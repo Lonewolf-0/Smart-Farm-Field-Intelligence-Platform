@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.25",
+    "@types/geojson": "^7946.0.16",
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.19.41",
     "ts-node": "^10.9.2",
