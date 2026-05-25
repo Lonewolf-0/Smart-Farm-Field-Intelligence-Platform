@@ -89,16 +89,3 @@ npm run build
 
 - Fork the repo, create a branch, open a pull request. Keep changes focused and include tests where appropriate.
 
-## Next Steps / TODOs
-
-- Add documentation for required backend environment variables.
-- Add database schema and migration instructions.
-- Add CI (lint, test, build) for frontend and backend.
-
-## License
-
-Specify a license for this project (e.g., MIT). Add a `LICENSE` file at the repository root.
-
----
-
-If you want, I can adapt the README to include exact `npm` scripts, environment variable names, or deployment steps — point me to the relevant files and I'll update it.
