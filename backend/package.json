@@ -27,6 +27,7 @@
     "@types/geojson": "^7946.0.16",
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.19.41",
+    "@types/pg": "^8.20.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "~5.4.2"
