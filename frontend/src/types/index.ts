@@ -1,4 +1,5 @@
-import type { Polygon } from "geojson";
+// Minimal Polygon type to avoid pulling geojson types in the frontend build
+export type Polygon = any;
 // ==========================
 // API RESPONSE WRAPPER
 // ==========================
