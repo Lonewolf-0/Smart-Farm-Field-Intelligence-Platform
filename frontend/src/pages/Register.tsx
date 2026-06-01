@@ -25,7 +25,7 @@ const Register = () => {
 
   // Password strength calculator
   const getPasswordStrength = (
-    pass: string
+    pass: string,
   ): { level: string; color: string; width: string } => {
     if (pass.length === 0) return { level: "", color: "", width: "0%" };
 
@@ -155,9 +155,13 @@ const Register = () => {
         password,
       });
 
-      const token = res.data?.token || res.token;
-      localStorage.setItem("token", token);
+      const token = res?.token;
+      if (!token) {
+        setError("Registration failed. Missing auth token.");
+        return;
+      }
 
+      localStorage.setItem("token", token);
       navigate("/map");
     } catch (err: any) {
       const message =
@@ -172,7 +176,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow text-gray-800">
         {/* Header */}
         <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
 
@@ -187,10 +191,12 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Full Name
+            </label>
             <input
               type="text"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
                 fieldErrors.name ? "border-red-500" : "border-gray-300"
               }`}
               value={name}
@@ -208,10 +214,12 @@ const Register = () => {
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Email
+            </label>
             <input
               type="email"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
                 fieldErrors.email ? "border-red-500" : "border-gray-300"
               }`}
               value={email}
@@ -229,10 +237,12 @@ const Register = () => {
 
           {/* Password Field */}
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Password
+            </label>
             <input
               type="password"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
                 fieldErrors.password ? "border-red-500" : "border-gray-300"
               }`}
               value={password}
@@ -263,10 +273,10 @@ const Register = () => {
                     passwordStrength.level === "Weak"
                       ? "text-red-500"
                       : passwordStrength.level === "Fair"
-                      ? "text-yellow-600"
-                      : passwordStrength.level === "Good"
-                      ? "text-blue-500"
-                      : "text-green-500"
+                        ? "text-yellow-600"
+                        : passwordStrength.level === "Good"
+                          ? "text-blue-500"
+                          : "text-green-500"
                   }`}
                 >
                   Password strength: {passwordStrength.level}
@@ -277,17 +287,17 @@ const Register = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1 text-gray-700">
               Confirm Password
             </label>
             <input
               type="password"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
                 fieldErrors.confirmPassword
                   ? "border-red-500"
                   : confirmPassword && password === confirmPassword
-                  ? "border-green-500"
-                  : "border-gray-300"
+                    ? "border-green-500"
+                    : "border-gray-300"
               }`}
               value={confirmPassword}
               onChange={(e) => {
@@ -302,9 +312,11 @@ const Register = () => {
                 {fieldErrors.confirmPassword}
               </p>
             )}
-            {confirmPassword && password === confirmPassword && !fieldErrors.confirmPassword && (
-              <p className="text-green-500 text-xs mt-1">Passwords match ✓</p>
-            )}
+            {confirmPassword &&
+              password === confirmPassword &&
+              !fieldErrors.confirmPassword && (
+                <p className="text-green-500 text-xs mt-1">Passwords match ✓</p>
+              )}
           </div>
 
           {/* Submit Button */}
@@ -324,7 +336,10 @@ const Register = () => {
         {/* Login Link */}
         <p className="mt-4 text-sm text-center text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-green-600 hover:underline font-medium">
+          <Link
+            to="/login"
+            className="text-green-600 hover:underline font-medium"
+          >
             Login
           </Link>
         </p>

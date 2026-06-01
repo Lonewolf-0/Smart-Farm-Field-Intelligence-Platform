@@ -35,12 +35,9 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const res = await loginUser({
-        email,
-        password,
-      });
+      const res = await loginUser({ email, password });
+      const token = res?.token;
 
-      const token = res?.data?.token || res?.token;
       if (!token) {
         setError("Login failed. Missing auth token.");
         return;
@@ -60,17 +57,19 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow text-gray-800">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
         {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Email
+            </label>
             <input
               type="email"
-              className="w-full border rounded px-3 py-2"
+              className="w-full border rounded px-3 py-2 text-gray-900 placeholder-gray-400 bg-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -78,10 +77,12 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Password
+            </label>
             <input
               type="password"
-              className="w-full border rounded px-3 py-2"
+              className="w-full border rounded px-3 py-2 text-gray-900 placeholder-gray-400 bg-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -101,7 +102,7 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center">
+        <p className="mt-4 text-sm text-center text-gray-700">
           {"Don't have an account? "}
           <Link to="/register" className="text-green-600 hover:underline">
             Register
