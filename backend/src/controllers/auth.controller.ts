@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { registerUser, loginUser } from "../services/auth.service";
 import { sendResponse } from "../utils/response";
+import { AuthRequest } from "../types";
 
 export const registerController = async (req: Request, res: Response) => {
   try {
@@ -20,6 +21,21 @@ export const registerController = async (req: Request, res: Response) => {
 
     console.error(error);
 
+    return sendResponse(res, 500, "Internal server error", null, error.message);
+  }
+};
+
+export const getMe = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return sendResponse(res, 401, "Unauthorized", null, "Missing user");
+    }
+
+    return sendResponse(res, 200, "Current user", user);
+  } catch (error: any) {
+    console.error(error);
     return sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
