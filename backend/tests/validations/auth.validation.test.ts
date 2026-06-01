@@ -1,7 +1,10 @@
-import { validateRegisterInput } from "../../src/validations/auth.validation";
+import {
+  validateRegisterInput,
+  validateLoginInput,
+} from "../../src/validations/auth.validation";
 
 describe("validateRegisterInput", () => {
-  // ✅ VALID CASE
+  //  VALID CASE
   it("should return null for valid input", () => {
     const result = validateRegisterInput({
       name: "Ashish",
@@ -114,6 +117,87 @@ describe("validateRegisterInput", () => {
   it("should fail if password is less than 6 characters", () => {
     const result = validateRegisterInput({
       name: "Ashish",
+      email: "test@test.com",
+      password: "123",
+    });
+
+    expect(result).toBe("Password must be at least 6 characters");
+  });
+});
+
+describe("validateLoginInput", () => {
+  //  VALID CASE
+  it("should return null for valid input", () => {
+    const result = validateLoginInput({
+      email: "test@test.com",
+      password: "123456",
+    });
+
+    expect(result).toBeNull();
+  });
+
+  //  EMAIL EMPTY
+  it("should return error if email is empty", () => {
+    const result = validateLoginInput({
+      email: "",
+      password: "123456",
+    });
+
+    expect(result).toBe("Email is required");
+  });
+
+  //  EMAIL ONLY SPACES
+  it("should return error if email contains only spaces", () => {
+    const result = validateLoginInput({
+      email: "   ",
+      password: "123456",
+    });
+
+    expect(result).toBe("Email is required");
+  });
+
+  //  EMAIL INVALID FORMAT
+  it("should return error for invalid email format", () => {
+    const result = validateLoginInput({
+      email: "invalidemail",
+      password: "123456",
+    });
+
+    expect(result).toBe("Invalid email format");
+  });
+
+  it("should return error for invalid email missing domain", () => {
+    const result = validateLoginInput({
+      email: "test@",
+      password: "123456",
+    });
+
+    expect(result).toBe("Invalid email format");
+  });
+
+  //  PASSWORD EMPTY
+  it("should return error if password is empty", () => {
+    const result = validateLoginInput({
+      email: "test@test.com",
+      password: "",
+    });
+
+    expect(result).toBe("Password is required");
+  });
+
+  // PASSWORD ONLY SPACES
+  it("should return error if password contains only spaces", () => {
+    const result = validateLoginInput({
+      email: "test@test.com",
+      password: "   ",
+    });
+
+    expect(result).toBe("Password is required");
+  });
+
+  //  PASSWORD < 6
+  it("should return error if password length is less than 6", () => {
+    const result = validateLoginInput({
       email: "test@test.com",
       password: "123",
     });

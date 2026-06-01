@@ -25,3 +25,11 @@ export const createUser = async (
 
   return result.rows[0];
 };
+
+export const findUserWithPasswordByEmail = async (email: string) => {
+  const result = await pool.query(
+    `SELECT id,email,name,password,created_at as "createdAt" FROM users WHERE email=$1`,
+    [email],
+  );
+  return result.rows[0] || null;
+};
