@@ -11,7 +11,7 @@ import HomePage from "./pages/HomePage.tsx";
 import MapPage from "./pages/MapPage.tsx";
 import DashboardPage from "./pages/DashboardPage.tsx";
 import BranchesPage from "./pages/BranchesPage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
+import Login from "./pages/Login.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 
 const navItems = [
@@ -84,7 +84,7 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/branches" element={<BranchesPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
