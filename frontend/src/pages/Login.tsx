@@ -1,9 +1,11 @@
-import { useState, type SyntheticEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, type SyntheticEvent, useEffect } from "react";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { refreshUser, isAuthenticated } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +46,10 @@ const Login = () => {
       }
 
       localStorage.setItem("token", token);
+      // refresh auth context
+      try {
+        await refreshUser();
+      } catch {}
       navigate("/map");
     } catch (err: unknown) {
       const message =
@@ -54,6 +60,11 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // Redirect authenticated users via effect to avoid conditional hook returns
+  useEffect(() => {
+    if (isAuthenticated) navigate("/map");
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

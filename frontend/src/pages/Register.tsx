@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 interface FormErrors {
   name?: string;
@@ -11,8 +12,9 @@ interface FormErrors {
 
 const Register = () => {
   const navigate = useNavigate();
+  const { refreshUser, isAuthenticated } = useAuth();
 
-  // Form state
+  // Form state (declare hooks before any early returns)
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +53,11 @@ const Register = () => {
   };
 
   const passwordStrength = getPasswordStrength(password);
+
+  // Redirect authenticated users via effect to avoid conditional hook returns
+  useEffect(() => {
+    if (isAuthenticated) navigate("/map");
+  }, [isAuthenticated, navigate]);
 
   // Inline validation
   const validateField = (field: string, value: string) => {
@@ -162,6 +169,9 @@ const Register = () => {
       }
 
       localStorage.setItem("token", token);
+      try {
+        await refreshUser();
+      } catch {}
       navigate("/map");
     } catch (err: any) {
       const message =
