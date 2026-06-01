@@ -8,7 +8,7 @@ import {
   validateRegisterInput,
   validateLoginInput,
 } from "../validations/auth.validation";
-
+import { authenticate } from "../middlewares/auth.middleware";
 const router = Router();
 
 router.post(
@@ -18,5 +18,12 @@ router.post(
 );
 
 router.post("/login", validate(validateLoginInput), loginController);
+
+router.get("/protected", authenticate, (req, res) => {
+  res.json({
+    message: "You are authenticated",
+    user: (req as any).user,
+  });
+});
 
 export default router;
