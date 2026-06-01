@@ -1,4 +1,4 @@
-import { RegisterRequest } from "../types";
+import { RegisterRequest, LoginRequest } from "../types";
 
 export const validateRegisterInput = (data: RegisterRequest) => {
   const { name, email, password } = data;
@@ -32,4 +32,27 @@ export const validateRegisterInput = (data: RegisterRequest) => {
   }
 
   return null; //valid
+};
+
+export const validateLoginInput = (data: LoginRequest): string | null => {
+  const { email, password } = data;
+
+  if (!email || email.trim().length === 0) {
+    return "Email is required";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return "Invalid email format";
+  }
+
+  if (!password || password.trim().length === 0) {
+    return "Password is required";
+  }
+
+  if (password.length < 6) {
+    return "Password must be at least 6 characters";
+  }
+
+  return null;
 };

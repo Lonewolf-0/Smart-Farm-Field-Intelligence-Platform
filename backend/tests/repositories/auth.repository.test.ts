@@ -1,6 +1,7 @@
 import {
   createUser,
   findUserByEmail,
+  findUserWithPasswordByEmail,
 } from "../../src/repositories/auth.repository";
 import { pool } from "../../src/config/db";
 
@@ -29,5 +30,36 @@ describe("Auth Repository", () => {
     const user = await findUserByEmail("test@test.com");
 
     expect(user?.email).toBe("test@test.com");
+  });
+});
+
+describe("Auth Repository - Login", () => {
+  it("should return user with password", async () => {
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [
+        {
+          id: "1",
+          email: "test@test.com",
+          name: "Ashish",
+          password: "hashed",
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    });
+
+    const user = await findUserWithPasswordByEmail("test@test.com");
+
+    expect(user?.email).toBe("test@test.com");
+    expect(user?.password).toBe("hashed");
+  });
+
+  it("should return null if user not found", async () => {
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [],
+    });
+
+    const user = await findUserWithPasswordByEmail("notfound@test.com");
+
+    expect(user).toBeNull();
   });
 });
