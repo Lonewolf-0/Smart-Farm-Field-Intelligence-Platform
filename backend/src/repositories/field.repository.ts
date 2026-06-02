@@ -25,3 +25,14 @@ export const createField = async (
   );
   return result.rows[0];
 };
+
+export const getFieldsByUserId = async (userId: string) => {
+  const result = await pool.query(
+    `SELECT id, name, area, centroid_lat, centroid_lng, polygon, created_at 
+     FROM fields 
+     WHERE user_id = $1 
+     ORDER BY created_at DESC`,
+    [userId],
+  );
+  return result.rows;
+};

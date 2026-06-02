@@ -1,7 +1,34 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import * as turf from "@turf/turf";
-import { createField } from "../repositories/field.repository";
+import { createField, getFieldsByUserId } from "../repositories/field.repository";
+
+export const getUserFields = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({ success: false, error: "Unauthorized" });
+      return;
+    }
+
+    const fields = await getFieldsByUserId(user.id);
+    const formattedFields = fields.map((f: any) => ({
+      id: f.id,
+      name: f.name,
+      area: f.area,
+      polygon: f.polygon,
+      centroid: {
+        lat: f.centroid_lat,
+        lng: f.centroid_lng,
+      },
+      createdAt: f.created_at,
+    }));
+    res.status(200).json({ success: true, data: formattedFields });
+  } catch (error: any) {
+    console.error("Get User Fields Error:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};
 
 export const saveField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -34,7 +61,20 @@ export const saveField = async (req: AuthRequest, res: Response): Promise<void> 
       centroidLng
     );
 
-    res.status(201).json({ success: true, data: newField });
+    res.status(201).json({ 
+      success: true, 
+      data: {
+        id: newField.id,
+        name: newField.name,
+        area: newField.area,
+        polygon: newField.polygon,
+        centroid: {
+          lat: newField.centroid_lat,
+          lng: newField.centroid_lng,
+        },
+        createdAt: newField.created_at,
+      } 
+    });
   } catch (error: any) {
     console.error("Save Field Error:", error);
     res.status(500).json({ success: false, error: "Internal server error" });
