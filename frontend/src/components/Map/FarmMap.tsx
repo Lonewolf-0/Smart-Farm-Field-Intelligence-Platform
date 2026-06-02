@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON, Tooltip } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import GeomanControl from "./GeomanControl";
 
@@ -32,12 +32,14 @@ interface FarmMapProps {
   onPolygonChange?: (polygon: DrawnPolygon | null) => void;
   savedFields?: any[]; // using any to avoid import cycles if not needed, or better use Field type
   selectedFieldId?: string | null;
+  onSelectField?: (id: string) => void;
 }
 
 const FarmMap: React.FC<FarmMapProps> = ({ 
   onPolygonChange,
   savedFields = [],
-  selectedFieldId = null
+  selectedFieldId = null,
+  onSelectField
 }) => {
   const hasGeolocation =
     typeof navigator !== "undefined" && !!navigator.geolocation;
@@ -187,13 +189,20 @@ const FarmMap: React.FC<FarmMapProps> = ({
             <GeoJSON
               key={field.id}
               data={field.polygon}
+              eventHandlers={{
+                click: () => onSelectField?.(field.id),
+              }}
               pathOptions={{
                 color: isSelected ? "#eab308" : "#3b82f6", // Yellow if selected, blue otherwise
                 weight: isSelected ? 4 : 2,
                 fillColor: isSelected ? "#fef08a" : "#93c5fd",
                 fillOpacity: isSelected ? 0.6 : 0.3,
               }}
-            />
+            >
+              <Tooltip direction="top" sticky>
+                <span className="font-semibold">{field.name}</span>
+              </Tooltip>
+            </GeoJSON>
           );
         })}
 

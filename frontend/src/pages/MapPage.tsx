@@ -62,6 +62,10 @@ const MapPage: React.FC = () => {
     }
   };
 
+  const handleSelectField = (id: string) => {
+    setSelectedFieldId((prev) => (prev === id ? null : id));
+  };
+
   return (
     <div className="w-full h-[calc(100vh-64px)] flex overflow-hidden">
       {/* Sidebar */}
@@ -70,7 +74,7 @@ const MapPage: React.FC = () => {
           fields={savedFields}
           isLoading={isLoadingFields}
           selectedFieldId={selectedFieldId}
-          onSelectField={setSelectedFieldId}
+          onSelectField={handleSelectField}
         />
       )}
 
@@ -80,6 +84,7 @@ const MapPage: React.FC = () => {
           onPolygonChange={handlePolygonChange}
           savedFields={savedFields}
           selectedFieldId={selectedFieldId}
+          onSelectField={handleSelectField}
         />
         
         {/* Save Button for authenticated users */}
