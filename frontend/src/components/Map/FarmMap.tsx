@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import GeomanControl from "./GeomanControl";
 
@@ -30,9 +30,15 @@ export interface DrawnPolygon {
 
 interface FarmMapProps {
   onPolygonChange?: (polygon: DrawnPolygon | null) => void;
+  savedFields?: any[]; // using any to avoid import cycles if not needed, or better use Field type
+  selectedFieldId?: string | null;
 }
 
-const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
+const FarmMap: React.FC<FarmMapProps> = ({ 
+  onPolygonChange,
+  savedFields = [],
+  selectedFieldId = null
+}) => {
   const hasGeolocation =
     typeof navigator !== "undefined" && !!navigator.geolocation;
 
@@ -79,6 +85,17 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
   const handlePolygonDeleted = () => {
     onPolygonChange?.(null);
   };
+
+  // Fly to selected field when it changes
+  useEffect(() => {
+    if (selectedFieldId && savedFields.length > 0) {
+      const field = savedFields.find((f) => f.id === selectedFieldId);
+      if (field && field.centroid) {
+        setMapCenter([field.centroid.lat, field.centroid.lng]);
+        setZoom(16);
+      }
+    }
+  }, [selectedFieldId, savedFields]);
 
   // Recenter on user location
   const handleRecenter = () => {
@@ -162,6 +179,23 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
         {locationStatus === "granted" && userLocation && (
           <FlyToLocation center={mapCenter} zoom={zoom} />
         )}
+
+        {/* Saved Polygons */}
+        {savedFields.map((field) => {
+          const isSelected = field.id === selectedFieldId;
+          return (
+            <GeoJSON
+              key={field.id}
+              data={field.polygon}
+              pathOptions={{
+                color: isSelected ? "#eab308" : "#3b82f6", // Yellow if selected, blue otherwise
+                weight: isSelected ? 4 : 2,
+                fillColor: isSelected ? "#fef08a" : "#93c5fd",
+                fillOpacity: isSelected ? 0.6 : 0.3,
+              }}
+            />
+          );
+        })}
 
         <GeomanControl
           onPolygonCreated={handlePolygonCreated}
