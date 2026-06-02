@@ -4,7 +4,7 @@ import { ENV } from "./config/env";
 import { pool } from "./config/db";
 import authRoutes from "./routes/auth.routes";
 import weatherRoutes from "./routes/weather.routes";
-
+import analysisRoutes from "./routes/analysis.routes";
 import { authenticate } from "./middlewares/auth.middleware";
 
 const app = express();
@@ -27,6 +27,7 @@ app.options("*", cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/weather", weatherRoutes);
+app.use("/api/analysis", analysisRoutes);
 
 // Health check route
 app.get("/", (_req, res) => {

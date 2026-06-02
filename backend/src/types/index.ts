@@ -11,8 +11,15 @@ export interface JwtPayload {
   email: string;
 }
 
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: Date;
+}
+
 export interface AuthRequest extends Request {
-  user?: JwtPayload;
+  user?: AuthUser;
 }
 
 export interface User {
