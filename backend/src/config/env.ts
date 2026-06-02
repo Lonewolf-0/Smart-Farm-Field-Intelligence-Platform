@@ -19,4 +19,6 @@ export const ENV = {
   DB_USER: requiredEnv("DB_USER"),
   DB_PASSWORD: requiredEnv("DB_PASSWORD"),
   JWT_SECRET: requiredEnv("JWT_SECRET"),
+  OPENWEATHER_API_KEY: requiredEnv("OPENWEATHER_API_KEY"),
+  OPENWEATHER_BASE_URL: requiredEnv("OPENWEATHER_BASE_URL"),
 };
