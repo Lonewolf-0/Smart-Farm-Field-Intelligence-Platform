@@ -36,3 +36,13 @@ export const getFieldsByUserId = async (userId: string) => {
   );
   return result.rows;
 };
+
+export const deleteField = async (fieldId: string, userId: string) => {
+  const result = await pool.query(
+    `DELETE FROM fields 
+     WHERE id = $1 AND user_id = $2 
+     RETURNING id`,
+    [fieldId, userId]
+  );
+  return result.rowCount ? result.rowCount > 0 : false;
+};
