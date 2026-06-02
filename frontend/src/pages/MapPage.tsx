@@ -81,6 +81,16 @@ const MapPage: React.FC = () => {
     }
   };
 
+  const handleEditField = async (id: string, newName: string) => {
+    try {
+      await api.put(`/fields/${id}`, { name: newName });
+      void fetchFields();
+    } catch (error) {
+      console.error("Failed to rename field:", error);
+      alert("Failed to rename field. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full h-[calc(100vh-64px)] flex overflow-hidden">
       {/* Sidebar */}
@@ -91,6 +101,7 @@ const MapPage: React.FC = () => {
           selectedFieldId={selectedFieldId}
           onSelectField={handleSelectField}
           onDeleteField={handleDeleteField}
+          onEditField={handleEditField}
         />
       )}
 

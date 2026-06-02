@@ -1,7 +1,41 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import * as turf from "@turf/turf";
-import { createField, getFieldsByUserId, deleteField } from "../repositories/field.repository";
+import { createField, getFieldsByUserId, deleteField, updateFieldName } from "../repositories/field.repository";
+
+export const updateField = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({ success: false, error: "Unauthorized" });
+      return;
+    }
+
+    const { id } = req.params;
+    const { name } = req.body;
+    
+    if (!id) {
+      res.status(400).json({ success: false, error: "Field ID required" });
+      return;
+    }
+    
+    if (!name || name.trim() === "") {
+      res.status(400).json({ success: false, error: "Field name required" });
+      return;
+    }
+
+    const updatedField = await updateFieldName(id, user.id, name.trim());
+    if (!updatedField) {
+      res.status(404).json({ success: false, error: "Field not found or unauthorized" });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: updatedField });
+  } catch (error: any) {
+    console.error("Update Field Error:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};
 
 export const deleteUserField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {

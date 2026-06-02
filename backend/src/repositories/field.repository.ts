@@ -46,3 +46,14 @@ export const deleteField = async (fieldId: string, userId: string) => {
   );
   return result.rowCount ? result.rowCount > 0 : false;
 };
+
+export const updateFieldName = async (fieldId: string, userId: string, newName: string) => {
+  const result = await pool.query(
+    `UPDATE fields 
+     SET name = $3
+     WHERE id = $1 AND user_id = $2 
+     RETURNING id, name`,
+    [fieldId, userId, newName]
+  );
+  return result.rows[0];
+};
