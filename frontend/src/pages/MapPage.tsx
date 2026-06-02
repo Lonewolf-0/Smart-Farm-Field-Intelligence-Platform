@@ -6,6 +6,7 @@ import SaveFieldModal from "../components/Map/SaveFieldModal";
 import FieldSidebar from "../components/Map/FieldSidebar";
 import api from "../services/api";
 import type { Field } from "../types";
+import * as turf from "@turf/turf";
 
 const MapPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -17,6 +18,7 @@ const MapPage: React.FC = () => {
   const [savedFields, setSavedFields] = useState<Field[]>([]);
   const [isLoadingFields, setIsLoadingFields] = useState(false);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [currentAreaHa, setCurrentAreaHa] = useState<number | null>(null);
 
   const fetchFields = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -40,6 +42,12 @@ const MapPage: React.FC = () => {
   const handlePolygonChange = (polygon: DrawnPolygon | null) => {
     setCurrentPolygon(polygon);
     setSaveSuccess(null);
+    if (polygon) {
+      const areaSqMeters = turf.area(turf.polygon(polygon.geoJSON.coordinates));
+      setCurrentAreaHa(areaSqMeters / 10000);
+    } else {
+      setCurrentAreaHa(null);
+    }
   };
 
   const handleSaveSubmit = async (name: string) => {
@@ -124,6 +132,21 @@ const MapPage: React.FC = () => {
           </button>
         )}
 
+        {/* Debug panel (fallback or additional info) */}
+        {currentPolygon && !saveSuccess && (
+          <div className="absolute top-20 right-4 z-[1000] bg-white p-4 rounded-lg shadow-lg max-w-xs pointer-events-none">
+            <h3 className="font-bold text-sm mb-2 text-gray-800">Drawn Field Data</h3>
+            <p className="text-xs text-gray-600 mb-1">
+              Vertices: {currentPolygon.geoJSON.coordinates[0].length - 1}
+            </p>
+            {currentAreaHa !== null && (
+              <p className="text-xs text-gray-800 font-medium">
+                Area: {currentAreaHa.toFixed(2)} ha / {(currentAreaHa * 2.47105).toFixed(2)} acres
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Success Message */}
         {saveSuccess && (
           <div className="absolute top-6 right-4 z-[1000] bg-white border-l-4 border-green-500 p-4 rounded shadow-lg max-w-xs">
@@ -136,6 +159,7 @@ const MapPage: React.FC = () => {
           isLoading={isSaving}
           onSave={handleSaveSubmit}
           onCancel={() => setIsModalOpen(false)}
+          areaHectares={currentAreaHa}
         />
       </div>
     </div>

@@ -5,6 +5,7 @@ interface SaveFieldModalProps {
   onCancel: () => void;
   isOpen: boolean;
   isLoading: boolean;
+  areaHectares?: number | null;
 }
 
 const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
@@ -12,6 +13,7 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
   onCancel,
   isOpen,
   isLoading,
+  areaHectares,
 }) => {
   const [fieldName, setFieldName] = useState("");
 
@@ -31,6 +33,20 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
         <p className="text-sm text-gray-600 mb-4">
           Enter a name for your drawn field boundary to save it.
         </p>
+        
+        {areaHectares !== undefined && areaHectares !== null && (
+          <div className="mb-4 bg-green-50 text-green-800 p-3 rounded-lg text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 12l5-5 5 5-5 5z" />
+              <path d="M12 2l5 5-5 5-5-5z" />
+              <path d="M12 22l5-5-5 5-5 5z" />
+              <path d="M22 12l-5 5-5-5 5-5z" />
+            </svg>
+            <span>
+              <strong>Area:</strong> {areaHectares.toFixed(2)} ha / {(areaHectares * 2.47105).toFixed(2)} acres
+            </span>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
