@@ -7,6 +7,7 @@ import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import { AuthProvider } from "./context/AuthContext";
 import Layout from "./components/Layout/Layout";
+import ProtectedRoute from "./components/Layout/ProtectedRoute";
 
 function App() {
   return (
@@ -17,9 +18,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/branches" element={<BranchesPage />} />
+          <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/branches" element={<ProtectedRoute><BranchesPage /></ProtectedRoute>} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
