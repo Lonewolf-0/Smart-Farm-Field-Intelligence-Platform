@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
-import type { LatLngExpression, Map as LeafletMap } from "leaflet";
+import type { LatLngExpression } from "leaflet";
+import GeomanControl from "./GeomanControl";
 
 // Default center: India
 const INDIA_CENTER: LatLngExpression = [20.5937, 78.9629];
@@ -23,7 +24,15 @@ const FlyToLocation: React.FC<FlyToLocationProps> = ({ center, zoom }) => {
   return null;
 };
 
-const FarmMap: React.FC = () => {
+export interface DrawnPolygon {
+  geoJSON: GeoJSON.Polygon;
+}
+
+interface FarmMapProps {
+  onPolygonChange?: (polygon: DrawnPolygon | null) => void;
+}
+
+const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
   const hasGeolocation =
     typeof navigator !== "undefined" && !!navigator.geolocation;
 
@@ -36,8 +45,6 @@ const FarmMap: React.FC = () => {
   const [locationStatus, setLocationStatus] = useState<
     "loading" | "granted" | "denied" | "unavailable"
   >(hasGeolocation ? "loading" : "unavailable");
-
-  const mapRef = useRef<LeafletMap | null>(null);
 
   // Geolocation
   useEffect(() => {
@@ -65,12 +72,19 @@ const FarmMap: React.FC = () => {
     );
   }, [hasGeolocation]);
 
+  const handlePolygonCreated = (geoJSON: GeoJSON.Polygon) => {
+    onPolygonChange?.({ geoJSON });
+  };
 
+  const handlePolygonDeleted = () => {
+    onPolygonChange?.(null);
+  };
 
   // Recenter on user location
   const handleRecenter = () => {
-    if (userLocation && mapRef.current) {
-      mapRef.current.flyTo(userLocation, DEFAULT_ZOOM, { duration: 1.5 });
+    if (userLocation) {
+      setMapCenter(userLocation);
+      setZoom(DEFAULT_ZOOM);
     }
   };
 
@@ -117,7 +131,6 @@ const FarmMap: React.FC = () => {
         </button>
       )}
 
-      {/* Map Container */}
       <MapContainer
         center={mapCenter}
         zoom={zoom}
@@ -126,7 +139,6 @@ const FarmMap: React.FC = () => {
         doubleClickZoom={false}
         dragging={true}
         className="w-full h-full z-0"
-        ref={mapRef}
       >
         {/* Satellite Tiles */}
         <TileLayer
@@ -148,9 +160,13 @@ const FarmMap: React.FC = () => {
 
         {/* Fly to user location */}
         {locationStatus === "granted" && userLocation && (
-          <FlyToLocation center={userLocation} zoom={DEFAULT_ZOOM} />
+          <FlyToLocation center={mapCenter} zoom={zoom} />
         )}
 
+        <GeomanControl
+          onPolygonCreated={handlePolygonCreated}
+          onPolygonDeleted={handlePolygonDeleted}
+        />
       </MapContainer>
     </div>
   );
