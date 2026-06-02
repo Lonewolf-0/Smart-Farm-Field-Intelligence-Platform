@@ -14,11 +14,13 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
           <Route path="/map" element={<MapPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/branches" element={<BranchesPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>
