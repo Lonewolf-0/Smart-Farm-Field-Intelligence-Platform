@@ -1,10 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
-import type { LatLngExpression, Map as LeafletMap } from "leaflet";
-import L from "leaflet";
-import DrawControls from "./DrawControls";
-import DrawButton from "./DrawButton";
-import AreaDisplay from "./AreaDisplay";
+import type { LatLngExpression } from "leaflet";
+import GeomanControl from "./GeomanControl";
 
 // Default center: India
 const INDIA_CENTER: LatLngExpression = [20.5937, 78.9629];
@@ -27,10 +24,8 @@ const FlyToLocation: React.FC<FlyToLocationProps> = ({ center, zoom }) => {
   return null;
 };
 
-// Exported polygon data type
 export interface DrawnPolygon {
   geoJSON: GeoJSON.Polygon;
-  area: number; // hectares
 }
 
 interface FarmMapProps {
@@ -50,12 +45,6 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
   const [locationStatus, setLocationStatus] = useState<
     "loading" | "granted" | "denied" | "unavailable"
   >(hasGeolocation ? "loading" : "unavailable");
-
-  // Drawing state
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [drawnPolygon, setDrawnPolygon] = useState<DrawnPolygon | null>(null);
-
-  const mapRef = useRef<LeafletMap | null>(null);
 
   // Geolocation
   useEffect(() => {
@@ -83,55 +72,19 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
     );
   }, [hasGeolocation]);
 
-  // Handle polygon created
-  const handlePolygonCreated = useCallback(
-    (geoJSON: GeoJSON.Polygon, area: number) => {
-      const polygon: DrawnPolygon = { geoJSON, area };
-      setDrawnPolygon(polygon);
-      onPolygonChange?.(polygon);
-    },
-    [onPolygonChange],
-  );
-
-  // Handle polygon deleted
-  const handlePolygonDeleted = useCallback(() => {
-    setDrawnPolygon(null);
-    onPolygonChange?.(null);
-  }, [onPolygonChange]);
-
-  // Start drawing programmatically
-  const handleStartDraw = () => {
-    setIsDrawing(true);
+  const handlePolygonCreated = (geoJSON: GeoJSON.Polygon) => {
+    onPolygonChange?.({ geoJSON });
   };
 
-  // Cancel drawing
-  const handleCancelDraw = () => {
-    setIsDrawing(false);
-    // The draw handler will be disabled via the DrawControls component
-  };
-
-  // Clear existing polygon
-  const handleClearPolygon = () => {
-    setDrawnPolygon(null);
+  const handlePolygonDeleted = () => {
     onPolygonChange?.(null);
-    // Remove all polygon layers and markers (non-tile, non-zoom layers)
-    if (mapRef.current) {
-      mapRef.current.eachLayer((layer: L.Layer) => {
-        if (
-          layer instanceof L.Polygon ||
-          layer instanceof L.Polyline ||
-          layer instanceof L.Marker
-        ) {
-          layer.remove();
-        }
-      });
-    }
   };
 
   // Recenter on user location
   const handleRecenter = () => {
-    if (userLocation && mapRef.current) {
-      mapRef.current.flyTo(userLocation, DEFAULT_ZOOM, { duration: 1.5 });
+    if (userLocation) {
+      setMapCenter(userLocation);
+      setZoom(DEFAULT_ZOOM);
     }
   };
 
@@ -154,18 +107,6 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
           </span>
         </div>
       )}
-
-      {/* Custom Draw Button */}
-      <DrawButton
-        isDrawing={isDrawing}
-        hasPolygon={drawnPolygon !== null}
-        onStartDraw={handleStartDraw}
-        onCancelDraw={handleCancelDraw}
-        onClearPolygon={handleClearPolygon}
-      />
-
-      {/* Area Display */}
-      {drawnPolygon && <AreaDisplay area={drawnPolygon.area} />}
 
       {/* Recenter Button */}
       {userLocation && locationStatus === "granted" && (
@@ -190,7 +131,6 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
         </button>
       )}
 
-      {/* Map Container */}
       <MapContainer
         center={mapCenter}
         zoom={zoom}
@@ -199,7 +139,6 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
         doubleClickZoom={false}
         dragging={true}
         className="w-full h-full z-0"
-        ref={mapRef}
       >
         {/* Satellite Tiles */}
         <TileLayer
@@ -221,15 +160,12 @@ const FarmMap: React.FC<FarmMapProps> = ({ onPolygonChange }) => {
 
         {/* Fly to user location */}
         {locationStatus === "granted" && userLocation && (
-          <FlyToLocation center={userLocation} zoom={DEFAULT_ZOOM} />
+          <FlyToLocation center={mapCenter} zoom={zoom} />
         )}
 
-        {/* Drawing Controls */}
-        <DrawControls
+        <GeomanControl
           onPolygonCreated={handlePolygonCreated}
           onPolygonDeleted={handlePolygonDeleted}
-          isDrawing={isDrawing}
-          setIsDrawing={setIsDrawing}
         />
       </MapContainer>
     </div>
