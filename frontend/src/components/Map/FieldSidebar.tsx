@@ -105,7 +105,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                           <path d="M12 22l5-5-5 5-5 5z" />
                           <path d="M22 12l-5 5-5-5 5-5z" />
                         </svg>
-                        {field.area.toFixed(2)} ha
+                        {field.area.toFixed(2)} ha / {(field.area * 2.47105).toFixed(2)} acres
                       </span>
                     </div>
                   </div>
