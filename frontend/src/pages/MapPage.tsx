@@ -66,6 +66,21 @@ const MapPage: React.FC = () => {
     setSelectedFieldId((prev) => (prev === id ? null : id));
   };
 
+  const handleDeleteField = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this field?")) return;
+    
+    try {
+      await api.delete(`/fields/${id}`);
+      if (selectedFieldId === id) {
+        setSelectedFieldId(null);
+      }
+      void fetchFields();
+    } catch (error) {
+      console.error("Failed to delete field:", error);
+      alert("Failed to delete field. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full h-[calc(100vh-64px)] flex overflow-hidden">
       {/* Sidebar */}
@@ -75,6 +90,7 @@ const MapPage: React.FC = () => {
           isLoading={isLoadingFields}
           selectedFieldId={selectedFieldId}
           onSelectField={handleSelectField}
+          onDeleteField={handleDeleteField}
         />
       )}
 
