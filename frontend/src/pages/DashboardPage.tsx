@@ -1,15 +1,11 @@
-import { BarChart3, CloudSun, ShieldAlert, Map } from "lucide-react";
+import { BarChart3, ShieldAlert, Map } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field } from "../types";
 import SoilCard from "../components/Dashboard/SoilCard";
+import IrrigationCard from "../components/Dashboard/IrrigationCard";
 
 const placeholderCards = [
-  {
-    title: "Weather",
-    text: "Forecast and current conditions will appear here.",
-    icon: CloudSun,
-  },
   {
     title: "Risk alerts",
     text: "Environmental warnings will surface in this card.",
@@ -90,6 +86,7 @@ function DashboardPage() {
       {selectedFieldId && (
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           <SoilCard fieldId={selectedFieldId} />
+          <IrrigationCard fieldId={selectedFieldId} />
           
           {placeholderCards.map(({ title, text, icon: Icon }) => (
             <article
