@@ -25,8 +25,9 @@ export const calculateIrrigation = (
     for (const day of nasaData) {
       currentMoisture -= day.et0;
       currentMoisture += day.precipitation;
-      // Cap at field capacity
+      // Bound between 0 and field capacity
       if (currentMoisture > awc) currentMoisture = awc;
+      if (currentMoisture < 0) currentMoisture = 0;
     }
   }
 
@@ -65,6 +66,7 @@ export const calculateIrrigation = (
     }
     
     if (projectedMoisture > awc) projectedMoisture = awc;
+    if (projectedMoisture < 0) projectedMoisture = 0;
   }
 
   if (nextIrrigationDays === 0 && projectedMoisture > mad) {
