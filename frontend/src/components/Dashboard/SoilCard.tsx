@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
+import { ShieldAlert } from "lucide-react";
 import SoilHistoryChart from "./SoilHistoryChart";
 import type { HistoryRecord } from "./SoilHistoryChart";
 
@@ -21,9 +22,16 @@ interface SoilCardProps {
   fieldId: string;
 }
 
+interface SoilAlert {
+  type: string;
+  severity: "warning" | "critical";
+  message: string;
+}
+
 const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   const [data, setData] = useState<SoilData | null>(null);
   const [history, setHistory] = useState<HistoryRecord[]>([]);
+  const [alerts, setAlerts] = useState<SoilAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,9 +41,11 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
       setError(null);
       const res = await api.get(`/analysis/${fieldId}/soil/history`);
       if (res.data?.success) {
-        setHistory(res.data.data);
-        if (res.data.data.length > 0) {
-          setData(res.data.data[0].data);
+        const { records, alerts } = res.data.data;
+        setHistory(records || []);
+        setAlerts(alerts || []);
+        if (records && records.length > 0) {
+          setData(records[0].data);
         } else {
           setData(null);
         }
@@ -153,6 +163,22 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         <p className="text-sm text-slate-400 mb-1">Dominant Texture</p>
         <p className="text-2xl font-semibold text-white tracking-wide">{topLayer.texture || "Unknown"}</p>
       </div>
+
+      {alerts.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {alerts.map((alert, i) => (
+            <div key={i} className={`p-3 rounded-lg border flex items-start gap-3 ${
+              alert.severity === 'critical' ? 'bg-red-950/50 border-red-500/30 text-red-200' : 'bg-yellow-950/50 border-yellow-500/30 text-yellow-200'
+            }`}>
+              <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-sm">{alert.type} Alert</p>
+                <p className="text-xs opacity-90">{alert.message}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 flex-1">
         {/* pH */}
