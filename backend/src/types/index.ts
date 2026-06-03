@@ -202,3 +202,20 @@ export interface AddSoilDataRequest {
 export interface AnalysisRequest {
   fieldId: string;
 }
+
+export interface SoilAnalysisInput {
+  ph: number;
+  soilTexture: string;
+  organicCarbon: number;
+}
+
+export interface CropSuitabilityV2 {
+  name: string;
+  score: number;
+  breakdown: {
+    ph: number;
+    temperature: number;
+    rainfall: number;
+    soilTexture: number;
+  };
+}
