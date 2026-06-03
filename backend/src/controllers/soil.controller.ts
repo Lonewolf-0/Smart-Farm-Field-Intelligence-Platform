@@ -11,6 +11,47 @@ const getSeason = (month: number): string => {
   return "Rabi"; // 11, 0, 1
 };
 
+export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({ success: false, error: "Unauthorized" });
+      return;
+    }
+
+    const { fieldId } = req.params;
+    if (!fieldId) {
+      res.status(400).json({ success: false, error: "Field ID required" });
+      return;
+    }
+
+    const field = await findFieldById(fieldId);
+    if (!field) {
+      res.status(404).json({ success: false, error: "Field not found" });
+      return;
+    }
+
+    if (field.user_id !== user.id) {
+      res.status(403).json({ success: false, error: "Forbidden: Not your field" });
+      return;
+    }
+
+    // Fetch history from database
+    const historyResult = await pool.query(
+      `SELECT id, year, season, data, created_at 
+       FROM soil_data 
+       WHERE field_id = $1 
+       ORDER BY created_at DESC`,
+      [fieldId]
+    );
+
+    res.status(200).json({ success: true, data: historyResult.rows });
+  } catch (error: any) {
+    console.error("Soil History Error:", error);
+    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+  }
+};
+
 export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;
@@ -51,7 +92,15 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
       [fieldId, year, season, JSON.stringify(soilData)]
     );
 
-    res.status(200).json({ success: true, data: soilData });
+    // Return the newly created record format
+    const newRecord = {
+      year,
+      season,
+      data: soilData,
+      created_at: now.toISOString()
+    };
+
+    res.status(200).json({ success: true, data: newRecord });
   } catch (error: any) {
     console.error("Soil Data Error:", error);
     res.status(500).json({ success: false, error: error.message || "Internal server error" });
