@@ -1,0 +1,158 @@
+import React, { useState, useEffect } from "react";
+import api from "../../services/api";
+
+interface SoilLayerData {
+  depthLabel: string;
+  ph: number | null;
+  organicCarbon: number | null;
+  clay: number | null;
+  sand: number | null;
+  nitrogen: number | null;
+  texture: string;
+}
+
+interface SoilData {
+  layers: SoilLayerData[];
+}
+
+interface SoilCardProps {
+  fieldId: string;
+}
+
+const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
+  const [data, setData] = useState<SoilData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSoilData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await api.post(`/analysis/${fieldId}/soil`);
+      setData(res.data.data);
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Failed to load soil data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (fieldId) {
+      void fetchSoilData();
+    }
+  }, [fieldId]);
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-6 animate-pulse">
+        <div className="h-6 w-32 bg-slate-800 rounded mb-4"></div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-20 bg-slate-800 rounded-xl"></div>
+          <div className="h-20 bg-slate-800 rounded-xl"></div>
+          <div className="h-20 bg-slate-800 rounded-xl"></div>
+          <div className="h-20 bg-slate-800 rounded-xl"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data || !data.layers || data.layers.length === 0) {
+    return (
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/50 p-6 text-center">
+        <p className="text-red-400 mb-4">{error || "No soil data available."}</p>
+        <button
+          onClick={fetchSoilData}
+          className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Use top layer (0-5cm) for dashboard summary
+  const topLayer = data.layers[0];
+  
+  // Calculations
+  const ph = topLayer.ph;
+  const phText = ph === null ? "Unknown" : ph < 6.0 ? "Acidic" : ph > 7.5 ? "Alkaline" : "Neutral";
+  const phColor = ph === null ? "text-slate-400" : (ph >= 6.0 && ph <= 7.5) ? "text-green-400" : (ph < 5.5 || ph > 8.0) ? "text-red-400" : "text-yellow-400";
+  
+  const ocPercentage = topLayer.organicCarbon !== null ? topLayer.organicCarbon / 10 : null;
+  const ocColor = ocPercentage === null ? "text-slate-400" : ocPercentage > 1.5 ? "text-green-400" : ocPercentage < 0.5 ? "text-red-400" : "text-yellow-400";
+  const ocRating = ocPercentage === null ? "Unknown" : ocPercentage > 1.5 ? "High" : ocPercentage < 0.5 ? "Poor" : "Moderate";
+
+  // Health Score Calculation
+  let score = 100;
+  if (ph !== null) {
+    if (ph < 5.5 || ph > 8.0) score -= 25;
+    else if (ph < 6.0 || ph > 7.5) score -= 10;
+  }
+  if (ocPercentage !== null) {
+    if (ocPercentage < 0.5) score -= 25;
+    else if (ocPercentage <= 1.5) score -= 10;
+  }
+  if (topLayer.texture === "Clay" || topLayer.texture === "Sandy") score -= 15;
+  else if (topLayer.texture === "Sandy Loam") score -= 5;
+  
+  const scoreColor = score >= 80 ? "text-green-400" : score >= 60 ? "text-yellow-400" : "text-red-400";
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h3 className="text-xl font-bold text-white">Soil Profile</h3>
+          <p className="text-sm text-cyan-200 mt-1">Top Layer (0-5cm)</p>
+        </div>
+        <div className="text-right">
+          <div className={`text-3xl font-black ${scoreColor}`}>{score}</div>
+          <div className="text-xs text-slate-400 uppercase tracking-widest mt-1">Health Score</div>
+        </div>
+      </div>
+
+      <div className="mb-6 bg-white/5 rounded-xl p-4 border border-white/5 text-center shrink-0">
+        <p className="text-sm text-slate-400 mb-1">Dominant Texture</p>
+        <p className="text-2xl font-semibold text-white tracking-wide">{topLayer.texture || "Unknown"}</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 flex-1">
+        {/* pH */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col justify-center">
+          <p className="text-xs text-slate-400 mb-1">pH Level</p>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-xl font-bold ${phColor}`}>{ph?.toFixed(1) || "-"}</span>
+            <span className="text-xs text-slate-300">{phText}</span>
+          </div>
+        </div>
+
+        {/* Organic Carbon */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col justify-center">
+          <p className="text-xs text-slate-400 mb-1">Organic Carbon</p>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-xl font-bold ${ocColor}`}>{ocPercentage?.toFixed(2) || "-"}%</span>
+            <span className="text-xs text-slate-300">{ocRating}</span>
+          </div>
+        </div>
+
+        {/* Clay */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col justify-center">
+          <p className="text-xs text-slate-400 mb-1">Clay Content</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-white">{topLayer.clay?.toFixed(1) || "-"}%</span>
+          </div>
+        </div>
+
+        {/* Sand */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col justify-center">
+          <p className="text-xs text-slate-400 mb-1">Sand Content</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-white">{topLayer.sand?.toFixed(1) || "-"}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SoilCard;

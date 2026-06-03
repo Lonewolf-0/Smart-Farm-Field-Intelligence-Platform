@@ -1,15 +1,14 @@
-import { BarChart3, Brain, CloudSun, ShieldAlert } from "lucide-react";
+import { BarChart3, CloudSun, ShieldAlert, Map } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "../services/api";
+import type { Field } from "../types";
+import SoilCard from "../components/Dashboard/SoilCard";
 
-const cards = [
+const placeholderCards = [
   {
     title: "Weather",
     text: "Forecast and current conditions will appear here.",
     icon: CloudSun,
-  },
-  {
-    title: "Soil",
-    text: "Soil health metrics and trends are placeholder-ready.",
-    icon: Brain,
   },
   {
     title: "Risk alerts",
@@ -19,34 +18,95 @@ const cards = [
 ];
 
 function DashboardPage() {
+  const [fields, setFields] = useState<Field[]>([]);
+  const [selectedFieldId, setSelectedFieldId] = useState<string>("");
+  const [loadingFields, setLoadingFields] = useState(true);
+
+  useEffect(() => {
+    const fetchFields = async () => {
+      try {
+        const res = await api.get("/fields");
+        if (res.data?.success) {
+          setFields(res.data.data);
+          if (res.data.data.length > 0) {
+            setSelectedFieldId(res.data.data[0].id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch fields", err);
+      } finally {
+        setLoadingFields(false);
+      }
+    };
+    void fetchFields();
+  }, []);
+
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/20 backdrop-blur-xl sm:p-8">
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/15 text-cyan-200">
-          <BarChart3 className="h-6 w-6" />
+    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/20 backdrop-blur-xl sm:p-8 min-h-[calc(100vh-6rem)]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/15 text-cyan-200">
+            <BarChart3 className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
+              Dashboard
+            </p>
+            <h2 className="text-3xl font-semibold text-white">
+              Field Analytics
+            </h2>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
-            Dashboard
-          </p>
-          <h2 className="text-3xl font-semibold text-white">
-            Analytics placeholders
-          </h2>
+
+        {/* Field Selector */}
+        <div className="flex items-center gap-3 bg-slate-950/50 p-2 pl-4 rounded-xl border border-white/10">
+          <Map className="h-5 w-5 text-cyan-200" />
+          {loadingFields ? (
+            <span className="text-slate-300 pr-4 animate-pulse">Loading fields...</span>
+          ) : fields.length > 0 ? (
+            <select
+              value={selectedFieldId}
+              onChange={(e) => setSelectedFieldId(e.target.value)}
+              className="bg-transparent text-white font-medium focus:outline-none appearance-none pr-8 cursor-pointer"
+            >
+              {fields.map((field) => (
+                <option key={field.id} value={field.id} className="bg-slate-900 text-white">
+                  {field.name} ({field.area.toFixed(1)} ha)
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className="text-slate-400 pr-4">No fields saved</span>
+          )}
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {cards.map(({ title, text, icon: Icon }) => (
-          <article
-            key={title}
-            className="rounded-2xl border border-white/10 bg-slate-950/50 p-5"
-          >
-            <Icon className="h-5 w-5 text-cyan-200" />
-            <h3 className="mt-3 text-lg font-semibold text-white">{title}</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
-          </article>
-        ))}
-      </div>
+      {!loadingFields && fields.length === 0 && (
+        <div className="mt-8 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6 text-center">
+          <p className="text-yellow-200">You haven't saved any fields yet. Draw and save a field on the Map to view analytics.</p>
+        </div>
+      )}
+
+      {selectedFieldId && (
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <SoilCard fieldId={selectedFieldId} />
+          
+          {placeholderCards.map(({ title, text, icon: Icon }) => (
+            <article
+              key={title}
+              className="rounded-2xl border border-white/10 bg-slate-950/50 p-5 flex flex-col h-full"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <Icon className="h-6 w-6 text-cyan-200" />
+                <h3 className="text-xl font-bold text-white">{title}</h3>
+              </div>
+              <div className="flex-1 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-center text-center">
+                <p className="text-sm leading-6 text-slate-400 italic">{text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
