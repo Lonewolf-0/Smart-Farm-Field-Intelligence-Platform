@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
+import SoilHistoryChart from "./SoilHistoryChart";
+import type { HistoryRecord } from "./SoilHistoryChart";
 
 interface SoilLayerData {
   depthLabel: string;
@@ -21,15 +23,23 @@ interface SoilCardProps {
 
 const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   const [data, setData] = useState<SoilData | null>(null);
+  const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSoilData = async () => {
+  const fetchSoilHistory = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await api.post(`/analysis/${fieldId}/soil`);
-      setData(res.data.data);
+      const res = await api.get(`/analysis/${fieldId}/soil/history`);
+      if (res.data?.success) {
+        setHistory(res.data.data);
+        if (res.data.data.length > 0) {
+          setData(res.data.data[0].data);
+        } else {
+          setData(null);
+        }
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to load soil data.");
     } finally {
@@ -37,9 +47,23 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     }
   };
 
+  const handleRunAnalysis = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await api.post(`/analysis/${fieldId}/soil`);
+      if (res.data?.success) {
+        await fetchSoilHistory();
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Failed to run analysis.");
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (fieldId) {
-      void fetchSoilData();
+      void fetchSoilHistory();
     }
   }, [fieldId]);
 
@@ -57,15 +81,29 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     );
   }
 
-  if (error || !data || !data.layers || data.layers.length === 0) {
+  if (error) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/50 p-6 text-center">
-        <p className="text-red-400 mb-4">{error || "No soil data available."}</p>
+        <p className="text-red-400 mb-4">{error}</p>
         <button
-          onClick={fetchSoilData}
+          onClick={fetchSoilHistory}
           className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
         >
           Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!data || !data.layers || data.layers.length === 0) {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md flex flex-col items-center justify-center text-center">
+        <p className="text-slate-300 mb-4">No soil analysis found for this field.</p>
+        <button
+          onClick={handleRunAnalysis}
+          className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-900/50"
+        >
+          Run First Analysis
         </button>
       </div>
     );
@@ -150,6 +188,19 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
             <span className="text-xl font-bold text-white">{topLayer.sand?.toFixed(1) || "-"}%</span>
           </div>
         </div>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-white/10">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-bold text-white">Historical Trends</h3>
+          <button
+            onClick={handleRunAnalysis}
+            className="px-4 py-2 bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-800 text-cyan-200 text-sm font-semibold rounded-lg transition-colors"
+          >
+            Update Analysis
+          </button>
+        </div>
+        <SoilHistoryChart history={history} />
       </div>
     </div>
   );
