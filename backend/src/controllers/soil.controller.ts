@@ -46,7 +46,62 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
       [fieldId]
     );
 
-    sendResponse(res, 200, "Success", historyResult.rows);
+    const alerts: Array<{ type: string, severity: string, message: string }> = [];
+    
+    if (historyResult.rows.length >= 2) {
+      const recentRecords = historyResult.rows.slice(0, 3);
+      const newest = recentRecords[0];
+      const oldest = recentRecords[recentRecords.length - 1];
+      
+      const yearsElapsed = Math.max(1, newest.year - oldest.year);
+      
+      const newestTop = newest.data.layers?.[0];
+      const oldestTop = oldest.data.layers?.[0];
+      
+      if (newestTop && oldestTop) {
+        // pH trend
+        if (oldestTop.ph !== null && newestTop.ph !== null) {
+          const phDropPerYear = (oldestTop.ph - newestTop.ph) / yearsElapsed;
+          if (phDropPerYear > 0.3) {
+            alerts.push({
+              type: "pH",
+              severity: "warning",
+              message: "Soil becoming acidic. Consider liming."
+            });
+          }
+        }
+        
+        // OC trend (stored as g/kg. API gives 10x percentage. So drop of 0.2% = 2.0 g/kg)
+        if (oldestTop.organicCarbon !== null && newestTop.organicCarbon !== null) {
+          const ocDropGKgPerYear = (oldestTop.organicCarbon - newestTop.organicCarbon) / yearsElapsed;
+          const ocDropPercentPerYear = ocDropGKgPerYear / 10;
+          if (ocDropPercentPerYear > 0.2) {
+            alerts.push({
+              type: "Organic Carbon",
+              severity: "critical",
+              message: "Organic matter declining. Add compost/green manure."
+            });
+          }
+        }
+        
+        // Nitrogen trend
+        if (oldestTop.nitrogen !== null && newestTop.nitrogen !== null) {
+          const nDropPerYear = (oldestTop.nitrogen - newestTop.nitrogen) / yearsElapsed;
+          if (nDropPerYear > 5) {
+            alerts.push({
+              type: "Nitrogen",
+              severity: "warning",
+              message: "Nitrogen depletion detected. Consider legume rotation."
+            });
+          }
+        }
+      }
+    }
+
+    sendResponse(res, 200, "Success", {
+      records: historyResult.rows,
+      alerts
+    });
   } catch (error: any) {
     console.error("Soil History Error:", error);
     sendResponse(res, 500, "Internal server error", null, error.message);
