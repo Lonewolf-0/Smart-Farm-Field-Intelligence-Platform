@@ -66,9 +66,10 @@ export interface CropSuitability {
 
 export interface IrrigationPlan {
   nextIrrigationDays: number;
-  waterRequired: number;
-  soilMoisture: number;
-  evapotranspiration: number;
+  waterRequired: number; // mm
+  currentSoilMoisture: number; // percentage
+  dailyET: number; // mm/day
+  rainfallNext7Days: number; // mm
 }
 
 export interface NDVIData {

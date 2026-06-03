@@ -3,6 +3,7 @@ import { AuthRequest } from "../types";
 import { findFieldById } from "../repositories/field.repository";
 import { getSoilProperties } from "../services/soil.service";
 import { pool } from "../config/db";
+import { sendResponse } from "../utils/response";
 
 const getSeason = (month: number): string => {
   if (month >= 2 && month <= 4) return "Kharif preparation";
@@ -15,24 +16,24 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { fieldId } = req.params;
     if (!fieldId) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
 
     const field = await findFieldById(fieldId);
     if (!field) {
-      res.status(404).json({ success: false, error: "Field not found" });
+      sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
     }
 
     if (field.user_id !== user.id) {
-      res.status(403).json({ success: false, error: "Forbidden: Not your field" });
+      sendResponse(res, 403, "Forbidden: Not your field", null, "Forbidden");
       return;
     }
 
@@ -45,10 +46,65 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
       [fieldId]
     );
 
-    res.status(200).json({ success: true, data: historyResult.rows });
+    const alerts: Array<{ type: string, severity: string, message: string }> = [];
+    
+    if (historyResult.rows.length >= 2) {
+      const recentRecords = historyResult.rows.slice(0, 3);
+      const newest = recentRecords[0];
+      const oldest = recentRecords[recentRecords.length - 1];
+      
+      const yearsElapsed = Math.max(1, newest.year - oldest.year);
+      
+      const newestTop = newest.data.layers?.[0];
+      const oldestTop = oldest.data.layers?.[0];
+      
+      if (newestTop && oldestTop) {
+        // pH trend
+        if (oldestTop.ph !== null && newestTop.ph !== null) {
+          const phDropPerYear = (oldestTop.ph - newestTop.ph) / yearsElapsed;
+          if (phDropPerYear > 0.3) {
+            alerts.push({
+              type: "pH",
+              severity: "warning",
+              message: "Soil becoming acidic. Consider liming."
+            });
+          }
+        }
+        
+        // OC trend (stored as g/kg. API gives 10x percentage. So drop of 0.2% = 2.0 g/kg)
+        if (oldestTop.organicCarbon !== null && newestTop.organicCarbon !== null) {
+          const ocDropGKgPerYear = (oldestTop.organicCarbon - newestTop.organicCarbon) / yearsElapsed;
+          const ocDropPercentPerYear = ocDropGKgPerYear / 10;
+          if (ocDropPercentPerYear > 0.2) {
+            alerts.push({
+              type: "Organic Carbon",
+              severity: "critical",
+              message: "Organic matter declining. Add compost/green manure."
+            });
+          }
+        }
+        
+        // Nitrogen trend
+        if (oldestTop.nitrogen !== null && newestTop.nitrogen !== null) {
+          const nDropPerYear = (oldestTop.nitrogen - newestTop.nitrogen) / yearsElapsed;
+          if (nDropPerYear > 5) {
+            alerts.push({
+              type: "Nitrogen",
+              severity: "warning",
+              message: "Nitrogen depletion detected. Consider legume rotation."
+            });
+          }
+        }
+      }
+    }
+
+    sendResponse(res, 200, "Success", {
+      records: historyResult.rows,
+      alerts
+    });
   } catch (error: any) {
     console.error("Soil History Error:", error);
-    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
 
@@ -56,24 +112,24 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { fieldId } = req.params;
     if (!fieldId) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
 
     const field = await findFieldById(fieldId);
     if (!field) {
-      res.status(404).json({ success: false, error: "Field not found" });
+      sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
     }
 
     if (field.user_id !== user.id) {
-      res.status(403).json({ success: false, error: "Forbidden: Not your field" });
+      sendResponse(res, 403, "Forbidden: Not your field", null, "Forbidden");
       return;
     }
 
@@ -100,9 +156,9 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
       created_at: now.toISOString()
     };
 
-    res.status(200).json({ success: true, data: newRecord });
+    sendResponse(res, 200, "Success", newRecord);
   } catch (error: any) {
     console.error("Soil Data Error:", error);
-    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };

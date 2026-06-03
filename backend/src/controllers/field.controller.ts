@@ -2,12 +2,13 @@ import { Response } from "express";
 import { AuthRequest } from "../types";
 import * as turf from "@turf/turf";
 import { createField, getFieldsByUserId, deleteField, updateFieldName } from "../repositories/field.repository";
+import { sendResponse } from "../utils/response";
 
 export const updateField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
@@ -15,25 +16,25 @@ export const updateField = async (req: AuthRequest, res: Response): Promise<void
     const { name } = req.body;
     
     if (!id) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
     
     if (!name || name.trim() === "") {
-      res.status(400).json({ success: false, error: "Field name required" });
+      sendResponse(res, 400, "Field name required", null, "Field name required");
       return;
     }
 
     const updatedField = await updateFieldName(id, user.id, name.trim());
     if (!updatedField) {
-      res.status(404).json({ success: false, error: "Field not found or unauthorized" });
+      sendResponse(res, 404, "Field not found or unauthorized", null, "Field not found or unauthorized");
       return;
     }
 
-    res.status(200).json({ success: true, data: updatedField });
+    sendResponse(res, 200, "Success", updatedField);
   } catch (error: any) {
     console.error("Update Field Error:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
 
@@ -41,26 +42,26 @@ export const deleteUserField = async (req: AuthRequest, res: Response): Promise<
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { id } = req.params;
     if (!id) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
 
     const deleted = await deleteField(id, user.id);
     if (!deleted) {
-      res.status(404).json({ success: false, error: "Field not found or unauthorized to delete" });
+      sendResponse(res, 404, "Field not found or unauthorized to delete", null, "Field not found or unauthorized to delete");
       return;
     }
 
-    res.status(200).json({ success: true, message: "Field deleted successfully" });
+    sendResponse(res, 200, "Field deleted successfully");
   } catch (error: any) {
     console.error("Delete Field Error:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
 
@@ -68,7 +69,7 @@ export const getUserFields = async (req: AuthRequest, res: Response): Promise<vo
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
@@ -84,10 +85,10 @@ export const getUserFields = async (req: AuthRequest, res: Response): Promise<vo
       },
       createdAt: f.created_at,
     }));
-    res.status(200).json({ success: true, data: formattedFields });
+    sendResponse(res, 200, "Success", formattedFields);
   } catch (error: any) {
     console.error("Get User Fields Error:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
 
@@ -95,13 +96,13 @@ export const saveField = async (req: AuthRequest, res: Response): Promise<void> 
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { name, polygon } = req.body;
     if (!name || !polygon || polygon.type !== "Polygon") {
-      res.status(400).json({ success: false, error: "Invalid field data. Name and valid Polygon required." });
+      sendResponse(res, 400, "Invalid field data. Name and valid Polygon required.", null, "Invalid field data. Name and valid Polygon required.");
       return;
     }
 
@@ -122,22 +123,19 @@ export const saveField = async (req: AuthRequest, res: Response): Promise<void> 
       centroidLng
     );
 
-    res.status(201).json({ 
-      success: true, 
-      data: {
-        id: newField.id,
-        name: newField.name,
-        area: newField.area,
-        polygon: newField.polygon,
-        centroid: {
-          lat: newField.centroid_lat,
-          lng: newField.centroid_lng,
-        },
-        createdAt: newField.created_at,
-      } 
+    sendResponse(res, 201, "Success", {
+      id: newField.id,
+      name: newField.name,
+      area: newField.area,
+      polygon: newField.polygon,
+      centroid: {
+        lat: newField.centroid_lat,
+        lng: newField.centroid_lng,
+      },
+      createdAt: newField.created_at,
     });
   } catch (error: any) {
     console.error("Save Field Error:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
