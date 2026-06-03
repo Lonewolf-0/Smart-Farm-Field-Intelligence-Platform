@@ -3,6 +3,7 @@ import { AuthRequest } from "../types";
 import { findFieldById } from "../repositories/field.repository";
 import { getSoilProperties } from "../services/soil.service";
 import { pool } from "../config/db";
+import { sendResponse } from "../utils/response";
 
 const getSeason = (month: number): string => {
   if (month >= 2 && month <= 4) return "Kharif preparation";
@@ -15,24 +16,24 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { fieldId } = req.params;
     if (!fieldId) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
 
     const field = await findFieldById(fieldId);
     if (!field) {
-      res.status(404).json({ success: false, error: "Field not found" });
+      sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
     }
 
     if (field.user_id !== user.id) {
-      res.status(403).json({ success: false, error: "Forbidden: Not your field" });
+      sendResponse(res, 403, "Forbidden: Not your field", null, "Forbidden");
       return;
     }
 
@@ -45,10 +46,10 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
       [fieldId]
     );
 
-    res.status(200).json({ success: true, data: historyResult.rows });
+    sendResponse(res, 200, "Success", historyResult.rows);
   } catch (error: any) {
     console.error("Soil History Error:", error);
-    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
 
@@ -56,24 +57,24 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
   try {
     const user = req.user;
     if (!user) {
-      res.status(401).json({ success: false, error: "Unauthorized" });
+      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
       return;
     }
 
     const { fieldId } = req.params;
     if (!fieldId) {
-      res.status(400).json({ success: false, error: "Field ID required" });
+      sendResponse(res, 400, "Field ID required", null, "Field ID required");
       return;
     }
 
     const field = await findFieldById(fieldId);
     if (!field) {
-      res.status(404).json({ success: false, error: "Field not found" });
+      sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
     }
 
     if (field.user_id !== user.id) {
-      res.status(403).json({ success: false, error: "Forbidden: Not your field" });
+      sendResponse(res, 403, "Forbidden: Not your field", null, "Forbidden");
       return;
     }
 
@@ -100,9 +101,9 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
       created_at: now.toISOString()
     };
 
-    res.status(200).json({ success: true, data: newRecord });
+    sendResponse(res, 200, "Success", newRecord);
   } catch (error: any) {
     console.error("Soil Data Error:", error);
-    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+    sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
