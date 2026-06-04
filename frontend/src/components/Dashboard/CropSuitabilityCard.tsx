@@ -9,6 +9,8 @@ import {
   CheckCircle2 
 } from "lucide-react";
 import type { CropSuitability } from "../../types";
+import CropCompare from "./CropCompare";
+import Toast from "../UI/Toast";
 
 interface CropSuitabilityCardProps {
   fieldId: string;
@@ -75,6 +77,8 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
   const [crops, setCrops] = useState<CropSuitability[]>([]);
   const [selectedSeason, setSelectedSeason] = useState<"All" | "Kharif" | "Rabi" | "Zaid">("All");
   const [expandedCrop, setExpandedCrop] = useState<string | null>(null);
+  const [selectedCompare, setSelectedCompare] = useState<CropSuitability[]>([]);
+  const [activeToast, setActiveToast] = useState<{ message: string; type: "info" | "warning" | "success" | "error" } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -98,6 +102,8 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
 
   useEffect(() => {
     if (fieldId) {
+      setSelectedCompare([]);
+      setActiveToast(null);
       void fetchCropSuitability();
     }
   }, [fieldId]);
@@ -143,6 +149,24 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
       </div>
     );
   }
+
+  const handleToggleCompare = (crop: CropSuitability, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedCompare((prev) => {
+      const exists = prev.find((c) => c.name === crop.name);
+      if (exists) {
+        setActiveToast({ message: `${crop.name} removed from comparison`, type: "info" });
+        return prev.filter((c) => c.name !== crop.name);
+      }
+      if (prev.length >= 3) {
+        setActiveToast({ message: "You can compare a maximum of 3 crops side by side.", type: "warning" });
+        return prev;
+      }
+      const newSelected = [...prev, crop];
+      setActiveToast({ message: `${crop.name} added to comparison (${newSelected.length}/3)`, type: "success" });
+      return newSelected;
+    });
+  };
 
   // Filter crops based on local season dictionary
   const filteredCrops = crops.filter((crop) => {
@@ -209,6 +233,18 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                   className="flex items-center justify-between cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
+                    <button
+                      onClick={(e) => handleToggleCompare(crop, e)}
+                      className={`w-4.5 h-4.5 rounded border flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
+                        selectedCompare.some((c) => c.name === crop.name)
+                          ? "bg-green-500 border-green-500 text-slate-950"
+                          : "border-white/20 hover:border-white/40 bg-white/5 text-transparent"
+                      }`}
+                    >
+                      <svg className="w-3 h-3 stroke-current fill-none stroke-[3]" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </button>
                     <span className="font-semibold text-white text-sm truncate">{crop.name}</span>
                     {getSeasonBadge(season)}
                   </div>
@@ -288,6 +324,31 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
             );
           })}
         </div>
+      )}
+
+      {selectedCompare.length === 1 && (
+        <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/25 rounded-xl text-xs text-amber-200 flex items-center gap-2 animate-fadeIn shrink-0">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>Select at least one more crop to enable comparison.</span>
+        </div>
+      )}
+
+      {selectedCompare.length >= 2 && (
+        <CropCompare
+          crops={selectedCompare}
+          onClear={() => {
+            setSelectedCompare([]);
+            setActiveToast({ message: "Comparison cleared", type: "info" });
+          }}
+        />
+      )}
+
+      {activeToast && (
+        <Toast
+          message={activeToast.message}
+          type={activeToast.type}
+          onClose={() => setActiveToast(null)}
+        />
       )}
     </div>
   );
