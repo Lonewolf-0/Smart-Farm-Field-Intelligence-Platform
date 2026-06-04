@@ -6,6 +6,7 @@ import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
 import WeatherCard from "../components/Dashboard/WeatherCard";
 import CropSuitabilityCard from "../components/Dashboard/CropSuitabilityCard";
+import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
 
 function DashboardPage() {
@@ -85,6 +86,7 @@ function DashboardPage() {
           <NDVICard fieldId={selectedFieldId} />
           <WeatherCard fieldId={selectedFieldId} />
           <CropSuitabilityCard fieldId={selectedFieldId} />
+          <FertilizerCard fieldId={selectedFieldId} />
         </div>
       )}
     </section>
