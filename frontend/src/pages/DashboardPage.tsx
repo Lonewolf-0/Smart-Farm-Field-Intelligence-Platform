@@ -5,6 +5,7 @@ import type { Field } from "../types";
 import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
 import WeatherCard from "../components/Dashboard/WeatherCard";
+import CropSuitabilityCard from "../components/Dashboard/CropSuitabilityCard";
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
@@ -77,10 +78,11 @@ function DashboardPage() {
       )}
 
       {selectedFieldId && (
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
           <SoilCard fieldId={selectedFieldId} />
           <IrrigationCard fieldId={selectedFieldId} />
           <WeatherCard fieldId={selectedFieldId} />
+          <CropSuitabilityCard fieldId={selectedFieldId} />
         </div>
       )}
     </section>

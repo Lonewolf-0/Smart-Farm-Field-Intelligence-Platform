@@ -69,11 +69,14 @@ export interface WeatherData {
 //  ANALYTICS
 // ==========================
 export interface CropSuitability {
-  crop: string;
+  name: string;
   score: number;
-  soilMatch: number;
-  climateMatch: number;
-  rainfallMatch: number;
+  breakdown: {
+    ph: number;
+    temperature: number;
+    rainfall: number;
+    soilTexture: number;
+  };
 }
 
 export interface IrrigationPlan {
