@@ -2,9 +2,13 @@ import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware";
 import { getFieldWeather } from "../controllers/weather.controller";
 import { getCropSuitability } from "../controllers/crop.controller";
-import { getFieldSoil, getFieldSoilHistory } from "../controllers/soil.controller";
+import {
+  getFieldSoil,
+  getFieldSoilHistory,
+} from "../controllers/soil.controller";
 import { getIrrigationPlan } from "../controllers/irrigation.controller";
 import { getFieldNDVI } from "../controllers/ndviController";
+import { getFertilizerPlan } from "../controllers/fertilizerController";
 
 const router = Router();
 
@@ -14,5 +18,6 @@ router.get("/:fieldId/soil/history", authenticate, getFieldSoilHistory);
 router.post("/:fieldId/crop", authenticate, getCropSuitability);
 router.post("/:fieldId/irrigation", authenticate, getIrrigationPlan);
 router.post("/:fieldId/ndvi", authenticate, getFieldNDVI);
+router.post("/:fieldId/fertilizer", authenticate, getFertilizerPlan);
 
 export default router;
