@@ -1,6 +1,6 @@
 import { calculateCropSuitability } from "../../src/services/crop-suitability.service";
 
-describe("Crop Suitability Service (100% Coverage)", () => {
+describe("Crop Suitability Service", () => {
   const baseWeather = {
     temperature: 25,
     humidity: 50,
