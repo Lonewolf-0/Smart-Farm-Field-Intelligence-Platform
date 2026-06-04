@@ -4,6 +4,7 @@ import api from "../services/api";
 import type { Field } from "../types";
 import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
+import WeatherCard from "../components/Dashboard/WeatherCard";
 
 const placeholderCards = [
   {
@@ -87,6 +88,7 @@ function DashboardPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           <SoilCard fieldId={selectedFieldId} />
           <IrrigationCard fieldId={selectedFieldId} />
+          <WeatherCard fieldId={selectedFieldId} />
           
           {placeholderCards.map(({ title, text, icon: Icon }) => (
             <article
