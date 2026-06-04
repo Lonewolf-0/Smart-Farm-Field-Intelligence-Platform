@@ -86,10 +86,12 @@ export interface FertilizerProduct {
 }
 
 export interface FertilizerPlan {
-  nitrogenRequired: number;
-  phosphorusRequired: number;
-  potassiumRequired: number;
+  nitrogenDeficit: number;
+  phosphorusDeficit: number;
+  potassiumDeficit: number;
   recommendations: FertilizerProduct[];
+  totalQuantity: number;
+  applicationSchedule: string[];
 }
 
 export interface PesticideRecommendation {
@@ -219,4 +221,9 @@ export interface CropSuitabilityV2 {
     rainfall: number;
     soilTexture: number;
   };
+}
+export interface SoilNPK {
+  nitrogen: number; // kg/ha available
+  phosphorus: number; // kg/ha available
+  potassium: number; // kg/ha available
 }
