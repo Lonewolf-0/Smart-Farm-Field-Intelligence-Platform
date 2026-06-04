@@ -16,6 +16,7 @@ import {
   Umbrella
 } from "lucide-react";
 import type { WeatherData } from "../../types";
+import WeatherChart from "./WeatherChart";
 
 interface WeatherCardProps {
   fieldId: string;
@@ -128,6 +129,7 @@ const formatDate = (dateStr: string): string => {
 
 const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
   const [data, setData] = useState<WeatherData | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "chart">("list");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -255,42 +257,73 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
 
       {/* 7-Day Forecast */}
       <div className="flex-1 flex flex-col min-h-0 border-t border-white/10 pt-5">
-        <h4 className="text-sm font-bold text-white mb-3 shrink-0 flex items-center gap-1.5">
-          <Umbrella className="w-4 h-4 text-cyan-400" />
-          7-Day Forecast Summary
-        </h4>
-        <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[220px] custom-scrollbar">
-          {data.forecast.map((day, index) => {
-            const dayInfo = getWeatherInfo(day.condition);
-            const DayIcon = dayInfo.icon;
-            return (
-              <div 
-                key={index} 
-                className="flex items-center justify-between p-2 rounded-lg bg-white/0 hover:bg-white/5 border border-transparent hover:border-white/5 transition-colors"
-              >
-                <div className="w-[100px] shrink-0">
-                  <p className="text-xs font-semibold text-slate-300">{formatDate(day.date)}</p>
-                </div>
-                <div className="flex items-center gap-2 flex-1 justify-start px-2">
-                  <DayIcon className={`w-4 h-4 shrink-0 ${dayInfo.colorClass}`} />
-                  <span className="text-xs text-slate-400 truncate max-w-[80px]">{dayInfo.label}</span>
-                </div>
-                <div className="text-right shrink-0 flex items-center gap-3">
-                  <p className="text-xs text-slate-400">
-                    {day.precipitation > 0 ? (
-                      <span className="text-blue-400 font-medium">{formatPrecipitation(day.precipitation)}</span>
-                    ) : (
-                      "0 mm"
-                    )}
-                  </p>
-                  <p className="text-xs font-bold text-slate-200 w-[70px]">
-                    {formatTemp(day.tempMin)} / {formatTemp(day.tempMax)}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex justify-between items-center mb-3 shrink-0">
+          <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+            <Umbrella className="w-4 h-4 text-cyan-400" />
+            7-Day Forecast
+          </h4>
+          <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 shrink-0">
+            <button 
+              onClick={() => setViewMode("list")}
+              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                viewMode === "list" 
+                  ? "bg-cyan-500 text-slate-950 shadow-sm" 
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              List
+            </button>
+            <button 
+              onClick={() => setViewMode("chart")}
+              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                viewMode === "chart" 
+                  ? "bg-cyan-500 text-slate-950 shadow-sm" 
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Chart
+            </button>
+          </div>
         </div>
+
+        {viewMode === "list" ? (
+          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[220px] custom-scrollbar">
+            {data.forecast.map((day, index) => {
+              const dayInfo = getWeatherInfo(day.condition);
+              const DayIcon = dayInfo.icon;
+              return (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-2 rounded-lg bg-white/0 hover:bg-white/5 border border-transparent hover:border-white/5 transition-colors"
+                >
+                  <div className="w-[100px] shrink-0">
+                    <p className="text-xs font-semibold text-slate-300">{formatDate(day.date)}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-1 justify-start px-2">
+                    <DayIcon className={`w-4 h-4 shrink-0 ${dayInfo.colorClass}`} />
+                    <span className="text-xs text-slate-400 truncate max-w-[80px]">{dayInfo.label}</span>
+                  </div>
+                  <div className="text-right shrink-0 flex items-center gap-3">
+                    <p className="text-xs text-slate-400">
+                      {day.precipitation > 0 ? (
+                        <span className="text-blue-400 font-medium">{formatPrecipitation(day.precipitation)}</span>
+                      ) : (
+                        "0 mm"
+                      )}
+                    </p>
+                    <p className="text-xs font-bold text-slate-200 w-[70px]">
+                      {formatTemp(day.tempMin)} / {formatTemp(day.tempMax)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex-1 min-h-0">
+            <WeatherChart forecast={data.forecast} />
+          </div>
+        )}
       </div>
     </div>
   );

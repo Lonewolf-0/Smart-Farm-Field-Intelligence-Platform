@@ -1,18 +1,10 @@
-import { BarChart3, ShieldAlert, Map } from "lucide-react";
+import { BarChart3, Map } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field } from "../types";
 import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
 import WeatherCard from "../components/Dashboard/WeatherCard";
-
-const placeholderCards = [
-  {
-    title: "Risk alerts",
-    text: "Environmental warnings will surface in this card.",
-    icon: ShieldAlert,
-  },
-];
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
@@ -89,21 +81,6 @@ function DashboardPage() {
           <SoilCard fieldId={selectedFieldId} />
           <IrrigationCard fieldId={selectedFieldId} />
           <WeatherCard fieldId={selectedFieldId} />
-          
-          {placeholderCards.map(({ title, text, icon: Icon }) => (
-            <article
-              key={title}
-              className="rounded-2xl border border-white/10 bg-slate-950/50 p-5 flex flex-col h-full"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <Icon className="h-6 w-6 text-cyan-200" />
-                <h3 className="text-xl font-bold text-white">{title}</h3>
-              </div>
-              <div className="flex-1 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-center text-center">
-                <p className="text-sm leading-6 text-slate-400 italic">{text}</p>
-              </div>
-            </article>
-          ))}
         </div>
       )}
     </section>
