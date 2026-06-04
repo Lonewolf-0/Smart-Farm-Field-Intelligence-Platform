@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { WeatherData } from "../../types";
 import WeatherChart from "./WeatherChart";
+import AlertBanner from "../UI/AlertBanner";
 
 interface WeatherCardProps {
   fieldId: string;
@@ -130,6 +131,7 @@ const formatDate = (dateStr: string): string => {
 const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
   const [data, setData] = useState<WeatherData | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "chart">("list");
+  const [isAlertDismissed, setIsAlertDismissed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -153,6 +155,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
 
   useEffect(() => {
     if (fieldId) {
+      setIsAlertDismissed(false);
       void fetchWeatherData();
     }
   }, [fieldId]);
@@ -209,6 +212,14 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
   const currentInfo = getWeatherInfo(currentCondition);
   const CurrentIcon = currentInfo.icon;
 
+  // Calculate 7-day rainfall total for AlertBanner
+  const totalRainfall = data.forecast.reduce((sum, day) => sum + day.precipitation, 0);
+  const showAlert = !isAlertDismissed && totalRainfall > 30;
+  const alertType = totalRainfall > 60 ? "danger" : "warning";
+  const alertMessage = totalRainfall > 60
+    ? `Heavy rainfall alert: ${totalRainfall.toFixed(1)}mm expected`
+    : `Moderate rainfall expected: ${totalRainfall.toFixed(1)}mm`;
+
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
       <div className="flex justify-between items-start mb-5">
@@ -220,6 +231,14 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
           Live
         </div>
       </div>
+
+      {showAlert && (
+        <AlertBanner
+          type={alertType}
+          message={alertMessage}
+          onDismiss={() => setIsAlertDismissed(true)}
+        />
+      )}
 
       {/* Current Conditions Block */}
       <div className="flex items-center gap-5 mb-6 shrink-0 bg-white/5 p-4 rounded-xl border border-white/5">
