@@ -21,6 +21,8 @@ export const ENV = {
   JWT_SECRET: requiredEnv("JWT_SECRET"),
   OPENWEATHER_API_KEY: requiredEnv("OPENWEATHER_API_KEY"),
   OPENWEATHER_BASE_URL: requiredEnv("OPENWEATHER_BASE_URL"),
-  SENTINEL_HUB_CLIENT_ID: process.env.SENTINEL_HUB_CLIENT_ID || "your_client_id",
-  SENTINEL_HUB_CLIENT_SECRET: process.env.SENTINEL_HUB_CLIENT_SECRET || "your_client_secret",
+  SENTINEL_HUB_CLIENT_ID:
+    process.env.SENTINEL_HUB_CLIENT_ID || "your_client_id",
+  SENTINEL_HUB_CLIENT_SECRET:
+    process.env.SENTINEL_HUB_CLIENT_SECRET || "your_client_secret",
 };

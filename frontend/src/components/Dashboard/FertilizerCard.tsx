@@ -12,26 +12,11 @@ import {
   ToggleRight 
 } from "lucide-react";
 import Toast from "../UI/Toast";
-import type { Field } from "../../types";
+import type { Field, FertilizerPlan } from "../../types";
+import FertilizerTimeline from "./FertilizerTimeline";
 
 interface FertilizerCardProps {
   fieldId: string;
-}
-
-interface FertilizerProduct {
-  name: string;
-  quantity: number; // kg per hectare
-  unit: string;
-}
-
-interface FertilizerPlan {
-  crop: string;
-  nitrogenDeficit: number;
-  phosphorusDeficit: number;
-  potassiumDeficit: number;
-  recommendations: FertilizerProduct[];
-  totalQuantity: number;
-  applicationSchedule: string[];
 }
 
 // Static crop nutrient requirements mapping matching the backend's crop requirements
@@ -130,7 +115,13 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
 
       const res = await api.post(`/analysis/${fieldId}/fertilizer`, payload);
       if (res.data?.success) {
-        setPlan(res.data.data);
+        const planData = res.data.data;
+        setPlan(planData);
+        if (useSoilTestData && planData.soilBaselines) {
+          setSoilN(planData.soilBaselines.nitrogen);
+          setSoilP(planData.soilBaselines.phosphorus);
+          setSoilK(planData.soilBaselines.potassium);
+        }
       } else {
         throw new Error(res.data?.error || "Calculation failed");
       }
@@ -143,35 +134,25 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
     }
   };
 
+  // Effect 1: Handle initial loading and field/soil data fetching when fieldId changes
   useEffect(() => {
     if (fieldId) {
       setLoading(true);
       setPlan(null);
       setError(null);
       void fetchFieldDetails();
-      
       if (useSoilTestData) {
-        void fetchSoilTestData().then(() => {
-          void calculatePlan();
-        });
-      } else {
-        void calculatePlan();
+        void fetchSoilTestData();
       }
     }
-  }, [fieldId]);
+  }, [fieldId, useSoilTestData]);
 
-  // Handle toggle switch state changes
+  // Effect 2: Handle auto-recalculations when inputs/selectors change (but do not refetch static soil test data)
   useEffect(() => {
     if (fieldId) {
-      if (useSoilTestData) {
-        void fetchSoilTestData().then(() => {
-          void calculatePlan();
-        });
-      } else {
-        void calculatePlan();
-      }
+      void calculatePlan();
     }
-  }, [useSoilTestData]);
+  }, [fieldId, useSoilTestData, selectedCrop]);
 
   const handleRecalculate = () => {
     setToast({ message: `Recalculating plan for ${selectedCrop}...`, type: "info" });
@@ -398,7 +379,29 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
           </button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] flex-1">
+        <>
+          {/* Live Recommendations & Alerts */}
+          {plan?.liveDataAdjustments && plan.liveDataAdjustments.length > 0 && (
+            <div className="grid gap-2.5 mb-6 shrink-0">
+              {plan.liveDataAdjustments.map((adj, i) => {
+                const isWarning = adj.type === "warning";
+                const isInfo = adj.type === "info";
+                const bgClass = isWarning 
+                  ? "bg-red-500/10 border-red-500/20 text-red-200" 
+                  : isInfo 
+                  ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-200" 
+                  : "bg-green-500/10 border-green-500/20 text-green-200";
+                return (
+                  <div key={i} className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs ${bgClass} animate-fadeIn`}>
+                    <Info className={`w-4 h-4 shrink-0 mt-0.5 ${isWarning ? "text-red-400" : isInfo ? "text-cyan-400" : "text-green-400"}`} />
+                    <span className="leading-relaxed font-semibold">{adj.message}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] flex-1">
           
           {/* Deficit Visuals & Schedule */}
           <div className="space-y-6">
@@ -607,6 +610,15 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
           </div>
 
         </div>
+
+        {/* Timeline Visualization */}
+        {plan && (
+          <FertilizerTimeline 
+            scheduleSteps={plan.scheduleSteps} 
+            fieldArea={area} 
+          />
+        )}
+        </>
       )}
 
       {toast && (
