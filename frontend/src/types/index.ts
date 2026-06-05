@@ -99,11 +99,33 @@ export interface FertilizerProduct {
   unit: string;
 }
 
-export interface FertilizerPlan {
-  nitrogenRequired: number;
-  phosphorusRequired: number;
-  potassiumRequired: number;
+export interface FertilizerStep {
+  stage: string;
+  days: number;
+  description: string;
   recommendations: FertilizerProduct[];
+}
+
+export interface LiveAdjustment {
+  type: "warning" | "info" | "success";
+  message: string;
+}
+
+export interface FertilizerPlan {
+  crop: string;
+  nitrogenDeficit: number;
+  phosphorusDeficit: number;
+  potassiumDeficit: number;
+  recommendations: FertilizerProduct[];
+  totalQuantity: number;
+  applicationSchedule: string[];
+  scheduleSteps?: FertilizerStep[];
+  liveDataAdjustments?: LiveAdjustment[];
+  soilBaselines?: {
+    nitrogen: number;
+    phosphorus: number;
+    potassium: number;
+  };
 }
 
 export interface PesticideRecommendation {
