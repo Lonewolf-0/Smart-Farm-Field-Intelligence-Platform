@@ -8,6 +8,7 @@ import WeatherCard from "../components/Dashboard/WeatherCard";
 import CropSuitabilityCard from "../components/Dashboard/CropSuitabilityCard";
 import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
+import PesticideCard from "../components/Dashboard/PesticideCard";
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
@@ -87,6 +88,9 @@ function DashboardPage() {
           <WeatherCard fieldId={selectedFieldId} />
           <CropSuitabilityCard fieldId={selectedFieldId} />
           <FertilizerCard fieldId={selectedFieldId} />
+          <div className="md:col-span-2">
+            <PesticideCard fieldId={selectedFieldId} />
+          </div>
         </div>
       )}
     </section>
