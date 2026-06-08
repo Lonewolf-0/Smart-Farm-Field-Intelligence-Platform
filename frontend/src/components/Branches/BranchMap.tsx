@@ -157,7 +157,7 @@ const BranchMap: React.FC<BranchMapProps> = ({
                 </div>
 
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${branch.latitude},${branch.longitude}`}
+                  href={`https://www.google.com/maps/dir/?api=1${selectedField && selectedField.centroid ? `&origin=${selectedField.centroid.lat},${selectedField.centroid.lng}` : ""}&destination=${branch.latitude},${branch.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
