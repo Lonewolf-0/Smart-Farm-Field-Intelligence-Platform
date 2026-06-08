@@ -145,6 +145,7 @@ const BranchesPage: React.FC = () => {
                 branches={branches}
                 savedFields={fields}
                 selectedBranchId={selectedBranchId}
+                selectedFieldId={selectedFieldId}
                 onSelectBranch={setSelectedBranchId}
               />
             </div>
