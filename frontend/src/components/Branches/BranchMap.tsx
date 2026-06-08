@@ -7,6 +7,7 @@ interface BranchMapProps {
   branches: (NutrienBranch & { distance?: number })[];
   savedFields: Field[];
   selectedBranchId: string | null;
+  selectedFieldId?: string;
   onSelectBranch: (id: string) => void;
 }
 
@@ -51,15 +52,29 @@ const branchSelectedIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
+const farmIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 const BranchMap: React.FC<BranchMapProps> = ({
   branches,
   savedFields,
   selectedBranchId,
+  selectedFieldId,
   onSelectBranch,
 }) => {
+  const selectedField = savedFields.find((f) => f.id === selectedFieldId);
+
   // Center map on the first field if available, else fallback
   const initialCenter =
-    savedFields.length > 0
+    selectedField && selectedField.centroid
+      ? ([selectedField.centroid.lat, selectedField.centroid.lng] as L.LatLngExpression)
+      : savedFields.length > 0
       ? ([savedFields[0].centroid.lat, savedFields[0].centroid.lng] as L.LatLngExpression)
       : DEFAULT_CENTER;
 
@@ -88,6 +103,21 @@ const BranchMap: React.FC<BranchMapProps> = ({
             }}
           />
         ))}
+
+        {/* Render Selected Farm Pointer */}
+        {selectedField && selectedField.centroid && (
+          <Marker
+            position={[selectedField.centroid.lat, selectedField.centroid.lng]}
+            icon={farmIcon}
+          >
+            <Popup className="rounded-xl">
+              <div className="p-1 text-center">
+                <h3 className="font-bold text-lg text-slate-800 mb-1">{selectedField.name}</h3>
+                <p className="text-xs text-slate-500 uppercase font-semibold">Your Farm</p>
+              </div>
+            </Popup>
+          </Marker>
+        )}
 
         {/* Render Branches */}
         {branches.map((branch) => (
@@ -127,7 +157,7 @@ const BranchMap: React.FC<BranchMapProps> = ({
                 </div>
 
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${branch.latitude},${branch.longitude}`}
+                  href={`https://www.google.com/maps/dir/?api=1${selectedField && selectedField.centroid ? `&origin=${selectedField.centroid.lat},${selectedField.centroid.lng}` : ""}&destination=${branch.latitude},${branch.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
