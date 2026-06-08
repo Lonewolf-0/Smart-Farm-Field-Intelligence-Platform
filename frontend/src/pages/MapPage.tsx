@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Save, CheckCircle } from "lucide-react";
 import FarmMap from "../components/Map/FarmMap";
 import type { DrawnPolygon } from "../components/Map/FarmMap";
 import { useAuth } from "../context/AuthContext";
@@ -126,21 +127,21 @@ const MapPage: React.FC = () => {
         {currentPolygon && isAuthenticated && !saveSuccess && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-6 right-4 z-[1000] bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 transition-colors font-medium"
+            className="absolute top-6 right-4 z-[1000] bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl shadow-lg hover:bg-emerald-400 transition-colors font-bold flex items-center gap-2"
           >
-            Save Polygon
+            <Save className="h-4 w-4" /> Save Polygon
           </button>
         )}
 
         {/* Debug panel (fallback or additional info) */}
         {currentPolygon && !saveSuccess && (
-          <div className="absolute top-20 right-4 z-[1000] bg-white p-4 rounded-lg shadow-lg max-w-xs pointer-events-none">
-            <h3 className="font-bold text-sm mb-2 text-gray-800">Drawn Field Data</h3>
-            <p className="text-xs text-gray-600 mb-1">
+          <div className="absolute top-20 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-lg max-w-xs pointer-events-none">
+            <h3 className="font-bold text-sm mb-2 text-white">Drawn Field Data</h3>
+            <p className="text-xs text-slate-400 mb-1">
               Vertices: {currentPolygon.geoJSON.coordinates[0].length - 1}
             </p>
             {currentAreaHa !== null && (
-              <p className="text-xs text-gray-800 font-medium">
+              <p className="text-xs text-slate-200 font-medium">
                 Area: {currentAreaHa.toFixed(2)} ha / {(currentAreaHa * 2.47105).toFixed(2)} acres
               </p>
             )}
@@ -149,8 +150,9 @@ const MapPage: React.FC = () => {
 
         {/* Success Message */}
         {saveSuccess && (
-          <div className="absolute top-6 right-4 z-[1000] bg-white border-l-4 border-green-500 p-4 rounded shadow-lg max-w-xs">
-            <p className="text-sm text-green-700 font-medium">{saveSuccess}</p>
+          <div className="absolute top-6 right-4 z-[1000] bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-xl shadow-lg max-w-xs flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
+            <p className="text-sm text-emerald-200 font-medium">{saveSuccess}</p>
           </div>
         )}
 

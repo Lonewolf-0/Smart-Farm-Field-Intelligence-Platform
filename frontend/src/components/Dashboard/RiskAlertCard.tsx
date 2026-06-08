@@ -181,7 +181,7 @@ const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts
         <p className="text-slate-400 text-xs mb-4">{error}</p>
         <button
           onClick={fetchRisks}
-          className="px-4 py-2 bg-slate-850 hover:bg-slate-800 border border-white/15 text-white text-xs font-semibold rounded-lg flex items-center gap-2 cursor-pointer transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           Retry
@@ -193,7 +193,7 @@ const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
       <div className="flex justify-between items-center mb-5 border-b border-white/5 pb-3 shrink-0">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-amber-500" />
           Active Risk Warnings
         </h3>

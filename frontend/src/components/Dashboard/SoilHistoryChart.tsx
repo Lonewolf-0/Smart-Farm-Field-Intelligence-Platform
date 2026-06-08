@@ -55,7 +55,7 @@ const SoilHistoryChart: React.FC<Props> = ({ history }) => {
               <XAxis dataKey="label" stroke="#94a3b8" fontSize={12} />
               <YAxis domain={['auto', 'auto']} stroke="#94a3b8" fontSize={12} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#ffffff20', color: '#fff' }} 
+                contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: '12px' }} 
                 itemStyle={{ color: '#fff' }}
               />
               <Legend wrapperStyle={{ fontSize: '12px' }} />
@@ -74,7 +74,7 @@ const SoilHistoryChart: React.FC<Props> = ({ history }) => {
               <XAxis dataKey="label" stroke="#94a3b8" fontSize={12} />
               <YAxis domain={['auto', 'auto']} stroke="#94a3b8" fontSize={12} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#ffffff20', color: '#fff' }} 
+                contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: '12px' }} 
                 itemStyle={{ color: '#fff' }}
               />
               <Legend wrapperStyle={{ fontSize: '12px' }} />

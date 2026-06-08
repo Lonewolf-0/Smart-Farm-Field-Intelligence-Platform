@@ -1,15 +1,6 @@
 import React from "react";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer,
-  Legend,
-  Tooltip
-} from "recharts";
-import { Trophy, Trash2 } from "lucide-react";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { Trophy, Trash2, BarChart3 } from "lucide-react";
 import type { CropSuitability } from "../../types";
 
 interface CropCompareProps {
@@ -58,7 +49,7 @@ const CropCompare: React.FC<CropCompareProps> = ({ crops, onClear }) => {
     <div className="mt-6 pt-6 border-t border-white/10 space-y-5 animate-fadeIn">
       <div className="flex justify-between items-center shrink-0">
         <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <span>📊 Crop Comparison</span>
+          <span className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-cyan-400" /> Crop Comparison</span>
           <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] lowercase font-semibold border border-cyan-500/20">
             {crops.length} selected
           </span>
@@ -205,8 +196,8 @@ const CropCompare: React.FC<CropCompareProps> = ({ crops, onClear }) => {
               <Tooltip 
                 contentStyle={{
                   backgroundColor: "#0f172a",
-                  borderColor: "#ffffff15",
-                  borderRadius: "8px",
+                  borderColor: "rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
                   color: "#fff",
                   fontSize: "11px"
                 }}

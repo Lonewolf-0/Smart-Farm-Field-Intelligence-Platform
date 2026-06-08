@@ -42,7 +42,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-6 animate-pulse h-full">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-32 bg-slate-800 rounded mb-6"></div>
         <div className="h-32 w-32 bg-slate-800 rounded-full mx-auto mb-6"></div>
         <div className="grid grid-cols-2 gap-4">
@@ -55,11 +55,11 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/50 p-6 text-center h-full flex flex-col items-center justify-center">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
         <p className="text-red-400 mb-4">{error}</p>
         <button
           onClick={fetchIrrigationData}
-          className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
         >
           Retry
         </button>
@@ -106,7 +106,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
             <Droplets className="w-5 h-5 text-cyan-400" />
             Irrigation Plan
           </h3>
-          <p className="text-sm text-slate-400 mt-1">Smart scheduling engine</p>
+          <p className="text-sm text-cyan-200 mt-0.5">Smart scheduling engine</p>
         </div>
         <div className={`px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold tracking-wide uppercase ${urgencyColor}`}>
           {urgencyText}

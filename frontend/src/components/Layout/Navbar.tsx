@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
+import { Map, BarChart3, Store, LogOut, LogIn, UserPlus, Menu, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const Navbar: React.FC = () => {
@@ -9,15 +10,17 @@ const Navbar: React.FC = () => {
   const NavItem = ({
     to,
     children,
+    icon: Icon,
   }: {
     to: string;
     children: React.ReactNode;
+    icon?: React.FC<{ className?: string }>;
   }) => (
     <NavLink
       to={to}
       className={({ isActive }) =>
         [
-          "px-3 py-2 rounded-md text-sm font-medium",
+          "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
           isActive
             ? "bg-emerald-300/20 text-emerald-200"
             : "text-slate-200 hover:bg-white/5",
@@ -25,6 +28,7 @@ const Navbar: React.FC = () => {
       }
       onClick={() => setOpen(false)}
     >
+      {Icon && <Icon className="h-4 w-4" />}
       {children}
     </NavLink>
   );
@@ -43,9 +47,9 @@ const Navbar: React.FC = () => {
           </div>
 
           <nav className="hidden md:flex items-center gap-2">
-            <NavItem to="/map">Map</NavItem>
-            <NavItem to="/dashboard">Dashboard</NavItem>
-            <NavItem to="/branches">Branches</NavItem>
+            <NavItem to="/map" icon={Map}>Map</NavItem>
+            <NavItem to="/dashboard" icon={BarChart3}>Dashboard</NavItem>
+            <NavItem to="/branches" icon={Store}>Branches</NavItem>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -54,8 +58,9 @@ const Navbar: React.FC = () => {
                 <span className="text-sm text-emerald-200">{user.name}</span>
                 <button
                   onClick={logout}
-                  className="px-3 py-1 rounded bg-emerald-600 text-white text-sm hover:bg-emerald-700"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 transition-colors"
                 >
+                  <LogOut className="h-3.5 w-3.5" />
                   Logout
                 </button>
               </div>
@@ -63,14 +68,16 @@ const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-1 rounded text-sm bg-white/5 hover:bg-white/10"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 hover:bg-white/10 text-slate-200 transition-colors"
                 >
+                  <LogIn className="h-3.5 w-3.5" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 py-1 rounded text-sm bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                 >
+                  <UserPlus className="h-3.5 w-3.5" />
                   Register
                 </Link>
               </div>
@@ -80,31 +87,10 @@ const Navbar: React.FC = () => {
           <div className="md:hidden">
             <button
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-slate-200 hover:bg-white/5"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-slate-200 hover:bg-white/5"
               aria-expanded={open}
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {open ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -113,9 +99,9 @@ const Navbar: React.FC = () => {
       {open && (
         <div className="md:hidden bg-slate-900/80 border-t border-white/5">
           <div className="px-4 pt-2 pb-4 space-y-2">
-            <NavItem to="/map">Map</NavItem>
-            <NavItem to="/dashboard">Dashboard</NavItem>
-            <NavItem to="/branches">Branches</NavItem>
+            <NavItem to="/map" icon={Map}>Map</NavItem>
+            <NavItem to="/dashboard" icon={BarChart3}>Dashboard</NavItem>
+            <NavItem to="/branches" icon={Store}>Branches</NavItem>
 
             <div className="pt-2 border-t border-white/5">
               {isAuthenticated && user ? (
@@ -126,8 +112,9 @@ const Navbar: React.FC = () => {
                       logout();
                       setOpen(false);
                     }}
-                    className="px-3 py-1 rounded bg-emerald-600 text-white text-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm transition-colors"
                   >
+                    <LogOut className="h-3.5 w-3.5" />
                     Logout
                   </button>
                 </div>
@@ -136,15 +123,17 @@ const Navbar: React.FC = () => {
                   <Link
                     to="/login"
                     onClick={() => setOpen(false)}
-                    className="px-3 py-1 rounded text-sm bg-white/5"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 text-slate-200 transition-colors"
                   >
+                    <LogIn className="h-3.5 w-3.5" />
                     Login
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setOpen(false)}
-                    className="px-3 py-1 rounded text-sm bg-emerald-600 text-white"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-emerald-600 text-white transition-colors"
                   >
+                    <UserPlus className="h-3.5 w-3.5" />
                     Register
                   </Link>
                 </div>
