@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import { sendResponse } from "../utils/response";
-import { findFieldById } from "../repositories/field.repository";
-import { getWeatherData } from "../services/weather.service";
+import { findFieldById } from "../repositories/fieldRepository";
+import { getWeatherData } from "../services/weatherService";
 import { assessPestRisk } from "../services/pesticideService";
-import { getCropSuitabilityService } from "../services/crop.service";
+import { getCropSuitabilityService } from "../services/cropService";
 
 // Simple season determinator based on month
 const getCurrentSeason = () => {
