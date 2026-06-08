@@ -1,4 +1,4 @@
-import { calculateCropSuitability } from "../../src/services/crop-suitability.service";
+import { calculateCropSuitability } from "../../src/services/cropSuitabilityService";
 
 describe("Crop Suitability Service", () => {
   const baseWeather = {

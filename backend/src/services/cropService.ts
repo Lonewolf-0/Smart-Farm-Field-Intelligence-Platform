@@ -2,18 +2,23 @@ import { findFieldById } from "../repositories/fieldRepository";
 import { findLatestSoilByFieldId } from "../repositories/soilRepository";
 
 import { getWeatherData } from "./weatherService";
-import { assessRisks } from "./riskService";
+import { calculateCropSuitability } from "./cropSuitabilityService";
 
-export const getRiskAnalysisService = async (
+export const getCropSuitabilityService = async (
   userId: string,
   fieldId: string,
 ) => {
-  //FIELD
+  //  1. Fetch field
   const field = await findFieldById(fieldId);
+
   if (!field) {
-    throw { status: 404, message: "Field not found" };
+    throw {
+      status: 404,
+      message: "Field not found",
+    };
   }
 
+  //  2. Ownership check
   if (field.user_id !== userId) {
     throw {
       status: 403,
@@ -22,11 +27,17 @@ export const getRiskAnalysisService = async (
     };
   }
 
-  //SOIL
+  //  3. Get soil
   const soil = await findLatestSoilByFieldId(fieldId);
+
   if (!soil) {
-    throw { status: 400, message: "Run soil analysis first" };
+    throw {
+      status: 400,
+      message: "Run soil analysis first",
+    };
   }
+
+  // 4. Transform soil
 
   const layer = soil.data.layers[0];
 
@@ -36,9 +47,11 @@ export const getRiskAnalysisService = async (
     soilTexture: layer.texture.toLowerCase(),
   };
 
-  //WEATHER
+  // 5. Weather
   const weather = await getWeatherData(field.centroid_lat, field.centroid_lng);
 
-  //RISK ENGINE
-  return assessRisks(weather, soilInput);
+  // 6. Suitability
+  const crops = calculateCropSuitability(soilInput, weather);
+
+  return crops;
 };

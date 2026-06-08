@@ -1,9 +1,9 @@
 import { SoilNPK, FertilizerPlan, FertilizerStep } from "../types";
-import { cropNutrientRequirements } from "../data/crop-nutrient-requirements";
-import { findFieldById } from "../repositories/field.repository";
-import { findLatestSoilByFieldId } from "../repositories/soil.repository";
-import { calculateCropSuitability } from "./crop-suitability.service";
-import { getWeatherData } from "./weather.service";
+import { cropNutrientRequirements } from "../data/cropNutrientRequirements";
+import { findFieldById } from "../repositories/fieldRepository";
+import { findLatestSoilByFieldId } from "../repositories/soilRepository";
+import { calculateCropSuitability } from "./cropSuitabilityService";
+import { getWeatherData } from "./weatherService";
 import { cropSchedules, defaultSchedule } from "../data/applicationSchedules";
 import { getNDVIData } from "./ndviService";
 

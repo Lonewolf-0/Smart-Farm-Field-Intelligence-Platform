@@ -1,16 +1,16 @@
 import { calculateFertilizer, getFertilizerService } from "../../src/services/fertilizerService";
-import { findFieldById } from "../../src/repositories/field.repository";
-import { findLatestSoilByFieldId } from "../../src/repositories/soil.repository";
-import { calculateCropSuitability } from "../../src/services/crop-suitability.service";
-import { getWeatherData } from "../../src/services/weather.service";
+import { findFieldById } from "../../src/repositories/fieldRepository";
+import { findLatestSoilByFieldId } from "../../src/repositories/soilRepository";
+import { calculateCropSuitability } from "../../src/services/cropSuitabilityService";
+import { getWeatherData } from "../../src/services/weatherService";
 import { getNDVIData } from "../../src/services/ndviService";
 import { cropSchedules } from "../../src/data/applicationSchedules";
 
 // Mock repositories and services
-jest.mock("../../src/repositories/field.repository");
-jest.mock("../../src/repositories/soil.repository");
-jest.mock("../../src/services/crop-suitability.service");
-jest.mock("../../src/services/weather.service");
+jest.mock("../../src/repositories/fieldRepository");
+jest.mock("../../src/repositories/soilRepository");
+jest.mock("../../src/services/cropSuitabilityService");
+jest.mock("../../src/services/weatherService");
 jest.mock("../../src/services/ndviService");
 
 const mockFindFieldById = findFieldById as jest.Mock;

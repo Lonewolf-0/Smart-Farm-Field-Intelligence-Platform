@@ -2,12 +2,12 @@ import express from "express";
 import cors from "cors";
 import { ENV } from "./config/env";
 import { pool } from "./config/db";
-import authRoutes from "./routes/auth.routes";
-import weatherRoutes from "./routes/weather.routes";
-import analysisRoutes from "./routes/analysis.routes";
-import fieldRoutes from "./routes/field.routes";
+import authRoutes from "./routes/authRoutes";
+import weatherRoutes from "./routes/weatherRoutes";
+import analysisRoutes from "./routes/analysisRoutes";
+import fieldRoutes from "./routes/fieldRoutes";
 import branchRoutes from "./routes/branchRoutes";
-import { authenticate } from "./middlewares/auth.middleware";
+import { authenticate } from "./middlewares/authMiddleware";
 
 const app = express();
 // const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
