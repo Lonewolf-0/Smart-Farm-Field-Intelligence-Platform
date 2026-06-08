@@ -172,9 +172,8 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
       )}
 
       {/* Pest Assessments List */}
-      <div className="space-y-4">
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider">Identified Threats</h4>
-        
+      <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 shrink-0">Identified Threats</h4>
+      <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar max-h-[280px] md:max-h-none pr-1">
         {data.assessments.map((pest, idx) => {
           const isHigh = pest.riskLevel === "High";
           const isExpanded = expandedPest === pest.pestName;

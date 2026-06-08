@@ -306,7 +306,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
         </div>
 
         {viewMode === "list" ? (
-          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[220px] custom-scrollbar">
+          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[220px] md:max-h-none custom-scrollbar">
             {data.forecast.map((day, index) => {
               const dayInfo = getWeatherInfo(day.condition);
               const DayIcon = dayInfo.icon;

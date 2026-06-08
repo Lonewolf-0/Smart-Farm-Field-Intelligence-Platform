@@ -1,4 +1,4 @@
-import { BarChart3, Map, AlertTriangle } from "lucide-react";
+import { BarChart3, Map, AlertTriangle, Eye, Sprout, ShieldAlert } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field, RiskAlert } from "../types";
@@ -17,6 +17,7 @@ function DashboardPage() {
   const [selectedFieldId, setSelectedFieldId] = useState<string>("");
   const [loadingFields, setLoadingFields] = useState(true);
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
+  const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations">("overview");
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -105,26 +106,78 @@ function DashboardPage() {
             </div>
           )}
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <RiskAlertCard 
-              fieldId={selectedFieldId} 
-              onCriticalAlerts={setCriticalAlerts} 
-            />
-            <SoilCard fieldId={selectedFieldId} />
-            <IrrigationCard fieldId={selectedFieldId} />
-          <NDVICard fieldId={selectedFieldId} />
-          <WeatherCard fieldId={selectedFieldId} />
-          <CropSuitabilityCard fieldId={selectedFieldId} />
-          <FertilizerCard fieldId={selectedFieldId} />
-          <div className="md:col-span-2">
-            <PesticideCard fieldId={selectedFieldId} />
+          {/* Premium Glassmorphism Tab Selector */}
+          <div className="mt-6 flex flex-wrap gap-2 p-1.5 rounded-2xl bg-slate-950/45 border border-white/10 backdrop-blur-md max-w-lg">
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                activeTab === "overview"
+                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Eye className="w-4 h-4" />
+              Overview & Weather
+            </button>
+            <button
+              onClick={() => setActiveTab("nutrition")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                activeTab === "nutrition"
+                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Sprout className="w-4 h-4" />
+              Soil & Nutrients
+            </button>
+            <button
+              onClick={() => setActiveTab("operations")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                activeTab === "operations"
+                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Operations
+            </button>
           </div>
-          <div className="md:col-span-2">
-            <BranchLocatorCard fieldId={selectedFieldId} />
-          </div>
-        </div>
-      </>
-    )}
+
+          {/* Tab Contents */}
+          {activeTab === "overview" && (
+            <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+              <WeatherCard fieldId={selectedFieldId} />
+              <div className="flex flex-col gap-4">
+                <RiskAlertCard 
+                  fieldId={selectedFieldId} 
+                  onCriticalAlerts={setCriticalAlerts} 
+                />
+                <NDVICard fieldId={selectedFieldId} />
+              </div>
+            </div>
+          )}
+
+          {activeTab === "nutrition" && (
+            <div className="mt-8 grid gap-4 md:grid-cols-2 animate-fadeIn">
+              <SoilCard fieldId={selectedFieldId} />
+              <CropSuitabilityCard fieldId={selectedFieldId} />
+            </div>
+          )}
+
+          {activeTab === "operations" && (
+            <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+              <div className="flex flex-col gap-4">
+                <IrrigationCard fieldId={selectedFieldId} />
+                <BranchLocatorCard fieldId={selectedFieldId} />
+              </div>
+              <PesticideCard fieldId={selectedFieldId} />
+              <div className="md:col-span-2">
+                <FertilizerCard fieldId={selectedFieldId} />
+              </div>
+            </div>
+          )}
+        </>
+      )}
   </section>
   );
 }
