@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { User, Mail, Lock, ShieldCheck, UserPlus } from "lucide-react";
 import { registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
@@ -185,14 +186,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow text-gray-800">
+    <div className="flex items-center justify-center min-h-[calc(100vh-6rem)]">
+      <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl">
         {/* Header */}
-        <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
+        <h2 className="text-2xl font-bold text-white text-center mb-6">Create Account</h2>
 
         {/* Server Error */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -201,70 +202,79 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Full Name
             </label>
-            <input
-              type="text"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
-                fieldErrors.name ? "border-red-500" : "border-gray-300"
-              }`}
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                validateField("name", e.target.value);
-              }}
-              onBlur={(e) => validateField("name", e.target.value)}
-              placeholder="John Doe"
-            />
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="text"
+                className={`w-full bg-white/5 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-400 focus:border-emerald-400 transition-colors ${
+                  fieldErrors.name ? "border-red-500/50" : "border-white/10"
+                }`}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  validateField("name", e.target.value);
+                }}
+                onBlur={(e) => validateField("name", e.target.value)}
+                placeholder="John Doe"
+              />
+            </div>
             {fieldErrors.name && (
-              <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>
+              <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>
             )}
           </div>
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Email
             </label>
-            <input
-              type="email"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
-                fieldErrors.email ? "border-red-500" : "border-gray-300"
-              }`}
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                validateField("email", e.target.value);
-              }}
-              onBlur={(e) => validateField("email", e.target.value)}
-              placeholder="you@example.com"
-            />
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="email"
+                className={`w-full bg-white/5 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-400 focus:border-emerald-400 transition-colors ${
+                  fieldErrors.email ? "border-red-500/50" : "border-white/10"
+                }`}
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  validateField("email", e.target.value);
+                }}
+                onBlur={(e) => validateField("email", e.target.value)}
+                placeholder="you@example.com"
+              />
+            </div>
             {fieldErrors.email && (
-              <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
+              <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
             )}
           </div>
 
           {/* Password Field */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Password
             </label>
-            <input
-              type="password"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
-                fieldErrors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                validateField("password", e.target.value);
-              }}
-              onBlur={(e) => validateField("password", e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="password"
+                className={`w-full bg-white/5 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-400 focus:border-emerald-400 transition-colors ${
+                  fieldErrors.password ? "border-red-500/50" : "border-white/10"
+                }`}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validateField("password", e.target.value);
+                }}
+                onBlur={(e) => validateField("password", e.target.value)}
+                placeholder="••••••••"
+              />
+            </div>
             {fieldErrors.password && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-400 text-xs mt-1">
                 {fieldErrors.password}
               </p>
             )}
@@ -272,7 +282,7 @@ const Register = () => {
             {/* Password Strength Indicator */}
             {password.length > 0 && (
               <div className="mt-2">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                   <div
                     className={`h-full ${passwordStrength.color} transition-all duration-300`}
                     style={{ width: passwordStrength.width }}
@@ -283,7 +293,7 @@ const Register = () => {
                     passwordStrength.level === "Weak"
                       ? "text-red-500"
                       : passwordStrength.level === "Fair"
-                        ? "text-yellow-600"
+                        ? "text-yellow-400"
                         : passwordStrength.level === "Good"
                           ? "text-blue-500"
                           : "text-green-500"
@@ -297,35 +307,38 @@ const Register = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Confirm Password
             </label>
-            <input
-              type="password"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-400 bg-white ${
-                fieldErrors.confirmPassword
-                  ? "border-red-500"
-                  : confirmPassword && password === confirmPassword
-                    ? "border-green-500"
-                    : "border-gray-300"
-              }`}
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                validateField("confirmPassword", e.target.value);
-              }}
-              onBlur={(e) => validateField("confirmPassword", e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="password"
+                className={`w-full bg-white/5 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-400 focus:border-emerald-400 transition-colors ${
+                  fieldErrors.confirmPassword
+                    ? "border-red-500/50"
+                    : confirmPassword && password === confirmPassword
+                      ? "border-emerald-500/50"
+                      : "border-white/10"
+                }`}
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  validateField("confirmPassword", e.target.value);
+                }}
+                onBlur={(e) => validateField("confirmPassword", e.target.value)}
+                placeholder="••••••••"
+              />
+            </div>
             {fieldErrors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-400 text-xs mt-1">
                 {fieldErrors.confirmPassword}
               </p>
             )}
             {confirmPassword &&
               password === confirmPassword &&
               !fieldErrors.confirmPassword && (
-                <p className="text-green-500 text-xs mt-1">Passwords match ✓</p>
+                <p className="text-emerald-400 text-xs mt-1">Passwords match ✓</p>
               )}
           </div>
 
@@ -333,22 +346,25 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+            className="w-full bg-emerald-500 text-slate-950 py-3 rounded-xl hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-bold transition-colors"
           >
             {loading ? (
-              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+              <span className="animate-spin h-5 w-5 border-2 border-slate-950 border-t-transparent rounded-full"></span>
             ) : (
-              "Create Account"
+              <>
+                <UserPlus className="h-4 w-4" />
+                Create Account
+              </>
             )}
           </button>
         </form>
 
         {/* Login Link */}
-        <p className="mt-4 text-sm text-center text-gray-600">
+        <p className="mt-4 text-sm text-center text-slate-400">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-green-600 hover:underline font-medium"
+            className="text-emerald-400 hover:underline font-medium"
           >
             Login
           </Link>

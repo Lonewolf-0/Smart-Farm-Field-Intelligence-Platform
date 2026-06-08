@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Store, List, ArrowLeftRight } from "lucide-react";
 import BranchMap from "../components/Branches/BranchMap";
 import BranchList from "../components/Branches/BranchList";
 import PriceCompare from "../components/Branches/PriceCompare";
@@ -77,7 +78,7 @@ const BranchesPage: React.FC = () => {
       {/* Header with Field Selector */}
       <div className="flex items-center justify-between p-4 border-b border-white/10 shrink-0 bg-slate-950">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          Branches Map
+          <Store className="h-5 w-5 text-emerald-400" /> Branches Map
         </h2>
         
         {fields.length > 0 && (
@@ -101,27 +102,27 @@ const BranchesPage: React.FC = () => {
       <div className="w-full flex-1 flex flex-col lg:flex-row overflow-hidden">
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           <>
             <div className="flex flex-col h-full bg-slate-950 border-r border-white/10 w-full lg:w-96 shrink-0 overflow-hidden">
               <div className="flex bg-slate-900 border-b border-white/10 shrink-0">
               <button
-                className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  activeTab === "list" ? "text-green-400 border-b-2 border-green-400" : "text-slate-400 hover:text-slate-200"
+                className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                  activeTab === "list" ? "text-cyan-400 border-b-2 border-cyan-400" : "text-slate-400 hover:text-slate-200"
                 }`}
                 onClick={() => setActiveTab("list")}
               >
-                Branch List
+                <List className="h-4 w-4" /> Branch List
               </button>
               <button
-                className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  activeTab === "compare" ? "text-green-400 border-b-2 border-green-400" : "text-slate-400 hover:text-slate-200"
+                className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                  activeTab === "compare" ? "text-cyan-400 border-b-2 border-cyan-400" : "text-slate-400 hover:text-slate-200"
                 }`}
                 onClick={() => setActiveTab("compare")}
               >
-                Compare Prices
+                <ArrowLeftRight className="h-4 w-4" /> Compare Prices
               </button>
             </div>
             

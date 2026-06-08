@@ -1,5 +1,6 @@
 import { useState, type SyntheticEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, LogIn } from "lucide-react";
 import { loginUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
@@ -67,55 +68,68 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow text-gray-800">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div className="flex items-center justify-center min-h-[calc(100vh-6rem)]">
+      <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl">
+        <h2 className="text-2xl font-bold text-white text-center mb-6">Login</h2>
 
-        {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
+        {error && (
+          <div className="mb-4 text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-xl text-sm">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Email
             </label>
-            <input
-              type="email"
-              className="w-full border rounded px-3 py-2 text-gray-900 placeholder-gray-400 bg-white"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-            />
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="email"
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-slate-300">
               Password
             </label>
-            <input
-              type="password"
-              className="w-full border rounded px-3 py-2 text-gray-900 placeholder-gray-400 bg-white"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="password"
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50 flex justify-center"
+            className="w-full bg-emerald-500 text-slate-950 py-3 rounded-xl hover:bg-emerald-400 font-bold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
           >
             {loading ? (
-              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+              <span className="animate-spin h-5 w-5 border-2 border-slate-950 border-t-transparent rounded-full" />
             ) : (
-              "Login"
+              <>
+                <LogIn className="h-4 w-4" />
+                Login
+              </>
             )}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-700">
+        <p className="mt-4 text-sm text-center text-slate-400">
           {"Don't have an account? "}
-          <Link to="/register" className="text-green-600 hover:underline">
+          <Link to="/register" className="text-emerald-400 hover:underline">
             Register
           </Link>
         </p>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Crosshair } from "lucide-react";
 import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON, Tooltip } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import GeomanControl from "./GeomanControl";
@@ -111,17 +112,17 @@ const FarmMap: React.FC<FarmMapProps> = ({
     <div className="relative w-full h-[calc(100vh-64px)]">
       {/* Location Status Banner */}
       {locationStatus === "loading" && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2">
-          <span className="animate-spin h-4 w-4 border-2 border-green-600 border-t-transparent rounded-full"></span>
-          <span className="text-sm text-gray-700">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl shadow-md flex items-center gap-2">
+          <span className="animate-spin h-4 w-4 border-2 border-emerald-400 border-t-transparent rounded-full"></span>
+          <span className="text-sm text-slate-300">
             Detecting your location...
           </span>
         </div>
       )}
 
       {locationStatus === "denied" && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-yellow-50 border border-yellow-200 px-4 py-2 rounded-lg shadow-md">
-          <span className="text-sm text-yellow-700">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl shadow-md">
+          <span className="text-sm text-amber-200">
             📍 Location access denied. Showing default view.
           </span>
         </div>
@@ -131,22 +132,10 @@ const FarmMap: React.FC<FarmMapProps> = ({
       {userLocation && locationStatus === "granted" && (
         <button
           onClick={handleRecenter}
-          className="absolute bottom-6 right-4 z-[1000] bg-white p-3 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+          className="absolute bottom-6 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 p-3 rounded-full shadow-lg hover:bg-slate-800 transition-colors"
           title="Center on my location"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-green-600"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-          </svg>
+          <Crosshair className="h-5 w-5 text-emerald-400" />
         </button>
       )}
 

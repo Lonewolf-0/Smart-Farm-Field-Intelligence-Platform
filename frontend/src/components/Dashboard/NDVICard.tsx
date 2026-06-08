@@ -44,7 +44,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-6 animate-pulse h-full">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-48 bg-slate-800 rounded mb-6"></div>
         <div className="h-32 w-32 bg-slate-800 rounded-full mx-auto mb-6"></div>
         <div className="h-10 bg-slate-800 rounded-xl mb-4"></div>
@@ -55,11 +55,11 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/50 p-6 text-center h-full flex flex-col items-center justify-center">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
         <p className="text-red-400 mb-4">{error}</p>
         <button
           onClick={fetchNDVIData}
-          className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
         >
           Retry
         </button>
@@ -110,7 +110,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
             <Leaf className="w-5 h-5 text-emerald-400" />
             Vegetation Health
           </h3>
-          <p className="text-sm text-slate-400 mt-1">Satellite NDVI Analysis</p>
+          <p className="text-sm text-cyan-200 mt-0.5">Satellite NDVI Analysis</p>
         </div>
         <div className={`px-3 py-1 rounded-full border text-xs font-semibold tracking-wide uppercase ${colorBadge}`}>
           {data.healthScore}
@@ -149,7 +149,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ backgroundColor: "#020617", borderColor: "#1e293b", borderRadius: "8px" }}
+                contentStyle={{ backgroundColor: "#0f172a", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px" }}
                 itemStyle={{ color: "#e2e8f0" }}
                 formatter={(value: any) => [`${Number(value).toFixed(1)}%`, "Area"]}
               />

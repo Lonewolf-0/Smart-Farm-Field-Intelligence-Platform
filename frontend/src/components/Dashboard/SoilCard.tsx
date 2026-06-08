@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, FlaskConical } from "lucide-react";
 import SoilHistoryChart from "./SoilHistoryChart";
 import type { HistoryRecord } from "./SoilHistoryChart";
 
@@ -79,7 +79,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-6 animate-pulse">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse">
         <div className="h-6 w-32 bg-slate-800 rounded mb-4"></div>
         <div className="grid grid-cols-2 gap-4">
           <div className="h-20 bg-slate-800 rounded-xl"></div>
@@ -93,11 +93,11 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/50 p-6 text-center">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center">
         <p className="text-red-400 mb-4">{error}</p>
         <button
           onClick={fetchSoilHistory}
-          className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
         >
           Retry
         </button>
@@ -150,8 +150,8 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-xl font-bold text-white">Soil Profile</h3>
-          <p className="text-sm text-cyan-200 mt-1">Top Layer (0-5cm)</p>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-cyan-400" />Soil Profile</h3>
+          <p className="text-sm text-cyan-200 mt-0.5">Top Layer (0-5cm)</p>
         </div>
         <div className="text-right">
           <div className={`text-3xl font-black ${scoreColor}`}>{score}</div>

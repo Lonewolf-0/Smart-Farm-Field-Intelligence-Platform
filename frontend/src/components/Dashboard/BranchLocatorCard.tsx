@@ -83,7 +83,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
             <Store className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg text-white">Nearest Branch</h3>
+            <h3 className="font-bold text-xl text-white">Nearest Branch</h3>
             <div className="flex items-center gap-1 text-sm text-slate-400 mt-0.5">
               <MapPin className="w-3 h-3" />
               <span>{nearestBranch.distance.toFixed(1)} km away</span>
@@ -126,7 +126,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
         
         <div className="flex flex-wrap gap-1.5 mb-2">
           {nearestBranch.services.slice(0, 3).map((service, i) => (
-            <span key={i} className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-white/5">
+            <span key={i} className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-lg border border-white/5">
               {service}
             </span>
           ))}

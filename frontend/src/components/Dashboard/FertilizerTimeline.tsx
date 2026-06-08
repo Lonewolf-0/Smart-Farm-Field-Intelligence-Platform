@@ -73,7 +73,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({ scheduleSteps =
                 </span>
                 
                 {/* Timing badge above node */}
-                <span className="absolute -top-6 text-[9px] bg-slate-950 px-1.5 py-0.5 rounded border border-white/10 text-slate-300 font-medium whitespace-nowrap">
+                <span className="absolute -top-6 text-[9px] bg-slate-950 px-1.5 py-0.5 rounded-md border border-white/10 text-slate-300 font-medium whitespace-nowrap">
                   {step.days === 0 ? "Sowing" : `Day ${step.days}`}
                 </span>
 
@@ -93,7 +93,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({ scheduleSteps =
         <div className="flex justify-between items-start gap-4">
           <div>
             <h5 className="text-sm font-bold text-white flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[10px] uppercase font-bold tracking-wider">
+              <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[10px] uppercase font-bold tracking-wider">
                 {activeStep.days === 0 ? "Basal Dose" : `Top-dress (+${activeStep.days} days)`}
               </span>
               {activeStep.stage}
