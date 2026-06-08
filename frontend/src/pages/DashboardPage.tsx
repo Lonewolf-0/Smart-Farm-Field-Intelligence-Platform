@@ -1,7 +1,7 @@
-import { BarChart3, Map } from "lucide-react";
+import { BarChart3, Map, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import type { Field } from "../types";
+import type { Field, RiskAlert } from "../types";
 import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
 import WeatherCard from "../components/Dashboard/WeatherCard";
@@ -10,11 +10,13 @@ import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
 import PesticideCard from "../components/Dashboard/PesticideCard";
 import BranchLocatorCard from "../components/Dashboard/BranchLocatorCard";
+import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string>("");
   const [loadingFields, setLoadingFields] = useState(true);
+  const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -82,9 +84,34 @@ function DashboardPage() {
       )}
 
       {selectedFieldId && (
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <SoilCard fieldId={selectedFieldId} />
-          <IrrigationCard fieldId={selectedFieldId} />
+        <>
+          {/* Critical Warnings Banner */}
+          {criticalAlerts.length > 0 && (
+            <div 
+              data-testid="critical-alerts-banner"
+              className="mt-6 p-4 rounded-2xl border border-red-500/30 bg-red-500/15 text-red-200 flex items-start gap-3 shadow-lg shadow-red-950/20 animate-fadeIn"
+            >
+              <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-extrabold text-white text-sm">CRITICAL WARNING ACTIVE</p>
+                <div className="mt-1 space-y-1.5 text-xs">
+                  {criticalAlerts.map((alert, idx) => (
+                    <p key={idx} className="leading-relaxed">
+                      • <strong>{alert.message}</strong> (Expected: {alert.expectedDate}) — {alert.recommendation}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <RiskAlertCard 
+              fieldId={selectedFieldId} 
+              onCriticalAlerts={setCriticalAlerts} 
+            />
+            <SoilCard fieldId={selectedFieldId} />
+            <IrrigationCard fieldId={selectedFieldId} />
           <NDVICard fieldId={selectedFieldId} />
           <WeatherCard fieldId={selectedFieldId} />
           <CropSuitabilityCard fieldId={selectedFieldId} />
@@ -96,8 +123,9 @@ function DashboardPage() {
             <BranchLocatorCard fieldId={selectedFieldId} />
           </div>
         </div>
-      )}
-    </section>
+      </>
+    )}
+  </section>
   );
 }
 

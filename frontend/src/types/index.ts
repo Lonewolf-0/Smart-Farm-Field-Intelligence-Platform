@@ -147,9 +147,11 @@ export interface ProfitAnalysis {
 
 export interface RiskAlert {
   type: string;
-  severity: string;
+  severity: "low" | "medium" | "high" | "critical" | string;
   message: string;
   expectedDate: string;
+  duration?: string;
+  recommendation?: string;
 }
 
 // ==========================
