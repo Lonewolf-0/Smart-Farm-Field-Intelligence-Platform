@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import api from "../../services/api";
 import { ShieldAlert, FlaskConical } from "lucide-react";
 import SoilHistoryChart from "./SoilHistoryChart";
 import type { HistoryRecord } from "./SoilHistoryChart";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface SoilLayerData {
   depthLabel: string;
@@ -29,53 +29,12 @@ interface SoilAlert {
 }
 
 const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
-  const [data, setData] = useState<SoilData | null>(null);
-  const [history, setHistory] = useState<HistoryRecord[]>([]);
-  const [alerts, setAlerts] = useState<SoilAlert[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchSoilHistory = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.get(`/analysis/${fieldId}/soil/history`);
-      if (res.data?.success) {
-        const { records, alerts } = res.data.data;
-        setHistory(records || []);
-        setAlerts(alerts || []);
-        if (records && records.length > 0) {
-          setData(records[0].data);
-        } else {
-          setData(null);
-        }
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to load soil data.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRunAnalysis = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/soil`);
-      if (res.data?.success) {
-        await fetchSoilHistory();
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to run analysis.");
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (fieldId) {
-      void fetchSoilHistory();
-    }
-  }, [fieldId]);
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const historyData = contextData?.soil as { records: HistoryRecord[]; alerts: SoilAlert[] } | undefined;
+  
+  const history = historyData?.records || [];
+  const alerts = historyData?.alerts || [];
+  const data = history.length > 0 ? history[0].data : null;
 
   if (loading) {
     return (
@@ -91,16 +50,10 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     );
   }
 
-  if (error) {
+  if (!historyData && !loading) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center">
-        <p className="text-red-400 mb-4">{error}</p>
-        <button
-          onClick={fetchSoilHistory}
-          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
-        >
-          Retry
-        </button>
+        <p className="text-red-400 mb-4">Failed to load soil data.</p>
       </div>
     );
   }
@@ -108,13 +61,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   if (!data || !data.layers || data.layers.length === 0) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md flex flex-col items-center justify-center text-center">
-        <p className="text-slate-300 mb-4">No soil analysis found for this field.</p>
-        <button
-          onClick={handleRunAnalysis}
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-900/50"
-        >
-          Run First Analysis
-        </button>
+        <p className="text-slate-300 mb-4">No soil analysis found for this field. Run a full field analysis from the dashboard.</p>
       </div>
     );
   }
@@ -219,12 +166,6 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
       <div className="mt-8 pt-6 border-t border-white/10">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-bold text-white">Historical Trends</h3>
-          <button
-            onClick={handleRunAnalysis}
-            className="px-4 py-2 bg-emerald-950/50 hover:bg-emerald-900 border border-emerald-800 text-emerald-200 text-sm font-semibold rounded-lg transition-colors"
-          >
-            Update Analysis
-          </button>
         </div>
         <SoilHistoryChart history={history} />
       </div>

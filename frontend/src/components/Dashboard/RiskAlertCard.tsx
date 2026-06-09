@@ -9,11 +9,10 @@ import {
   X, 
   ChevronDown, 
   ChevronUp, 
-  ShieldCheck,
-  RefreshCw
+  ShieldCheck
 } from "lucide-react";
-import api from "../../services/api";
 import type { RiskAlert } from "../../types";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface RiskAlertCardProps {
   fieldId: string;
@@ -92,9 +91,9 @@ const getAlertTitle = (type: string): string => {
 };
 
 const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts }) => {
-  const [alerts, setAlerts] = useState<RiskAlert[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const alerts = (contextData?.risks as RiskAlert[]) || [];
+  
   const [expandedAlerts, setExpandedAlerts] = useState<Record<string, boolean>>({});
   const [dismissedKeys, setDismissedKeys] = useState<string[]>(() => {
     try {
@@ -104,30 +103,6 @@ const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts
       return [];
     }
   });
-
-  const fetchRisks = async () => {
-    if (!fieldId) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/risks`);
-      if (res.data?.success) {
-        const fetchedAlerts: RiskAlert[] = res.data.data || [];
-        setAlerts(fetchedAlerts);
-      } else {
-        throw new Error(res.data?.error || "Failed to load risk analysis");
-      }
-    } catch (err: any) {
-      console.error("Failed to load risks", err);
-      setError(err.response?.data?.error || err.message || "Failed to fetch risk alerts.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchRisks();
-  }, [fieldId]);
 
   // Synchronize critical alerts to parent component whenever alerts or dismissed keys change
   useEffect(() => {
@@ -173,19 +148,11 @@ const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts
     );
   }
 
-  if (error) {
+  if (!contextData?.risks && !loading) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full min-h-[200px] flex flex-col items-center justify-center text-center">
         <AlertTriangle className="w-10 h-10 text-red-500 mb-2" />
-        <p className="text-red-400 font-semibold mb-1">Risk Assessment Failed</p>
-        <p className="text-slate-400 text-xs mb-4">{error}</p>
-        <button
-          onClick={fetchRisks}
-          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          Retry
-        </button>
+        <p className="text-red-400 font-semibold mb-1">Risk Assessment Unavailable</p>
       </div>
     );
   }

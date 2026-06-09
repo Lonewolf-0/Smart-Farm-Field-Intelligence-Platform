@@ -12,6 +12,7 @@ import PesticideCard from "../components/Dashboard/PesticideCard";
 import BranchLocatorCard from "../components/Dashboard/BranchLocatorCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 import CustomSelect from "../components/UI/CustomSelect";
+import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext";
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
@@ -23,7 +24,10 @@ function DashboardPage() {
   // Analysis State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeProgress, setAnalyzeProgress] = useState({ current: 0, total: 8, label: "" });
-  const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Cache State
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const [lastAnalyzedTimestamp, setLastAnalyzedTimestamp] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -44,43 +48,76 @@ function DashboardPage() {
     void fetchFields();
   }, []);
 
+  useEffect(() => {
+    if (!selectedFieldId) return;
+    const cacheKey = `dashboard_analysis_${selectedFieldId}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setAnalysisData(parsed.results);
+        setLastAnalyzedTimestamp(parsed.timestamp);
+      } catch (e) {
+        console.warn("Invalid cache", e);
+        setAnalysisData(null);
+        setLastAnalyzedTimestamp(null);
+      }
+    } else {
+      setAnalysisData(null);
+      setLastAnalyzedTimestamp(null);
+    }
+  }, [selectedFieldId]);
+
   const handleAnalyzeField = async () => {
     if (!selectedFieldId) return;
     setIsAnalyzing(true);
     try {
       const steps = [
-        { label: "Analyzing Soil Profile...", endpoint: `/analysis/${selectedFieldId}/soil`, method: "post" },
-        { label: "Fetching Satellite NDVI...", endpoint: `/analysis/${selectedFieldId}/ndvi`, method: "post" },
-        { label: "Forecasting Weather...", endpoint: `/analysis/${selectedFieldId}/weather`, method: "post" },
-        { label: "Assessing Irrigation Needs...", endpoint: `/analysis/${selectedFieldId}/irrigation`, method: "post" },
-        { label: "Computing Crop Suitability...", endpoint: `/analysis/${selectedFieldId}/crop`, method: "post" },
-        { label: "Calculating Fertilizer Plan...", endpoint: `/analysis/${selectedFieldId}/fertilizer`, method: "post" },
-        { label: "Assessing Pesticide Risk...", endpoint: `/analysis/${selectedFieldId}/pesticide`, method: "post" },
-        { label: "Compiling Risk Alerts...", endpoint: `/analysis/${selectedFieldId}/risks`, method: "post" },
+        { key: "soil", label: "Analyzing Soil Profile...", endpoint: `/analysis/${selectedFieldId}/soil` },
+        { key: "ndvi", label: "Fetching Satellite NDVI...", endpoint: `/analysis/${selectedFieldId}/ndvi` },
+        { key: "weather", label: "Forecasting Weather...", endpoint: `/analysis/${selectedFieldId}/weather` },
+        { key: "irrigation", label: "Assessing Irrigation Needs...", endpoint: `/analysis/${selectedFieldId}/irrigation` },
+        { key: "crop", label: "Computing Crop Suitability...", endpoint: `/analysis/${selectedFieldId}/crop` },
+        { key: "fertilizer", label: "Calculating Fertilizer Plan...", endpoint: `/analysis/${selectedFieldId}/fertilizer` },
+        { key: "pesticide", label: "Assessing Pesticide Risk...", endpoint: `/analysis/${selectedFieldId}/pesticide` },
+        { key: "risks", label: "Compiling Risk Alerts...", endpoint: `/analysis/${selectedFieldId}/risks` },
       ];
+
+      const newResults: Partial<AnalysisData> = {};
 
       for (let i = 0; i < steps.length; i++) {
         setAnalyzeProgress({ current: i + 1, total: steps.length, label: steps[i].label });
         try {
-          if (steps[i].method === "post") {
-            // Note: pesticide and fertilizer endpoints might expect body, but they handle empty body or default if not provided
-            await api.post(steps[i].endpoint);
+          const res = await api.post(steps[i].endpoint);
+          if (steps[i].key === "soil") {
+            const histRes = await api.get(`/analysis/${selectedFieldId}/soil/history`);
+            newResults.soil = histRes.data?.data;
           } else {
-            await api.get(steps[i].endpoint);
+            newResults[steps[i].key as keyof AnalysisData] = res.data?.data;
           }
         } catch (e) {
           console.warn(`Failed step ${steps[i].label}`, e);
-          // Continue with next steps even if one fails
         }
       }
       
-      // Increment refresh key to remount and update all cards
-      setRefreshKey(prev => prev + 1);
+      const timestamp = Date.now();
+      localStorage.setItem(`dashboard_analysis_${selectedFieldId}`, JSON.stringify({ timestamp, results: newResults }));
+      setAnalysisData(newResults as AnalysisData);
+      setLastAnalyzedTimestamp(timestamp);
     } catch (err) {
       console.error("Analysis failed", err);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const isStale24h = lastAnalyzedTimestamp ? Date.now() - lastAnalyzedTimestamp > 24 * 60 * 60 * 1000 : false;
+  const isStale7d = lastAnalyzedTimestamp ? Date.now() - lastAnalyzedTimestamp > 7 * 24 * 60 * 60 * 1000 : false;
+
+  const formatDate = (ts: number) => {
+    return new Date(ts).toLocaleString("en-US", {
+      month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"
+    });
   };
 
   return (
@@ -187,16 +224,24 @@ function DashboardPage() {
             )}
           </div>
 
-          {/* Analyze Button */}
+          {/* Time & Analyze Button */}
           {fields.length > 0 && selectedFieldId && (
-            <button
-              onClick={handleAnalyzeField}
-              disabled={isAnalyzing}
-              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-            >
-              <RefreshCw className={`w-4 h-4 ${isAnalyzing ? "animate-spin" : ""}`} />
-              {isAnalyzing ? "Analyzing..." : "Analyze Field"}
-            </button>
+            <div className="flex items-center gap-4 w-full sm:w-auto">
+              {lastAnalyzedTimestamp && (
+                <div className="hidden sm:block text-xs text-slate-400 text-right">
+                  <p>Last analyzed</p>
+                  <p className="font-medium text-slate-300">{formatDate(lastAnalyzedTimestamp)}</p>
+                </div>
+              )}
+              <button
+                onClick={handleAnalyzeField}
+                disabled={isAnalyzing}
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              >
+                <RefreshCw className={`w-4 h-4 ${isAnalyzing ? "animate-spin" : ""}`} />
+                {analysisData ? (isAnalyzing ? "Refreshing..." : "Refresh") : (isAnalyzing ? "Analyzing..." : "Analyze Field")}
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -208,7 +253,35 @@ function DashboardPage() {
       )}
 
       {selectedFieldId && (
-        <>
+        <AnalysisProvider value={{
+          data: analysisData,
+          timestamp: lastAnalyzedTimestamp,
+          isLoading: isAnalyzing,
+          isStale24h,
+          isStale7d,
+          refreshAnalysis: handleAnalyzeField,
+          hasCachedData: !!analysisData
+        }}>
+          {/* Stale Warnings Banner */}
+          {analysisData && isStale7d && (
+            <div className="mt-6 p-4 rounded-2xl border border-red-500/30 bg-red-500/15 text-red-200 flex items-start gap-3 shadow-lg shadow-red-950/20 animate-fadeIn">
+              <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-extrabold text-white text-sm">DATA IS STALE</p>
+                <p className="text-xs leading-relaxed mt-1">This analysis data is older than 7 days. Please click Refresh to get the latest insights.</p>
+              </div>
+            </div>
+          )}
+          {analysisData && isStale24h && !isStale7d && (
+            <div className="mt-6 p-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/15 text-yellow-200 flex items-start gap-3 shadow-lg shadow-yellow-950/20 animate-fadeIn">
+              <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-extrabold text-white text-sm">DATA MAY BE OUTDATED</p>
+                <p className="text-xs leading-relaxed mt-1">This analysis data is older than 24 hours. Click Refresh for the latest updates.</p>
+              </div>
+            </div>
+          )}
+
           {/* Critical Warnings Banner */}
           {criticalAlerts.length > 0 && (
             <div 
@@ -229,44 +302,59 @@ function DashboardPage() {
             </div>
           )}
 
-
-
           {/* Tab Contents */}
-          <div key={refreshKey}>
-            {activeTab === "overview" && (
-              <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
-                <WeatherCard fieldId={selectedFieldId} />
-                <div className="flex flex-col gap-4">
-                  <RiskAlertCard 
-                    fieldId={selectedFieldId} 
-                    onCriticalAlerts={setCriticalAlerts} 
-                  />
-                  <NDVICard fieldId={selectedFieldId} />
+          {analysisData ? (
+            <div>
+              {activeTab === "overview" && (
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                  <WeatherCard fieldId={selectedFieldId} />
+                  <div className="flex flex-col gap-4">
+                    <RiskAlertCard 
+                      fieldId={selectedFieldId} 
+                      onCriticalAlerts={setCriticalAlerts} 
+                    />
+                    <NDVICard fieldId={selectedFieldId} />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === "nutrition" && (
-              <div className="mt-8 grid gap-4 md:grid-cols-2 animate-fadeIn">
-                <SoilCard fieldId={selectedFieldId} />
-                <CropSuitabilityCard fieldId={selectedFieldId} />
-              </div>
-            )}
+              {activeTab === "nutrition" && (
+                <div className="mt-8 grid gap-4 md:grid-cols-2 animate-fadeIn">
+                  <SoilCard fieldId={selectedFieldId} />
+                  <CropSuitabilityCard fieldId={selectedFieldId} />
+                </div>
+              )}
 
-            {activeTab === "operations" && (
-              <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
-                <div className="flex flex-col gap-4">
-                  <IrrigationCard fieldId={selectedFieldId} />
-                  <BranchLocatorCard fieldId={selectedFieldId} />
+              {activeTab === "operations" && (
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                  <div className="flex flex-col gap-4">
+                    <IrrigationCard fieldId={selectedFieldId} />
+                    <BranchLocatorCard fieldId={selectedFieldId} />
+                  </div>
+                  <PesticideCard fieldId={selectedFieldId} />
+                  <div className="md:col-span-2">
+                    <FertilizerCard fieldId={selectedFieldId} />
+                  </div>
                 </div>
-                <PesticideCard fieldId={selectedFieldId} />
-                <div className="md:col-span-2">
-                  <FertilizerCard fieldId={selectedFieldId} />
-                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-8 rounded-2xl border border-slate-700/50 bg-slate-800/30 p-12 text-center animate-fadeIn">
+              <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-8 h-8 text-slate-500" />
               </div>
-            )}
-          </div>
-        </>
+              <h3 className="text-xl font-bold text-white mb-2">No Analysis Data</h3>
+              <p className="text-slate-400 max-w-md mx-auto mb-6">Run your first analysis to generate soil profiles, weather forecasts, and vegetation health metrics.</p>
+              <button
+                onClick={handleAnalyzeField}
+                disabled={isAnalyzing}
+                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-900/50"
+              >
+                {isAnalyzing ? "Analyzing..." : "Run First Analysis"}
+              </button>
+            </div>
+          )}
+        </AnalysisProvider>
       )}
   </section>
   );

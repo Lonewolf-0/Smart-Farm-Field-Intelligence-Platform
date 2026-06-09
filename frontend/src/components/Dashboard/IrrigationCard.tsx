@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import api from "../../services/api";
+import React from "react";
 import { Droplets, CloudRain, Sun } from "lucide-react";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface IrrigationPlan {
   nextIrrigationDays: number;
@@ -15,32 +15,10 @@ interface IrrigationCardProps {
 }
 
 const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
-  const [data, setData] = useState<IrrigationPlan | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const data = contextData?.irrigation as IrrigationPlan | undefined;
 
-  const fetchIrrigationData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/irrigation`);
-      if (res.data?.success) {
-        setData(res.data.data);
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to load irrigation data.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (fieldId) {
-      void fetchIrrigationData();
-    }
-  }, [fieldId]);
-
-  if (loading) {
+  if (loading && !data) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-32 bg-slate-800 rounded mb-6"></div>
@@ -53,22 +31,12 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
     );
   }
 
-  if (error) {
+  if (!data) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
-        <p className="text-red-400 mb-4">{error}</p>
-        <button
-          onClick={fetchIrrigationData}
-          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
-        >
-          Retry
-        </button>
+        <p className="text-red-400 mb-4">Failed to load irrigation data.</p>
       </div>
     );
-  }
-
-  if (!data) {
-    return null;
   }
 
   // Urgency logic

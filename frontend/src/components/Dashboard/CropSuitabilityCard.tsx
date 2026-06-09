@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import api from "../../services/api";
 import { 
   Sprout, 
   ChevronDown, 
   ChevronUp, 
   AlertCircle, 
-  RefreshCw, 
   CheckCircle2 
 } from "lucide-react";
 import type { CropSuitability } from "../../types";
 import CropCompare from "./CropCompare";
 import Toast from "../UI/Toast";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface CropSuitabilityCardProps {
   fieldId: string;
@@ -74,41 +73,22 @@ const getSeasonBadge = (season: "Kharif" | "Rabi" | "Zaid" | undefined) => {
 };
 
 const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) => {
-  const [crops, setCrops] = useState<CropSuitability[]>([]);
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const crops = (contextData?.crop as CropSuitability[]) || [];
+
   const [selectedSeason, setSelectedSeason] = useState<"All" | "Kharif" | "Rabi" | "Zaid">("All");
   const [expandedCrop, setExpandedCrop] = useState<string | null>(null);
   const [selectedCompare, setSelectedCompare] = useState<CropSuitability[]>([]);
   const [activeToast, setActiveToast] = useState<{ message: string; type: "info" | "warning" | "success" | "error" } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchCropSuitability = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/crop`);
-      if (res.data?.success) {
-        setCrops(res.data.data || []);
-      } else {
-        throw new Error(res.data?.error || "Failed to load crop recommendation");
-      }
-    } catch (err: any) {
-      console.error("Failed to fetch crop suitability:", err);
-      setError(err.response?.data?.error || err.message || "Failed to load suitability data.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (fieldId) {
       setSelectedCompare([]);
       setActiveToast(null);
-      void fetchCropSuitability();
     }
   }, [fieldId]);
 
-  if (loading) {
+  if (loading && crops.length === 0) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col">
         <div className="flex justify-between items-center mb-6">
@@ -133,19 +113,11 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
     );
   }
 
-  if (error) {
+  if (!contextData?.crop) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center min-h-[300px]">
         <AlertCircle className="w-12 h-12 text-red-500 mb-3" />
         <p className="text-red-400 font-semibold mb-1">Failed to Load Suitability</p>
-        <p className="text-slate-400 text-sm mb-4 max-w-[250px]">{error}</p>
-        <button
-          onClick={fetchCropSuitability}
-          className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-lg transition-colors shadow-sm flex items-center gap-2 font-medium cursor-pointer"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Retry
-        </button>
       </div>
     );
   }
