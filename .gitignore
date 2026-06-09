@@ -3,3 +3,6 @@ aidlc-docs
 .DS_Store
 
 .env
+.cursor
+.gemini
+CLAUDE.md
