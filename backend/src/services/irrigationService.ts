@@ -9,6 +9,19 @@ export const getAWCFromTexture = (texture: string): number => {
   return 125; // Default to loam
 };
 
+/**
+ * Calculates the irrigation plan by projecting the soil water balance forward up to 14 days.
+ * 
+ * @param soil Contains the soil texture used to estimate Available Water Capacity (AWC). 
+ *             AWC estimations: Clay=175mm, Loam=125mm, Sandy Loam=87.5mm, Sand=62.5mm.
+ * @param weather The current weather data, including a 7-day precipitation forecast.
+ * @param nasaData Historical evapotranspiration (ET0) and precipitation data.
+ *                 If ET0 is unavailable, it falls back to a typical ET0 of 3.0 mm/day.
+ * 
+ * @returns {IrrigationPlan} An object detailing the days until next irrigation is needed, 
+ *                           water required (based on Management Allowed Depletion factor of 0.5), 
+ *                           and current moisture percentage.
+ */
 export const calculateIrrigation = (
   soil: { texture: string },
   weather: WeatherData,

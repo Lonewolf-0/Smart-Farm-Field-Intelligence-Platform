@@ -9,6 +9,22 @@ export interface PestRiskAssessment {
   treatment: Treatment | null;
 }
 
+/**
+ * Assesses the risk of various pests for a given crop based on environmental heuristics.
+ * 
+ * The risk score (0-100) is calculated using a weighting system:
+ * - Temperature (+30 max): +30 if within ideal range, +15 if within 3°C of ideal range.
+ * - Humidity (+30 max): +30 if >= ideal min, +15 if within 15% of ideal min.
+ * - Season (+20 max): +20 for exact match, +10 for partial/generic match.
+ * - Rainfall (+20 max): 
+ *    - Fungi thrive in wet: >50mm (+20), >20mm (+10). 
+ *    - Insects thrive in dry: <10mm (+20), <30mm (+10).
+ * 
+ * @param crop The name of the crop to assess risks for.
+ * @param weather The current weather data (temperature, humidity, rainfall).
+ * @param season The current growing season.
+ * @returns {PestRiskAssessment[]} An array of risk assessments and treatment recommendations.
+ */
 export const assessPestRisk = (
   crop: string,
   weather: WeatherData,

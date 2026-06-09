@@ -6,11 +6,7 @@ import { sendResponse } from "../utils/response";
 
 export const updateField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const user = req.user;
-    if (!user) {
-      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
-      return;
-    }
+    const user = req.user!;
 
     const { id } = req.params;
     const { name } = req.body;
@@ -40,11 +36,7 @@ export const updateField = async (req: AuthRequest, res: Response): Promise<void
 
 export const deleteUserField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const user = req.user;
-    if (!user) {
-      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
-      return;
-    }
+    const user = req.user!;
 
     const { id } = req.params;
     if (!id) {
@@ -67,11 +59,7 @@ export const deleteUserField = async (req: AuthRequest, res: Response): Promise<
 
 export const getUserFields = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const user = req.user;
-    if (!user) {
-      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
-      return;
-    }
+    const user = req.user!;
 
     const fields = await getFieldsByUserId(user.id);
     const formattedFields = fields.map((f: any) => ({
@@ -94,11 +82,7 @@ export const getUserFields = async (req: AuthRequest, res: Response): Promise<vo
 
 export const saveField = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const user = req.user;
-    if (!user) {
-      sendResponse(res, 401, "Unauthorized", null, "Unauthorized");
-      return;
-    }
+    const user = req.user!;
 
     const { name, polygon } = req.body;
     if (!name || !polygon || polygon.type !== "Polygon") {
