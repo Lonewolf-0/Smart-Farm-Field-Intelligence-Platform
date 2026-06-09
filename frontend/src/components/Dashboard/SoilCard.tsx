@@ -93,12 +93,26 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   
   const scoreColor = score >= 80 ? "text-green-400" : score >= 60 ? "text-yellow-400" : "text-red-400";
 
+  const lastFetched = history.length > 0 ? history[0].created_at : null;
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    } catch {
+      return dateStr;
+    }
+  };
+
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-emerald-400" />Soil Profile</h3>
           <p className="text-sm text-emerald-200 mt-0.5">Top Layer (0-5cm)</p>
+          {lastFetched && (
+            <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-1.5">
+              Updated: {formatDate(lastFetched)}
+            </p>
+          )}
         </div>
         <div className="text-right">
           <div className={`text-3xl font-black ${scoreColor}`}>{score}</div>
