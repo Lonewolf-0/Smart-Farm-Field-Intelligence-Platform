@@ -1,6 +1,9 @@
 import { pool } from "../config/db";
 import { NutrienBranch } from "../types";
 
+/**
+ * Represents a Nutrien branch along with its calculated distance from a specific point.
+ */
 export interface BranchWithDistance extends NutrienBranch {
   distance: number;
 }

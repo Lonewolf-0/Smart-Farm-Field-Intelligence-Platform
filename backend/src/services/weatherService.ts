@@ -5,7 +5,14 @@ import { WeatherData } from "../types";
 const API_KEY = ENV.OPENWEATHER_API_KEY;
 const BASE_URL = ENV.OPENWEATHER_BASE_URL;
 
-//helper : retry logic
+/**
+ * Helper function to fetch data from a URL with retry logic.
+ * 
+ * @param {string} url - The URL to fetch.
+ * @param {number} [retries=1] - The number of times to retry the request upon failure.
+ * @returns {Promise<AxiosResponse<any>>} The axios response.
+ * @throws {Error} If the request fails after all retries.
+ */
 const fetchWithRetry = async (
   url: string,
   retries = 1,
@@ -20,6 +27,14 @@ const fetchWithRetry = async (
   }
 };
 
+/**
+ * Fetches current weather and a 7-day forecast for a given location using the OpenWeather API.
+ * 
+ * @param {number} lat - The latitude coordinate.
+ * @param {number} lng - The longitude coordinate.
+ * @returns {Promise<WeatherData>} An object containing current weather metrics and the 7-day forecast.
+ * @throws {Error} If the API request fails.
+ */
 export const getWeatherData = async (
   lat: number,
   lng: number,
@@ -38,9 +53,10 @@ export const getWeatherData = async (
     const current = currentRes.data;
     const forecast = forecastRes.data;
 
-    //map forecast
+    // Map forecast data: OpenWeather returns data in 3-hour intervals.
+    // We filter every 8th item to extract a daily forecast (24h / 3h = 8 intervals per day).
     const forecastData = forecast.list
-      .filter((_: any, index: number) => index % 8 === 0) // every 24h (3h interval → 8)
+      .filter((_: any, index: number) => index % 8 === 0)
       .slice(0, 7)
       .map((item: any) => ({
         date: item.dt_txt,

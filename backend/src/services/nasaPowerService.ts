@@ -35,6 +35,16 @@ const calculateET0 = (tmean: number, tmax: number, tmin: number, ra: number): nu
   return Number(et0.toFixed(2));
 };
 
+/**
+ * Fetches historical weather and environmental data from the NASA POWER API for a specific location.
+ * Calculates daily Reference Evapotranspiration (ET0) based on the retrieved data.
+ *
+ * @param lat - Latitude of the target location.
+ * @param lng - Longitude of the target location.
+ * @param startDate - The start date for the data range in YYYYMMDD format.
+ * @param endDate - The end date for the data range in YYYYMMDD format.
+ * @returns A promise resolving to an array of daily weather and ET0 data.
+ */
 export const getNasaPowerData = async (
   lat: number,
   lng: number,
@@ -71,8 +81,11 @@ export const getNasaPowerData = async (
     const { T2M, T2M_MAX, T2M_MIN, PRECTOTCORR, ALLSKY_SFC_SW_DWN } = properties;
 
     // Keys in the parameter object are dates like "20260101"
+    // Sort dates sequentially to ensure chronological order
     const dates = Object.keys(T2M).sort();
 
+    // Iterate through each date to build the final dataset
+    // Missing or invalid data from NASA POWER is typically represented as -999, so we normalize these to 0 or fallbacks
     const result: NasaPowerData[] = dates.map(date => {
       const tmean = T2M[date] !== -999 ? T2M[date] : 0;
       const tmax = T2M_MAX[date] !== -999 ? T2M_MAX[date] : tmean;
@@ -80,6 +93,7 @@ export const getNasaPowerData = async (
       const precipitation = PRECTOTCORR[date] !== -999 ? PRECTOTCORR[date] : 0;
       const solarRadiation = ALLSKY_SFC_SW_DWN[date] !== -999 ? ALLSKY_SFC_SW_DWN[date] : 0;
 
+      // Calculate the daily reference evapotranspiration (ET0) using the Simplified Hargreaves equation
       const et0 = calculateET0(tmean, tmax, tmin, solarRadiation);
 
       return {

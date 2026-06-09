@@ -8,6 +8,14 @@ import {
   findUserWithPasswordByEmail,
 } from "../repositories/authRepository";
 
+/**
+ * Registers a new user with the provided credentials.
+ * Hashes the password and generates a JWT token for the session.
+ * 
+ * @param {RegisterRequest} payload - The registration payload containing name, email, and password.
+ * @returns {Promise<{ user: any, token: string }>} An object containing the newly created user and a session token.
+ * @throws {Error} If a user with the given email already exists.
+ */
 export const registerUser = async (payload: RegisterRequest) => {
   const { name, email, password } = payload;
 
@@ -33,6 +41,14 @@ export const registerUser = async (payload: RegisterRequest) => {
   return { user, token };
 };
 
+/**
+ * Authenticates a user using email and password.
+ * Compares the provided password with the stored hash and generates a JWT token if successful.
+ * 
+ * @param {LoginRequest} payload - The login payload containing email and password.
+ * @returns {Promise<{ user: any, token: string }>} An object containing the authenticated user (without password) and a session token.
+ * @throws {Error} If the user is not found or the password does not match.
+ */
 export const loginUser = async (payload: LoginRequest) => {
   const { email, password } = payload;
 

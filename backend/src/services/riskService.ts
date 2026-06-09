@@ -17,6 +17,14 @@ export interface RiskAlert {
   recommendation: string;
 }
 
+/**
+ * Evaluates weather forecast and soil conditions to identify potential agricultural risks.
+ * Generates actionable alerts for threats like drought, frost, heat stress, heavy rain, flooding, and hail.
+ *
+ * @param weather - The weather data containing the upcoming forecast.
+ * @param soil - The soil analysis data including texture.
+ * @returns An array of risk alerts with severity, expected dates, and recommendations.
+ */
 export const assessRisks = (
   weather: WeatherData,
   soil: SoilAnalysisInput,
@@ -24,7 +32,8 @@ export const assessRisks = (
   const alerts: RiskAlert[] = [];
   const forecast = weather.forecast || [];
 
-  //DROUGHT
+  // DROUGHT
+  // A drought risk is identified if there are 7 or more dry days and 7 or more hot days in the forecast overall.
   const dryDays = forecast.filter((f) => f.precipitation === 0);
   const hotDays = forecast.filter((f) => f.tempMax > 35);
 
@@ -53,7 +62,8 @@ export const assessRisks = (
     }
   });
 
-  //HEAT STRESS
+  // HEAT STRESS
+  // Identifies heat stress if the maximum temperature exceeds 40°C for 2 or more consecutive days.
   let count = 0;
   forecast.forEach((day) => {
     if (day.tempMax > 40) count++;
@@ -86,6 +96,7 @@ export const assessRisks = (
   });
 
   // HEAVY RAIN (cumulative 3-day)
+  // Calculates total rainfall over sliding 3-day windows to detect prolonged heavy rain risks.
   for (let i = 0; i <= forecast.length - 3; i++) {
     const totalRain =
       Number(forecast[i]?.precipitation || 0) +
