@@ -14,6 +14,7 @@ import {
 import Toast from "../UI/Toast";
 import type { Field, FertilizerPlan } from "../../types";
 import FertilizerTimeline from "./FertilizerTimeline";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface FertilizerCardProps {
   fieldId: string;
@@ -46,6 +47,8 @@ const FERTILIZER_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number;
 };
 
 const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
+  const { data: contextData, isLoading: contextLoading } = useAnalysisContext();
+  
   const [field, setField] = useState<Field | null>(null);
   const [cropsList] = useState<string[]>(Object.keys(cropNutrients));
   const [selectedCrop, setSelectedCrop] = useState<string>("Wheat");
@@ -58,10 +61,22 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   
   // API plan output state
   const [plan, setPlan] = useState<FertilizerPlan | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [calculating, setCalculating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "info" | "warning" | "error" } | null>(null);
+
+  // Sync context data
+  useEffect(() => {
+    if (contextData?.fertilizer && useSoilTestData && selectedCrop === "Wheat") {
+      setPlan(contextData.fertilizer);
+      if (contextData.fertilizer.soilBaselines) {
+        setSoilN(contextData.fertilizer.soilBaselines.nitrogen);
+        setSoilP(contextData.fertilizer.soilBaselines.phosphorus);
+        setSoilK(contextData.fertilizer.soilBaselines.potassium);
+      }
+    }
+  }, [contextData, useSoilTestData, selectedCrop]);
 
   // Fetch field details to obtain field area
   const fetchFieldDetails = async () => {
@@ -78,19 +93,18 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
     }
   };
 
-  // Fetch the initial/latest soil test data for this field
+  // Fetch the initial/latest soil test data for this field (if context isn't enough)
   const fetchSoilTestData = async () => {
+    if (contextData?.fertilizer?.soilBaselines) return; // already got from context
     try {
       const res = await api.get(`/analysis/${fieldId}/soil/history`);
       if (res.data?.success && res.data.data?.records?.length > 0) {
         const topLayer = res.data.data.records[0].data.layers[0];
         setSoilN(topLayer.nitrogen || 0);
-        // P & K default to backend fallback values
         setSoilP(40);
         setSoilK(50);
         setError(null);
       } else {
-        // No soil records, fallback toggle off
         setUseSoilTestData(false);
         setToast({ message: "No soil test records found. Please enter NPK values manually.", type: "warning" });
       }
@@ -134,12 +148,8 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
     }
   };
 
-  // Effect 1: Handle initial loading and field/soil data fetching when fieldId changes
   useEffect(() => {
     if (fieldId) {
-      setLoading(true);
-      setPlan(null);
-      setError(null);
       void fetchFieldDetails();
       if (useSoilTestData) {
         void fetchSoilTestData();
@@ -147,9 +157,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
     }
   }, [fieldId, useSoilTestData]);
 
-  // Effect 2: Handle auto-recalculations when inputs/selectors change (but do not refetch static soil test data)
   useEffect(() => {
-    if (fieldId) {
+    // Only recalculate if it's not the default setup already handled by context
+    if (fieldId && !(useSoilTestData && selectedCrop === "Wheat" && contextData?.fertilizer)) {
       void calculatePlan();
     }
   }, [fieldId, useSoilTestData, selectedCrop]);
@@ -159,7 +169,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
     void calculatePlan();
   };
 
-  if (loading) {
+  const isInitializing = loading || (contextLoading && !plan);
+
+  if (isInitializing) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col md:col-span-2 min-h-[350px]">
         <div className="flex justify-between items-center mb-6">

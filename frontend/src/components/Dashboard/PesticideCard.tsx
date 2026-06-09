@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bug, AlertTriangle, ShieldCheck, ThermometerSun, Droplets, Wind, ChevronDown, ChevronUp } from "lucide-react";
 import api from "../../services/api";
+import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface Treatment {
   productName: string;
@@ -38,37 +39,55 @@ const CROPS = [
 ];
 
 const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
-  const [data, setData] = useState<PesticideData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: contextData, isLoading: contextLoading } = useAnalysisContext();
+  const [localData, setLocalData] = useState<PesticideData | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCrop, setSelectedCrop] = useState<string>("Wheat");
   const [expandedPest, setExpandedPest] = useState<string | null>(null);
 
-  const fetchPesticideData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/pesticide`, { crop: selectedCrop });
-      if (res.data?.success) {
-        setData(res.data.data);
-      } else {
-        throw new Error("Failed to fetch pesticide data");
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || err.message || "Failed to load data");
-    } finally {
-      setLoading(false);
+  // Sync selectedCrop with context if context data is available and we haven't selected anything yet
+  useEffect(() => {
+    if (contextData?.pesticide?.crop) {
+      setSelectedCrop(contextData.pesticide.crop);
     }
-  };
+  }, [contextData]);
+
+  // Use local data if it matches selected crop, otherwise fallback to context data
+  const data = (localData?.crop === selectedCrop) ? localData 
+             : (contextData?.pesticide?.crop === selectedCrop) ? contextData.pesticide 
+             : null;
 
   useEffect(() => {
-    if (fieldId) {
-      fetchPesticideData();
-    }
-  }, [fieldId, selectedCrop]);
+    if (!fieldId) return;
+    
+    // If we already have matching data from context or local, don't fetch
+    if (data?.crop === selectedCrop) return;
 
-  if (loading && !data) {
+    const fetchPesticideData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await api.post(`/analysis/${fieldId}/pesticide`, { crop: selectedCrop });
+        if (res.data?.success) {
+          setLocalData(res.data.data);
+        } else {
+          throw new Error("Failed to fetch pesticide data");
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError(err.response?.data?.message || err.message || "Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    void fetchPesticideData();
+  }, [fieldId, selectedCrop, data]);
+
+  const isLoading = loading || (contextLoading && !data);
+
+  if (isLoading && !data) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full min-h-[350px]">
         <div className="h-6 w-48 bg-slate-800 rounded mb-6"></div>

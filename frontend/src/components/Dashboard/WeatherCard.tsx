@@ -19,6 +19,8 @@ import type { WeatherData } from "../../types";
 import WeatherChart from "./WeatherChart";
 import AlertBanner from "../UI/AlertBanner";
 
+import { useAnalysisContext } from "../../context/AnalysisContext";
+
 interface WeatherCardProps {
   fieldId: string;
 }
@@ -129,38 +131,18 @@ const formatDate = (dateStr: string): string => {
 };
 
 const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
-  const [data, setData] = useState<WeatherData | null>(null);
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const data = contextData?.weather as WeatherData | undefined;
+  
   const [viewMode, setViewMode] = useState<"list" | "chart">("list");
   const [isAlertDismissed, setIsAlertDismissed] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchWeatherData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/weather`);
-      if (res.data?.success) {
-        setData(res.data.data);
-      } else {
-        throw new Error(res.data?.error || "Invalid response structure");
-      }
-    } catch (err: any) {
-      console.error("Failed to fetch weather:", err);
-      setError(err.response?.data?.error || err.message || "Failed to load weather data.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Reset alert dismissed state when field changes
   useEffect(() => {
-    if (fieldId) {
-      setIsAlertDismissed(false);
-      void fetchWeatherData();
-    }
+    setIsAlertDismissed(false);
   }, [fieldId]);
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col">
         <div className="h-6 w-32 bg-slate-800 rounded mb-6"></div>
@@ -186,27 +168,14 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
     );
   }
 
-  if (error) {
+  if (!data) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center min-h-[300px]">
         <AlertTriangle className="w-12 h-12 text-red-500 mb-3" />
-        <p className="text-red-400 font-semibold mb-1">Failed to Load Weather</p>
-        <p className="text-slate-400 text-sm mb-4 max-w-[250px]">{error}</p>
-        <button
-          onClick={fetchWeatherData}
-          className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-lg transition-colors shadow-sm flex items-center gap-2 font-medium cursor-pointer"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Retry
-        </button>
+        <p className="text-red-400 font-semibold mb-1">Weather Data Unavailable</p>
       </div>
     );
   }
-
-  if (!data) {
-    return null;
-  }
-
   // Get weather metadata for mapping icons/colors
   const currentCondition = data.rainfall > 0 ? "Rain" : (data.forecast[0]?.condition || "Clear");
   const currentInfo = getWeatherInfo(currentCondition);

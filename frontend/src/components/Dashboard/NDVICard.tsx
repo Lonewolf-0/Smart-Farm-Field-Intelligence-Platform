@@ -3,6 +3,8 @@ import api from "../../services/api";
 import { Leaf, Info } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
+import { useAnalysisContext } from "../../context/AnalysisContext";
+
 interface NDVIData {
   averageNDVI: number;
   healthScore: string;
@@ -17,32 +19,10 @@ interface NDVICardProps {
 }
 
 const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
-  const [data, setData] = useState<NDVIData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchNDVIData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await api.post(`/analysis/${fieldId}/ndvi`);
-      if (res.data?.success) {
-        setData(res.data.data);
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Satellite data unavailable. Try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (fieldId) {
-      void fetchNDVIData();
-    }
-  }, [fieldId]);
-
-  if (loading) {
+  const { data: contextData, isLoading: loading } = useAnalysisContext();
+  const data = contextData?.ndvi as NDVIData | undefined;
+  
+  if (loading && !data) {
     return (
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-48 bg-slate-800 rounded mb-6"></div>
@@ -53,24 +33,13 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
     );
   }
 
-  if (error) {
+  if (!data) {
     return (
       <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
-        <p className="text-red-400 mb-4">{error}</p>
-        <button
-          onClick={fetchNDVIData}
-          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-white text-sm font-semibold rounded-xl transition-colors"
-        >
-          Retry
-        </button>
+        <p className="text-red-400 mb-4">Satellite data unavailable. Try running analysis again.</p>
       </div>
     );
   }
-
-  if (!data) {
-    return null;
-  }
-
   let colorBadge = "bg-green-500/20 text-green-400 border-green-500/30";
   let textColor = "text-green-400";
   let bgGlow = "shadow-green-900/20";
