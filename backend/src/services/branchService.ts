@@ -51,13 +51,14 @@ export async function findNearestBranches(
   lng: number,
   limit: number = 5
 ): Promise<BranchWithDistance[]> {
-  // Fetch nearest branches from the database using PostGIS
+  // Fetch nearest branches from the database using SQL Haversine formula
   const query = `
-    SELECT *, 
-    (ST_Distance(
-      ST_MakePoint($1, $2)::geography, 
-      ST_MakePoint(longitude, latitude)::geography
-    ) / 1000) AS distance
+    SELECT *, (
+      6371 * acos(
+        cos(radians($2)) * cos(radians(latitude)) * cos(radians(longitude) - radians($1)) +
+        sin(radians($2)) * sin(radians(latitude))
+      )
+    ) AS distance
     FROM branches
     ORDER BY distance ASC
     LIMIT $3
