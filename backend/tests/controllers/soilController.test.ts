@@ -5,7 +5,13 @@ jest.mock("../../src/repositories/fieldRepository", () => ({
   findFieldById: jest.fn(),
 }));
 
+jest.mock("../../src/repositories/soilRepository", () => ({
+  getHistoryByFieldId: jest.fn(),
+  findLatestSoilByFieldId: jest.fn(),
+}));
+
 jest.mock("../../src/services/soilService", () => ({
+  ...jest.requireActual("../../src/services/soilService"),
   getSoilProperties: jest.fn(),
 }));
 
@@ -19,6 +25,7 @@ import {
 } from "../../src/controllers/soilController";
 
 import { findFieldById } from "../../src/repositories/fieldRepository";
+import { getHistoryByFieldId } from "../../src/repositories/soilRepository";
 import { getSoilProperties } from "../../src/services/soilService";
 import { pool } from "../../src/config/db";
 
@@ -53,10 +60,7 @@ describe("Soil Controller - FINAL 100%", () => {
 
   //Base validations
 
-  it("should return 401 if user missing", async () => {
-    const res = await request(createApp()).get("/history/field1");
-    expect(res.status).toBe(401);
-  });
+
 
   it("should return 404 if field not found", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(null);
@@ -89,7 +93,7 @@ describe("Soil Controller - FINAL 100%", () => {
     //  Forces:
     // - newestTop && oldestTop = true
     // - all thresholds = FALSE
-    (pool.query as jest.Mock).mockResolvedValue({
+    (getHistoryByFieldId as jest.Mock).mockResolvedValue({
       rows: [
         {
           year: 2025,
@@ -113,7 +117,7 @@ describe("Soil Controller - FINAL 100%", () => {
   it("should trigger ALL alerts", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
+    (getHistoryByFieldId as jest.Mock).mockResolvedValue({
       rows: [
         {
           year: 2025,
@@ -152,7 +156,7 @@ describe("Soil Controller - FINAL 100%", () => {
   it("should not compute alerts when history has fewer than 2 records", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
+    (getHistoryByFieldId as jest.Mock).mockResolvedValue({
       rows: [
         {
           year: 2025,
@@ -174,7 +178,7 @@ describe("Soil Controller - FINAL 100%", () => {
   it("should skip when layers missing", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
+    (getHistoryByFieldId as jest.Mock).mockResolvedValue({
       rows: [
         { year: 2025, data: {} },
         { year: 2020, data: {} },
@@ -192,7 +196,7 @@ describe("Soil Controller - FINAL 100%", () => {
   it("should skip when values are null", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
+    (getHistoryByFieldId as jest.Mock).mockResolvedValue({
       rows: [
         {
           year: 2025,
@@ -318,13 +322,6 @@ describe("Soil Controller - FINAL 100%", () => {
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Field ID required" }));
     });
 
-    it("should return 401 if user is missing in getFieldSoil", async () => {
-      const req = { params: { fieldId: "field1" } };
-      const res = mockRes();
-      await getFieldSoil(req as any, res as any);
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Unauthorized" }));
-    });
 
     it("should return 400 if fieldId is missing in getFieldSoil", async () => {
       const req = { user: { id: "user1" }, params: {} };

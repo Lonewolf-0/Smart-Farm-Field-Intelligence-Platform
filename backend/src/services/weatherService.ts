@@ -30,12 +30,10 @@ export const getWeatherData = async (
 
     //7-days forecast
     const forecastUrl = `${BASE_URL}/forecast?lat=${lat}&lon=${lng}&exclude=minutely,hourly,alerts&appid=${API_KEY}&units=metric`;
-    // const [currentRes, forecastRes] = await Promise.all([
-    //   fetchWithRetry(currentUrl),
-    //   fetchWithRetry(forecastUrl),
-    // ]);
-    const currentRes = await fetchWithRetry(currentUrl);
-    const forecastRes = await fetchWithRetry(forecastUrl);
+    const [currentRes, forecastRes] = await Promise.all([
+      fetchWithRetry(currentUrl),
+      fetchWithRetry(forecastUrl),
+    ]);
 
     const current = currentRes.data;
     const forecast = forecastRes.data;

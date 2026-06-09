@@ -158,6 +158,86 @@ export const calculateFertilizer = (
   };
 };
 
+const estimateDynamicNutrients = (layer: any) => {
+  // Dynamic P estimation based on pH & OC
+  const ph = layer.ph || 6.5;
+  let phFactor = 1.0;
+  if (ph < 5.5 || ph > 8.0) {
+    phFactor = 0.6;
+  } else if (ph < 6.0 || ph > 7.2) {
+    phFactor = 0.8;
+  }
+
+  const oc = layer.organicCarbon !== null ? layer.organicCarbon / 10 : 1.5;
+  const ocFactor = Math.min(1.5, Math.max(0.5, oc / 1.5));
+  const dynamicP = Number((40 * phFactor * ocFactor).toFixed(1));
+
+  // Dynamic K estimation based on texture
+  const clay = layer.clay || 20;
+  const sand = layer.sand || 40;
+  let textureFactor = 1.0;
+  if (sand > 60) {
+    textureFactor = 0.7;
+  } else if (clay > 35) {
+    textureFactor = 1.2;
+  }
+  const dynamicK = Number((50 * textureFactor).toFixed(1));
+
+  return {
+    nitrogen: layer.nitrogen || 0,
+    phosphorus: dynamicP,
+    potassium: dynamicK,
+  };
+};
+
+const generateLiveAlerts = async (weather: any, polygon: any) => {
+  const liveDataAdjustments = [];
+
+  let totalForecastRain = 0;
+  if (weather && weather.forecast) {
+    totalForecastRain = weather.forecast.reduce((sum: number, day: any) => sum + (day.precipitation || 0), 0);
+  }
+
+  if (totalForecastRain > 30) {
+    liveDataAdjustments.push({
+      type: "warning",
+      message: `⚠️ Delay Application: Heavy rain (${totalForecastRain.toFixed(1)}mm) expected in the next 7 days. Applying nitrogen now risks severe runoff and leaching.`
+    });
+  } else if (totalForecastRain === 0) {
+    liveDataAdjustments.push({
+      type: "info",
+      message: "💡 Irrigation Advised: No rainfall forecast in the next 7 days. Apply light watering after fertilizing to help dissolve granular nutrients."
+    });
+  } else {
+    liveDataAdjustments.push({
+      type: "success",
+      message: `✅ Favorable Weather: Light rain (${totalForecastRain.toFixed(1)}mm) expected, which will help dissolve the fertilizer naturally.`
+    });
+  }
+
+  try {
+    const ndviData = await getNDVIData(polygon);
+    if (ndviData) {
+      const avgNdvi = ndviData.averageNDVI;
+      if (avgNdvi < 0.45) {
+        liveDataAdjustments.push({
+          type: "warning",
+          message: `🌱 Crop Stress Detected: Latest satellite NDVI is ${avgNdvi.toFixed(2)} (low vegetative cover). Consider early top-dressing or micro-nutrient supplements to boost growth.`
+        });
+      } else if (avgNdvi > 0.65) {
+        liveDataAdjustments.push({
+          type: "success",
+          message: `✨ Vigorous Vegetation: Latest satellite NDVI is ${avgNdvi.toFixed(2)} indicating excellent crop canopy health and active nutrient uptake.`
+        });
+      }
+    }
+  } catch (err) {
+    console.log("Gracefully skipped NDVI fetch: satellite service not active or credentials missing");
+  }
+
+  return liveDataAdjustments;
+};
+
 export const getFertilizerService = async (
   userId: string,
   fieldId: string,
@@ -195,35 +275,7 @@ export const getFertilizerService = async (
       throw { status: 400, message: "run soil analysis first" };
     }
 
-    // Dynamic P estimation based on pH & OC
-    const ph = layer.ph || 6.5;
-    let phFactor = 1.0;
-    if (ph < 5.5 || ph > 8.0) {
-      phFactor = 0.6;
-    } else if (ph < 6.0 || ph > 7.2) {
-      phFactor = 0.8;
-    }
-
-    const oc = layer.organicCarbon !== null ? layer.organicCarbon / 10 : 1.5;
-    const ocFactor = Math.min(1.5, Math.max(0.5, oc / 1.5));
-    const dynamicP = Number((40 * phFactor * ocFactor).toFixed(1));
-
-    // Dynamic K estimation based on texture
-    const clay = layer.clay || 20;
-    const sand = layer.sand || 40;
-    let textureFactor = 1.0;
-    if (sand > 60) {
-      textureFactor = 0.7;
-    } else if (clay > 35) {
-      textureFactor = 1.2;
-    }
-    const dynamicK = Number((50 * textureFactor).toFixed(1));
-
-    soilData = {
-      nitrogen: layer.nitrogen || 0,
-      phosphorus: dynamicP,
-      potassium: dynamicK,
-    };
+    soilData = estimateDynamicNutrients(layer);
   }
 
   const soilBaselines = {
@@ -261,49 +313,7 @@ export const getFertilizerService = async (
   }
 
   // Live Calculations (Weather & NDVI)
-  const liveDataAdjustments = [];
-
-  let totalForecastRain = 0;
-  if (weather && weather.forecast) {
-    totalForecastRain = weather.forecast.reduce((sum, day) => sum + (day.precipitation || 0), 0);
-  }
-
-  if (totalForecastRain > 30) {
-    liveDataAdjustments.push({
-      type: "warning",
-      message: `⚠️ Delay Application: Heavy rain (${totalForecastRain.toFixed(1)}mm) expected in the next 7 days. Applying nitrogen now risks severe runoff and leaching.`
-    });
-  } else if (totalForecastRain === 0) {
-    liveDataAdjustments.push({
-      type: "info",
-      message: "💡 Irrigation Advised: No rainfall forecast in the next 7 days. Apply light watering after fertilizing to help dissolve granular nutrients."
-    });
-  } else {
-    liveDataAdjustments.push({
-      type: "success",
-      message: `✅ Favorable Weather: Light rain (${totalForecastRain.toFixed(1)}mm) expected, which will help dissolve the fertilizer naturally.`
-    });
-  }
-
-  try {
-    const ndviData = await getNDVIData(field.polygon);
-    if (ndviData) {
-      const avgNdvi = ndviData.averageNDVI;
-      if (avgNdvi < 0.45) {
-        liveDataAdjustments.push({
-          type: "warning",
-          message: `🌱 Crop Stress Detected: Latest satellite NDVI is ${avgNdvi.toFixed(2)} (low vegetative cover). Consider early top-dressing or micro-nutrient supplements to boost growth.`
-        });
-      } else if (avgNdvi > 0.65) {
-        liveDataAdjustments.push({
-          type: "success",
-          message: `✨ Vigorous Vegetation: Latest satellite NDVI is ${avgNdvi.toFixed(2)} indicating excellent crop canopy health and active nutrient uptake.`
-        });
-      }
-    }
-  } catch (err) {
-    console.log("Gracefully skipped NDVI fetch: satellite service not active or credentials missing");
-  }
+  const liveDataAdjustments = await generateLiveAlerts(weather, field.polygon);
 
   //4.Calculate fertilizer
   const plan = calculateFertilizer(soilData, selectedCrop, 1);

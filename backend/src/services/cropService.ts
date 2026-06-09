@@ -8,8 +8,11 @@ export const getCropSuitabilityService = async (
   userId: string,
   fieldId: string,
 ) => {
-  //  1. Fetch field
-  const field = await findFieldById(fieldId);
+  //  1. Fetch field and soil concurrently
+  const [field, soil] = await Promise.all([
+    findFieldById(fieldId),
+    findLatestSoilByFieldId(fieldId),
+  ]);
 
   if (!field) {
     throw {
@@ -26,9 +29,6 @@ export const getCropSuitabilityService = async (
       code: "FIELD_ACCESS_DENIED",
     };
   }
-
-  //  3. Get soil
-  const soil = await findLatestSoilByFieldId(fieldId);
 
   if (!soil) {
     throw {

@@ -51,9 +51,21 @@ export async function findNearestBranches(
   lng: number,
   limit: number = 5
 ): Promise<BranchWithDistance[]> {
-  // Fetch all branches from the database
-  const result = await pool.query(`SELECT * FROM branches`);
-  const branches: NutrienBranch[] = result.rows.map((row) => ({
+  // Fetch nearest branches from the database using PostGIS
+  const query = `
+    SELECT *, 
+    (ST_Distance(
+      ST_MakePoint($1, $2)::geography, 
+      ST_MakePoint(longitude, latitude)::geography
+    ) / 1000) AS distance
+    FROM branches
+    ORDER BY distance ASC
+    LIMIT $3
+  `;
+  
+  const result = await pool.query(query, [lng, lat, limit]);
+  
+  const branchesWithDistances: BranchWithDistance[] = result.rows.map((row) => ({
     id: row.id,
     name: row.name,
     latitude: row.latitude,
@@ -62,24 +74,8 @@ export async function findNearestBranches(
     phone: row.phone,
     services: row.services,
     products: row.products,
+    distance: row.distance,
   }));
 
-  // Calculate distance for each branch
-  const branchesWithDistances: BranchWithDistance[] = branches.map(
-    (branch) => {
-      const distance = calculateDistance(
-        lat,
-        lng,
-        branch.latitude,
-        branch.longitude
-      );
-      return { ...branch, distance };
-    }
-  );
-
-  // Sort by distance ascending
-  branchesWithDistances.sort((a, b) => a.distance - b.distance);
-
-  // Return the top N nearest branches
-  return branchesWithDistances.slice(0, limit);
+  return branchesWithDistances;
 }

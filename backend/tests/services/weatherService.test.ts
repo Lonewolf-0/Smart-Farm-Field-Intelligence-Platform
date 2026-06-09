@@ -68,19 +68,18 @@ describe("Weather Service", () => {
   // RETRY SUCCESS
   it("should retry once and succeed", async () => {
     let callCount = 0;
+    let failedCurrent = false;
 
-    mockedAxios.get.mockImplementation(() => {
+    mockedAxios.get.mockImplementation((url: string) => {
       callCount++;
-
-      if (callCount === 1) {
-        return Promise.reject(new Error("FAIL")); // fail
+      if (url.includes("forecast")) {
+        return Promise.resolve(mockForecast as any);
       }
-
-      if (callCount === 2) {
-        return Promise.resolve(mockCurrent as any); // retry success
+      if (!failedCurrent) {
+        failedCurrent = true;
+        return Promise.reject(new Error("FAIL"));
       }
-
-      return Promise.resolve(mockForecast as any); // forecast
+      return Promise.resolve(mockCurrent as any);
     });
 
     const result = await getWeatherData(18, 73);
