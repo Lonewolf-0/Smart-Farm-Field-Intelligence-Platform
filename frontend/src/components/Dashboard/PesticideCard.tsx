@@ -123,14 +123,14 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
             <Bug className={`w-5 h-5 ${overallColor}`} />
             Pest Risk Assessment
           </h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Season: {data.season}</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Season: {data.season}</p>
         </div>
         <div className="flex flex-col gap-1 text-right">
           <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Crop Select</label>
           <select
             value={selectedCrop}
             onChange={(e) => setSelectedCrop(e.target.value)}
-            className="bg-slate-900 border border-white/10 rounded-lg p-1.5 text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+            className="bg-slate-900 border border-white/10 rounded-lg p-1.5 text-sm text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
           >
             {CROPS.map((c) => (
               <option key={c} value={c}>
@@ -159,7 +159,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
       {/* Spray Window (Mocked logic for aesthetics based on AC) */}
       {hasHigh && (
         <div className="mb-6 p-4 rounded-xl bg-slate-900 border border-white/5 text-sm">
-          <p className="font-semibold text-cyan-300 mb-1 flex items-center gap-1.5">
+          <p className="font-semibold text-emerald-300 mb-1 flex items-center gap-1.5">
             <Wind className="w-4 h-4" /> Spray Window Recommendation
           </p>
           <p className="text-slate-300">

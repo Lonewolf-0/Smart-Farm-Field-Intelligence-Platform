@@ -17,14 +17,14 @@ const Toast: React.FC<ToastProps> = ({ message, type = "info", onClose, duration
   }, [duration, onClose]);
 
   const icons = {
-    info: <Info className="w-4 h-4 text-cyan-400" />,
+    info: <Info className="w-4 h-4 text-emerald-400" />,
     warning: <AlertTriangle className="w-4 h-4 text-amber-400" />,
     success: <CheckCircle className="w-4 h-4 text-green-400" />,
     error: <AlertCircle className="w-4 h-4 text-red-400" />
   };
 
   const borders = {
-    info: "border-cyan-500/20 bg-slate-900/90 text-cyan-100",
+    info: "border-emerald-500/20 bg-slate-900/90 text-emerald-100",
     warning: "border-amber-500/20 bg-slate-900/90 text-amber-100",
     success: "border-green-500/20 bg-slate-900/90 text-green-100",
     error: "border-red-500/20 bg-slate-900/90 text-red-100"

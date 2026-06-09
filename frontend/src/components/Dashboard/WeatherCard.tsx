@@ -225,9 +225,9 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
       <div className="flex justify-between items-start mb-5">
         <div>
           <h3 className="text-xl font-bold text-white">Weather Forecast</h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Real-time local telemetry</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Real-time local telemetry</p>
         </div>
-        <div className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold tracking-wide uppercase text-cyan-200">
+        <div className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold tracking-wide uppercase text-emerald-200">
           Live
         </div>
       </div>
@@ -278,7 +278,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
       <div className="flex-1 flex flex-col min-h-0 border-t border-white/10 pt-5">
         <div className="flex justify-between items-center mb-3 shrink-0">
           <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-            <Umbrella className="w-4 h-4 text-cyan-400" />
+            <Umbrella className="w-4 h-4 text-emerald-400" />
             7-Day Forecast
           </h4>
           <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 shrink-0">
@@ -286,7 +286,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
               onClick={() => setViewMode("list")}
               className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
                 viewMode === "list" 
-                  ? "bg-cyan-500 text-slate-950 shadow-sm" 
+                  ? "bg-emerald-500 text-slate-950 shadow-sm" 
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -296,7 +296,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
               onClick={() => setViewMode("chart")}
               className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
                 viewMode === "chart" 
-                  ? "bg-cyan-500 text-slate-950 shadow-sm" 
+                  ? "bg-emerald-500 text-slate-950 shadow-sm" 
                   : "text-slate-400 hover:text-white"
               }`}
             >

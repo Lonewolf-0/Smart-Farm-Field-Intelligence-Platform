@@ -109,12 +109,15 @@ const Login = () => {
                 placeholder="••••••••"
               />
             </div>
+            {password.length > 0 && password.length < 6 && (
+              <p className="text-xs text-amber-400/80 mt-1.5 ml-1">Password is usually at least 6 characters.</p>
+            )}
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-500 text-slate-950 py-3 rounded-xl hover:bg-emerald-400 font-bold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+            disabled={loading || !email || !password}
+            className="w-full bg-emerald-500 text-slate-950 py-3 rounded-xl hover:bg-emerald-400 font-bold flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="animate-spin h-5 w-5 border-2 border-slate-950 border-t-transparent rounded-full" />

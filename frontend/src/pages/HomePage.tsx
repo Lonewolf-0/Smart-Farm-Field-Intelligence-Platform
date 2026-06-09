@@ -44,14 +44,14 @@ function HomePage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/map"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
             >
               Open the map
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/5 hover:border-white/20"
             >
               View dashboard
             </Link>

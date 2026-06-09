@@ -11,6 +11,7 @@ import NDVICard from "../components/Dashboard/NDVICard";
 import PesticideCard from "../components/Dashboard/PesticideCard";
 import BranchLocatorCard from "../components/Dashboard/BranchLocatorCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
+import CustomSelect from "../components/UI/CustomSelect";
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
@@ -83,33 +84,26 @@ function DashboardPage() {
   };
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/20 backdrop-blur-xl sm:p-8 min-h-[calc(100vh-6rem)]">
+    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl sm:p-8 min-h-[calc(100vh-6rem)]">
       
-      {/* Fullscreen Progress Overlay */}
+      {/* Non-blocking Progress Banner */}
       {isAnalyzing && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-              <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
-              Analyzing Field...
-            </h3>
-            
-            <div className="space-y-2 mb-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-cyan-200 font-medium">{analyzeProgress.label}</span>
-                <span className="text-slate-400">{analyzeProgress.current} / {analyzeProgress.total}</span>
-              </div>
-              <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div 
-                  className="bg-cyan-500 h-2 rounded-full transition-all duration-300 ease-out"
-                  style={{ width: `${(analyzeProgress.current / analyzeProgress.total) * 100}%` }}
-                ></div>
-              </div>
+        <div className="mb-6 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 animate-fadeIn flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-emerald-200">
+            <RefreshCw className="w-5 h-5 animate-spin" />
+            <span className="font-semibold text-sm">Analyzing Field Data...</span>
+          </div>
+          <div className="flex-1 w-full max-w-md">
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-emerald-300">{analyzeProgress.label}</span>
+              <span className="text-emerald-400 font-medium">{analyzeProgress.current} / {analyzeProgress.total}</span>
             </div>
-            
-            <p className="text-xs text-slate-500 mt-6 text-center">
-              Please wait while our models process the latest satellite imagery and weather data.
-            </p>
+            <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-emerald-900/30">
+              <div 
+                className="bg-emerald-400 h-full rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${(analyzeProgress.current / analyzeProgress.total) * 100}%` }}
+              ></div>
+            </div>
           </div>
         </div>
       )}
@@ -117,11 +111,11 @@ function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/15 text-cyan-200">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-300/15 text-emerald-200">
               <BarChart3 className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-200">
                 Dashboard
               </p>
               <h2 className="text-3xl font-semibold text-white">
@@ -131,15 +125,15 @@ function DashboardPage() {
           </div>
           
           {/* Segmented Control */}
-          <div className="relative grid grid-cols-3 gap-1 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[450px]">
+          <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[450px]">
             <div 
-              className="absolute inset-y-1 left-1 bg-cyan-500 rounded-lg transition-transform duration-300 ease-out shadow-md"
+              className="absolute inset-y-1 bg-emerald-500 rounded-lg transition-all duration-300 ease-out shadow-md"
               style={{
-                width: "calc(33.333% - 5.33px)",
+                width: "calc((100% - 8px) / 3)",
                 transform: 
-                  activeTab === "overview" ? "translateX(0)" : 
+                  activeTab === "overview" ? "translateX(4px)" : 
                   activeTab === "nutrition" ? "translateX(calc(100% + 4px))" : 
-                  "translateX(calc(200% + 8px))"
+                  "translateX(calc(200% + 4px))"
               }}
             />
             <button
@@ -174,24 +168,22 @@ function DashboardPage() {
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
           {/* Field Selector */}
-          <div className="flex items-center gap-3 bg-slate-950/50 p-2 pl-4 rounded-xl border border-white/10">
-            <Map className="h-5 w-5 text-cyan-200" />
+          <div className="flex items-center gap-3 w-full sm:w-auto min-w-[200px]">
             {loadingFields ? (
-              <span className="text-slate-300 pr-4 animate-pulse">Loading fields...</span>
+              <span className="text-slate-300 animate-pulse bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">Loading fields...</span>
             ) : fields.length > 0 ? (
-              <select
-                value={selectedFieldId}
-                onChange={(e) => setSelectedFieldId(e.target.value)}
-                className="bg-transparent text-white font-medium focus:outline-none appearance-none pr-8 cursor-pointer"
-              >
-                {fields.map((field) => (
-                  <option key={field.id} value={field.id} className="bg-slate-900 text-white">
-                    {field.name} ({field.area.toFixed(1)} ha)
-                  </option>
-                ))}
-              </select>
+              <div className="w-full">
+                <CustomSelect
+                  value={fields.find((f) => f.id === selectedFieldId) || null}
+                  onChange={(val) => setSelectedFieldId(val.id as string)}
+                  options={fields.map((f) => ({
+                    id: f.id,
+                    name: `${f.name} (${f.area.toFixed(1)} ha)`,
+                  }))}
+                />
+              </div>
             ) : (
-              <span className="text-slate-400 pr-4">No fields saved</span>
+              <span className="text-slate-400 bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">No fields saved</span>
             )}
           </div>
 
@@ -200,7 +192,7 @@ function DashboardPage() {
             <button
               onClick={handleAnalyzeField}
               disabled={isAnalyzing}
-              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               <RefreshCw className={`w-4 h-4 ${isAnalyzing ? "animate-spin" : ""}`} />
               {isAnalyzing ? "Analyzing..." : "Analyze Field"}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DollarSign, MapPin, TrendingDown, ArrowRight } from "lucide-react";
 import api from "../../services/api";
 import type { Field } from "../../types";
+import CustomSelect from "../UI/CustomSelect";
 
 interface PriceCompareProps {
   userFields: Field[];
@@ -93,18 +94,12 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
           <DollarSign className="w-5 h-5 text-green-400" />
           Compare Prices
         </h2>
-        <div className="relative">
-          <select
-            value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
-            className="w-full bg-slate-900 border border-white/10 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-          >
-            {PRODUCTS.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+        <div className="w-full">
+          <CustomSelect
+            value={{ id: selectedProduct, name: selectedProduct }}
+            onChange={(val) => setSelectedProduct(val.id as string)}
+            options={PRODUCTS.map((p) => ({ id: p, name: p }))}
+          />
         </div>
       </div>
 
@@ -144,7 +139,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-4 h-4 text-slate-500 shrink-0" />
                   <span className="text-sm text-slate-400">
-                    {branch.distance.toFixed(1)} km away
+                    {Math.round(branch.distance)} km away
                   </span>
                 </div>
 
@@ -160,7 +155,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                     </span>
                   )}
                   {!isCheapest && diff > 0 && (
-                    <span className="text-[11px] text-rose-400 font-medium">
+                    <span className="text-[11px] font-bold tracking-wider uppercase bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full flex items-center gap-1">
                       +₹{diff} vs cheapest
                     </span>
                   )}

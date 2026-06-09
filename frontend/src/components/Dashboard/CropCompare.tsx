@@ -10,7 +10,7 @@ interface CropCompareProps {
 
 const colors = [
   { stroke: "#f87171", fill: "#f87171", bgClass: "bg-red-500/10", borderClass: "border-red-500/25", textClass: "text-red-400" },
-  { stroke: "#38bdf8", fill: "#38bdf8", bgClass: "bg-cyan-500/10", borderClass: "border-cyan-500/25", textClass: "text-cyan-400" },
+  { stroke: "#34d399", fill: "#34d399", bgClass: "bg-emerald-500/10", borderClass: "border-emerald-500/25", textClass: "text-emerald-400" },
   { stroke: "#34d399", fill: "#34d399", bgClass: "bg-emerald-500/10", borderClass: "border-emerald-500/25", textClass: "text-emerald-400" }
 ];
 
@@ -49,8 +49,8 @@ const CropCompare: React.FC<CropCompareProps> = ({ crops, onClear }) => {
     <div className="mt-6 pt-6 border-t border-white/10 space-y-5 animate-fadeIn">
       <div className="flex justify-between items-center shrink-0">
         <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <span className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-cyan-400" /> Crop Comparison</span>
-          <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] lowercase font-semibold border border-cyan-500/20">
+          <span className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-emerald-400" /> Crop Comparison</span>
+          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 text-[10px] lowercase font-semibold border border-emerald-500/20">
             {crops.length} selected
           </span>
         </h4>

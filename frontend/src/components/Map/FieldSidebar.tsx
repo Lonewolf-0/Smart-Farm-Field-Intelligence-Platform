@@ -61,73 +61,77 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                       : "bg-white/5 border-white/10 hover:border-emerald-500/30 hover:bg-white/10"
                   }`}
                 >
-                  <div className="pr-16">
-                    {editingId === field.id ? (
-                      <form 
-                        onSubmit={(e) => handleEditSubmit(e, field.id)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex gap-2"
-                      >
-                        <input
-                          type="text"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          className="flex-1 min-w-0 px-2 py-1 text-sm border border-white/20 rounded-lg bg-white/5 text-white focus:outline-none focus:border-emerald-400"
-                          autoFocus
-                        />
-                        <button 
-                          type="submit"
-                          className="text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 p-1 rounded-lg"
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      {editingId === field.id ? (
+                        <form 
+                          onSubmit={(e) => handleEditSubmit(e, field.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex gap-2"
                         >
-                          <Check className="h-4 w-4" />
-                        </button>
-                        <button 
-                          type="button"
-                          onClick={() => setEditingId(null)}
-                          className="text-slate-400 hover:text-slate-200 bg-white/10 p-1 rounded-lg"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </form>
-                    ) : (
-                      <h3 className="font-semibold text-white truncate">
-                        {field.name}
-                      </h3>
-                    )}
-                    <div className="flex items-center text-xs text-slate-400 mt-2 gap-3">
-                      <span className="flex items-center gap-1">
-                        <Maximize2 className="h-4 w-4" />
-                        {field.area.toFixed(2)} ha / {(field.area * 2.47105).toFixed(2)} acres
-                      </span>
+                          <input
+                            type="text"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            className="flex-1 min-w-0 px-2 py-1 text-sm border border-white/20 rounded-lg bg-white/5 text-white focus:outline-none focus:border-emerald-400"
+                            autoFocus
+                          />
+                          <button 
+                            type="submit"
+                            className="text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 p-1 rounded-lg shrink-0"
+                          >
+                            <Check className="h-4 w-4" />
+                          </button>
+                          <button 
+                            type="button"
+                            onClick={() => setEditingId(null)}
+                            className="text-slate-400 hover:text-slate-200 bg-white/10 p-1 rounded-lg shrink-0"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </form>
+                      ) : (
+                        <h3 className="font-semibold text-white truncate pr-2">
+                          {field.name}
+                        </h3>
+                      )}
+                      <div className="flex flex-col text-xs text-slate-400 mt-2 gap-1.5">
+                        <span className="flex items-center gap-1.5">
+                          <Maximize2 className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate">{field.area.toFixed(2)} ha</span>
+                        </span>
+                        <span className="flex items-center gap-1.5 pl-5 text-slate-500">
+                          <span className="truncate">{(field.area * 2.47105).toFixed(2)} acres</span>
+                        </span>
+                      </div>
                     </div>
+                    {editingId !== field.id && (
+                      <div className="flex flex-col sm:flex-row gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditName(field.name);
+                            setEditingId(field.id);
+                          }}
+                          className="text-slate-500 hover:text-emerald-400 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                          title="Edit field name"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteField(field.id);
+                          }}
+                          className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                          title="Delete field"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </button>
-                
-                {editingId !== field.id && (
-                  <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditName(field.name);
-                        setEditingId(field.id);
-                      }}
-                      className="text-slate-500 hover:text-cyan-400 p-1 rounded-lg hover:bg-white/10"
-                      title="Edit field name"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteField(field.id);
-                      }}
-                      className="text-slate-500 hover:text-red-400 p-1 rounded-lg hover:bg-red-500/10"
-                      title="Delete field"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
               </li>
             ))}
           </ul>
