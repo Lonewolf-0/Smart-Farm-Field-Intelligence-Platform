@@ -35,7 +35,6 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 
     return sendResponse(res, 200, "Current user", user);
   } catch (error: any) {
-    console.error(error);
     return sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
