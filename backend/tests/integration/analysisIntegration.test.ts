@@ -45,4 +45,29 @@ describe("Field Weather Integration", () => {
 
     expect(res.status).toBe(403);
   });
+
+  // 404
+  it("should return 404 if field not found", async () => {
+    jest.spyOn(repo, "findFieldById").mockResolvedValue(null);
+
+    const res = await request(app).post("/api/analysis/1/weather");
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toBe("Field not found");
+  });
+
+  // 500
+  it("should return 500 if an unexpected error occurs", async () => {
+    jest.spyOn(repo, "findFieldById").mockRejectedValue(new Error("Unexpected error"));
+
+    const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const res = await request(app).post("/api/analysis/1/weather");
+
+    expect(res.status).toBe(500);
+    expect(res.body.success).toBe(false);
+
+    errSpy.mockRestore();
+  });
 });

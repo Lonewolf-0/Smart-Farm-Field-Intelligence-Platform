@@ -42,7 +42,11 @@ app.get("/", (_req, res) => {
 });
 
 //start server
-app.listen(ENV.PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Backend listening on http://localhost:${ENV.PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(ENV.PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Backend listening on http://localhost:${ENV.PORT}`);
+  });
+}
+
+export default app;
