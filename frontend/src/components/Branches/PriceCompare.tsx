@@ -64,7 +64,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
   if (userFields.length === 0) {
     return (
       <div className="p-4 text-center text-slate-400 text-sm">
-        Please draw a field on the map first to compare prices based on your location.
+        Please select a specific field to compare prices based on its location.
       </div>
     );
   }

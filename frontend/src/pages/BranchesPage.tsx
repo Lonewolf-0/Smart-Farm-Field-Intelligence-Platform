@@ -27,7 +27,7 @@ const BranchesPage: React.FC = () => {
           const fetchedFields = res.data.data;
           setFields(fetchedFields);
           if (fetchedFields.length > 0) {
-            setSelectedFieldId(fetchedFields[0].id);
+            setSelectedFieldId("all");
           }
         }
       } catch (err) {
@@ -42,19 +42,26 @@ const BranchesPage: React.FC = () => {
     const fetchBranches = async () => {
       try {
         setIsLoading(true);
-        const selectedField = fields.find(f => f.id === selectedFieldId);
-
-        if (selectedField && selectedField.centroid) {
-          const { lat, lng } = selectedField.centroid;
-          const res = await api.get(`/branches/nearest?lat=${lat}&lng=${lng}&limit=100`);
+        
+        if (selectedFieldId === "all") {
+          const res = await api.get("/branches");
           if (res.data?.success) {
             setBranches(res.data.data);
           }
         } else {
-          // If no field selected or no fields available
-          const res = await api.get("/branches");
-          if (res.data?.success) {
-            setBranches(res.data.data);
+          const selectedField = fields.find(f => f.id === selectedFieldId);
+          if (selectedField && selectedField.centroid) {
+            const { lat, lng } = selectedField.centroid;
+            const res = await api.get(`/branches/nearest?lat=${lat}&lng=${lng}&limit=100`);
+            if (res.data?.success) {
+              setBranches(res.data.data);
+            }
+          } else {
+            // If no field selected or no fields available
+            const res = await api.get("/branches");
+            if (res.data?.success) {
+              setBranches(res.data.data);
+            }
           }
         }
       } catch (err) {
@@ -87,9 +94,16 @@ const BranchesPage: React.FC = () => {
             <span className="text-sm text-slate-400 whitespace-nowrap">Current Field:</span>
             <div className="w-full sm:w-64">
               <CustomSelect
-                value={fields.find((f) => f.id === selectedFieldId) || null}
+                value={
+                  selectedFieldId === "all"
+                    ? { id: "all", name: "Show All Branches" }
+                    : fields.find((f) => f.id === selectedFieldId) || { id: "all", name: "Show All Branches" }
+                }
                 onChange={(val) => setSelectedFieldId(val.id as string)}
-                options={fields.map((f) => ({ id: f.id, name: f.name }))}
+                options={[
+                  { id: "all", name: "Show All Branches" },
+                  ...fields.map((f) => ({ id: f.id, name: f.name }))
+                ]}
               />
             </div>
           </div>
