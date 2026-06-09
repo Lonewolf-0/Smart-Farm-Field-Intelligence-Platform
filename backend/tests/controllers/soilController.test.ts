@@ -149,6 +149,27 @@ describe("Soil Controller - FINAL 100%", () => {
     expect(res.body.data.alerts.length).toBe(3);
   });
 
+  it("should not compute alerts when history has fewer than 2 records", async () => {
+    (findFieldById as jest.Mock).mockResolvedValue(mockField);
+
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [
+        {
+          year: 2025,
+          data: { layers: [{ ph: 7, organicCarbon: 10, nitrogen: 30 }] },
+        },
+      ],
+    });
+
+    const res = await request(createApp({ id: "user1" })).get(
+      "/history/field1",
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.records.length).toBe(1);
+    expect(res.body.data.alerts).toEqual([]);
+  });
+
   // FORCE missing layers
   it("should skip when layers missing", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
@@ -279,5 +300,59 @@ describe("Soil Controller - FINAL 100%", () => {
     expect(res.status).toBe(500);
 
     spy.mockRestore();
+  });
+
+  describe("Direct function calls for full coverage", () => {
+    const mockRes = () => {
+      const res: any = {};
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+
+    it("should return 400 if fieldId is missing in getFieldSoilHistory", async () => {
+      const req = { user: { id: "user1" }, params: {} };
+      const res = mockRes();
+      await getFieldSoilHistory(req as any, res as any);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Field ID required" }));
+    });
+
+    it("should return 401 if user is missing in getFieldSoil", async () => {
+      const req = { params: { fieldId: "field1" } };
+      const res = mockRes();
+      await getFieldSoil(req as any, res as any);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Unauthorized" }));
+    });
+
+    it("should return 400 if fieldId is missing in getFieldSoil", async () => {
+      const req = { user: { id: "user1" }, params: {} };
+      const res = mockRes();
+      await getFieldSoil(req as any, res as any);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Field ID required" }));
+    });
+
+    it("should return 404 if field is not found in getFieldSoil", async () => {
+      (findFieldById as jest.Mock).mockResolvedValueOnce(null);
+      const req = { user: { id: "user1" }, params: { fieldId: "nonexistent" } };
+      const res = mockRes();
+      await getFieldSoil(req as any, res as any);
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Field not found" }));
+    });
+
+    it("should return 403 if user is not the field owner in getFieldSoil", async () => {
+      (findFieldById as jest.Mock).mockResolvedValueOnce({
+        id: "field1",
+        user_id: "other",
+      });
+      const req = { user: { id: "user1" }, params: { fieldId: "field1" } };
+      const res = mockRes();
+      await getFieldSoil(req as any, res as any);
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Forbidden" }));
+    });
   });
 });

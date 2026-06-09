@@ -40,6 +40,11 @@ describe("Soil Service - 100% Coverage", () => {
               unit_measure: { d_factor: 1 },
               depths: [{ label: "0-5cm", values: { mean: 10 } }],
             },
+            {
+              name: "nitrogen",
+              unit_measure: { d_factor: 100 },
+              depths: [{ label: "0-5cm", values: { mean: 15 } }],
+            },
           ],
         },
       },
@@ -55,6 +60,7 @@ describe("Soil Service - 100% Coverage", () => {
       ph: 6.5,
       clay: 30,
       sand: 60,
+      nitrogen: 15,
     });
   });
 
@@ -116,6 +122,10 @@ describe("Soil Service - 100% Coverage", () => {
                 { label: "0-5cm", values: { mean: 50 } }, // Clay
                 { label: "5-15cm", values: { mean: 10 } }, // Sandy
                 { label: "15-30cm", values: { mean: 20 } }, // Sandy loam
+                { label: "30-45cm", values: { mean: 30 } }, // Loam (clay >= 25 & clay <= 40 & sand >= 20 & sand <= 45)
+                { label: "45-60cm", values: { mean: 30 } }, // Loam (sand < 20)
+                { label: "60-75cm", values: { mean: 30 } }, // Loam (sand > 45)
+                { label: "75-90cm", values: { mean: 20 } }, // Loam (clay < 25)
               ],
             },
             {
@@ -125,6 +135,10 @@ describe("Soil Service - 100% Coverage", () => {
                 { label: "0-5cm", values: { mean: 20 } },
                 { label: "5-15cm", values: { mean: 70 } },
                 { label: "15-30cm", values: { mean: 60 } },
+                { label: "30-45cm", values: { mean: 30 } },
+                { label: "45-60cm", values: { mean: 10 } },
+                { label: "60-75cm", values: { mean: 50 } },
+                { label: "75-90cm", values: { mean: 30 } },
               ],
             },
           ],
@@ -136,7 +150,14 @@ describe("Soil Service - 100% Coverage", () => {
 
     const result = await getSoilProperties(10, 20);
 
-    expect(result.layers.length).toBeGreaterThan(0);
+    expect(result.layers.length).toBe(7);
+    expect(result.layers[0].texture).toBe("Clay");
+    expect(result.layers[1].texture).toBe("Sandy");
+    expect(result.layers[2].texture).toBe("Sandy Loam");
+    expect(result.layers[3].texture).toBe("Loam");
+    expect(result.layers[4].texture).toBe("Loam");
+    expect(result.layers[5].texture).toBe("Loam");
+    expect(result.layers[6].texture).toBe("Loam");
   });
 
   //  UNKNOWN TEXTURE (line 25)
@@ -161,6 +182,39 @@ describe("Soil Service - 100% Coverage", () => {
     const result = await getSoilProperties(10, 20);
 
     expect(result.layers[0].texture).toBe("Unknown");
+  });
+
+  // DEFAULT FALLBACKS CASE (line 62, 95)
+  it("should use default d_factor of 1 and Unknown label when missing in response", async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: {
+        properties: {
+          layers: [
+            {
+              name: "clay",
+              // unit_measure is missing (defaults to d_factor 1)
+              depths: [
+                {
+                  // label is missing (defaults to Unknown)
+                  values: { mean: 35 }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    });
+
+    const { getSoilProperties } = require("../../src/services/soilService");
+
+    const result = await getSoilProperties(10, 20);
+
+    expect(result.layers).toHaveLength(1);
+    expect(result.layers[0]).toMatchObject({
+      depthLabel: "Unknown",
+      clay: 35,
+      texture: "Unknown" // sand is missing, so texture is Unknown
+    });
   });
 
   // RETRY SUCCESS
@@ -195,6 +249,14 @@ describe("Soil Service - 100% Coverage", () => {
     const { getSoilProperties } = require("../../src/services/soilService");
 
     await expect(getSoilProperties(10, 20, 2)).rejects.toThrow(
+      "Failed to fetch soil data",
+    );
+  });
+
+  it("should throw default error when retries is set to 0", async () => {
+    const { getSoilProperties } = require("../../src/services/soilService");
+
+    await expect(getSoilProperties(10, 20, 0)).rejects.toThrow(
       "Failed to fetch soil data",
     );
   });
