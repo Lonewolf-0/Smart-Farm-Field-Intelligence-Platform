@@ -61,9 +61,9 @@ const CustomTooltip = ({ active, payload }: any) => {
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400 flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> Rainfall:
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Rainfall:
           </span>
-          <span className="font-bold text-cyan-200">{precip} mm</span>
+          <span className="font-bold text-emerald-200">{precip} mm</span>
         </div>
       </div>
     );
@@ -114,7 +114,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
           <YAxis
             yAxisId="right"
             orientation="right"
-            stroke="#38bdf8"
+            stroke="#34d399"
             fontSize={10}
             tickLine={false}
             axisLine={false}
@@ -135,7 +135,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
           <Bar
             yAxisId="right"
             dataKey="Precipitation"
-            fill="#38bdf8"
+            fill="#34d399"
             opacity={0.3}
             barSize={16}
             radius={[3, 3, 0, 0]}

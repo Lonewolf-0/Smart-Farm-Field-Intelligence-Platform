@@ -63,7 +63,7 @@ const getAlertIcon = (type: string, severity: string) => {
       return <Snowflake className={`${iconClass} text-blue-400`} />;
     case "heavy_rain":
     case "flooding":
-      return <CloudRain className={`${iconClass} text-cyan-400`} />;
+      return <CloudRain className={`${iconClass} text-emerald-400`} />;
     case "hail":
       return <CloudLightning className={`${iconClass} text-purple-400`} />;
     default:

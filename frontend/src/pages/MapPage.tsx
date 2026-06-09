@@ -127,30 +127,28 @@ const MapPage: React.FC = () => {
         {currentPolygon && isAuthenticated && !saveSuccess && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-6 right-4 z-[1000] bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl shadow-lg hover:bg-emerald-400 transition-colors font-bold flex items-center gap-2"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-emerald-500 text-slate-950 px-6 py-3 rounded-full shadow-2xl hover:bg-emerald-400 transition-transform hover:scale-105 font-bold flex items-center gap-2"
           >
-            <Save className="h-4 w-4" /> Save Polygon
+            <Save className="h-5 w-5" /> Save Polygon
           </button>
         )}
 
         {/* Debug panel (fallback or additional info) */}
         {currentPolygon && !saveSuccess && (
-          <div className="absolute top-20 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-lg max-w-xs pointer-events-none">
-            <h3 className="font-bold text-sm mb-2 text-white">Drawn Field Data</h3>
-            <p className="text-xs text-slate-400 mb-1">
-              Vertices: {currentPolygon.geoJSON.coordinates[0].length - 1}
-            </p>
-            {currentAreaHa !== null && (
-              <p className="text-xs text-slate-200 font-medium">
-                Area: {currentAreaHa.toFixed(2)} ha / {(currentAreaHa * 2.47105).toFixed(2)} acres
-              </p>
-            )}
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-xl max-w-sm pointer-events-none flex flex-col items-center">
+            <h3 className="font-bold text-sm mb-1 text-white">Drawn Field Data</h3>
+            <div className="flex items-center gap-4 text-xs text-slate-300">
+              <p>Vertices: <span className="text-white font-medium">{currentPolygon.geoJSON.coordinates[0].length - 1}</span></p>
+              {currentAreaHa !== null && (
+                <p>Area: <span className="text-white font-medium">{currentAreaHa.toFixed(2)} ha / {(currentAreaHa * 2.47105).toFixed(2)} acres</span></p>
+              )}
+            </div>
           </div>
         )}
 
         {/* Success Message */}
         {saveSuccess && (
-          <div className="absolute top-6 right-4 z-[1000] bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-xl shadow-lg max-w-xs flex items-center gap-2">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-xl shadow-lg max-w-xs flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
             <p className="text-sm text-emerald-200 font-medium">{saveSuccess}</p>
           </div>

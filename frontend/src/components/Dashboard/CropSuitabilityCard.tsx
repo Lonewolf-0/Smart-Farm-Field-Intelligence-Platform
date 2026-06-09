@@ -64,7 +64,7 @@ const getSeasonBadge = (season: "Kharif" | "Rabi" | "Zaid" | undefined) => {
   if (!season) return null;
   const classes = 
     season === "Kharif" ? "bg-amber-500/10 text-amber-300 border border-amber-500/20" :
-    season === "Rabi" ? "bg-cyan-500/10 text-cyan-300 border border-cyan-500/20" :
+    season === "Rabi" ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20" :
     "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20";
   return (
     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${classes}`}>
@@ -183,7 +183,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
             <Sprout className="w-5 h-5 text-green-400" />
             Crop Suitability
           </h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Top field recommendations</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Top field recommendations</p>
         </div>
         
         {/* Season Filter Buttons */}

@@ -103,10 +103,10 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <Droplets className="w-5 h-5 text-cyan-400" />
+            <Droplets className="w-5 h-5 text-emerald-400" />
             Irrigation Plan
           </h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Smart scheduling engine</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Smart scheduling engine</p>
         </div>
         <div className={`px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold tracking-wide uppercase ${urgencyColor}`}>
           {urgencyText}
@@ -159,7 +159,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
           {data.nextIrrigationDays === 0 ? "TODAY" : `${data.nextIrrigationDays} Days`}
         </p>
         {data.waterRequired > 0 ? (
-          <p className="text-sm text-cyan-200 mt-2 font-medium bg-cyan-950/30 inline-block px-4 py-1.5 rounded-full border border-cyan-900/50">
+          <p className="text-sm text-emerald-200 mt-2 font-medium bg-emerald-950/30 inline-block px-4 py-1.5 rounded-full border border-emerald-900/50">
             Needs {data.waterRequired} mm ({litersPerHectare} L/ha)
           </p>
         ) : (

@@ -6,6 +6,7 @@ import PriceCompare from "../components/Branches/PriceCompare";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import type { Field, NutrienBranch } from "../types";
+import CustomSelect from "../components/UI/CustomSelect";
 
 const BranchesPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -82,19 +83,15 @@ const BranchesPage: React.FC = () => {
         </h2>
         
         {fields.length > 0 && (
-          <div className="flex items-center gap-2 bg-slate-900 p-2 pl-4 rounded-xl border border-white/10">
-            <span className="text-sm text-slate-400">Current Field:</span>
-            <select
-              value={selectedFieldId}
-              onChange={(e) => setSelectedFieldId(e.target.value)}
-              className="bg-transparent text-white text-sm font-medium focus:outline-none appearance-none pr-8 cursor-pointer"
-            >
-              {fields.map((field) => (
-                <option key={field.id} value={field.id} className="bg-slate-900 text-white">
-                  {field.name}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center gap-3 bg-slate-900 p-2 pl-4 rounded-xl border border-white/10 w-full sm:w-auto">
+            <span className="text-sm text-slate-400 whitespace-nowrap">Current Field:</span>
+            <div className="w-full sm:w-64">
+              <CustomSelect
+                value={fields.find((f) => f.id === selectedFieldId) || null}
+                onChange={(val) => setSelectedFieldId(val.id as string)}
+                options={fields.map((f) => ({ id: f.id, name: f.name }))}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -110,7 +107,7 @@ const BranchesPage: React.FC = () => {
               <div className="flex bg-slate-900 border-b border-white/10 shrink-0">
               <button
                 className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                  activeTab === "list" ? "text-cyan-400 border-b-2 border-cyan-400" : "text-slate-400 hover:text-slate-200"
+                  activeTab === "list" ? "text-emerald-400 border-b-2 border-emerald-400" : "text-slate-400 hover:text-slate-200"
                 }`}
                 onClick={() => setActiveTab("list")}
               >
@@ -118,7 +115,7 @@ const BranchesPage: React.FC = () => {
               </button>
               <button
                 className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                  activeTab === "compare" ? "text-cyan-400 border-b-2 border-cyan-400" : "text-slate-400 hover:text-slate-200"
+                  activeTab === "compare" ? "text-emerald-400 border-b-2 border-emerald-400" : "text-slate-400 hover:text-slate-200"
                 }`}
                 onClick={() => setActiveTab("compare")}
               >

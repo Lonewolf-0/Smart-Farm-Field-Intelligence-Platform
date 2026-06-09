@@ -110,7 +110,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
             <Leaf className="w-5 h-5 text-emerald-400" />
             Vegetation Health
           </h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Satellite NDVI Analysis</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Satellite NDVI Analysis</p>
         </div>
         <div className={`px-3 py-1 rounded-full border text-xs font-semibold tracking-wide uppercase ${colorBadge}`}>
           {data.healthScore}
@@ -174,7 +174,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
 
       <div className="mt-6 flex flex-col gap-3">
         <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-white/5">
-          <Info className="w-4 h-4 text-cyan-400 shrink-0" />
+          <Info className="w-4 h-4 text-emerald-400 shrink-0" />
           <p>
             <span className="font-semibold text-slate-300">NDVI Guide:</span> &gt;0.6 Dense healthy canopy, 0.3-0.6 Moderate growth, &lt;0.3 Sparse/Stressed.
           </p>

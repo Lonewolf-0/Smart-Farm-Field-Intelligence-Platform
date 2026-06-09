@@ -247,7 +247,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             <FlaskConical className="w-5 h-5 text-amber-400" />
             Fertilizer Recommendations
           </h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Optimized feeding plan for {field?.name || "field"}</p>
+          <p className="text-sm text-emerald-200 mt-0.5">Optimized feeding plan for {field?.name || "field"}</p>
         </div>
 
         {/* Use Soil Test Data Toggle */}
@@ -293,7 +293,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             <span>Soil N (kg/ha)</span>
             {useSoilTestData && (
               <span title="Loaded from database">
-                <Info className="w-3 h-3 text-cyan-300" />
+                <Info className="w-3 h-3 text-emerald-300" />
               </span>
             )}
           </label>
@@ -314,7 +314,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             <span>Soil P (kg/ha)</span>
             {useSoilTestData && (
               <span title="Defaulted available">
-                <Info className="w-3 h-3 text-cyan-300" />
+                <Info className="w-3 h-3 text-emerald-300" />
               </span>
             )}
           </label>
@@ -335,7 +335,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             <span>Soil K (kg/ha)</span>
             {useSoilTestData && (
               <span title="Defaulted available">
-                <Info className="w-3 h-3 text-cyan-300" />
+                <Info className="w-3 h-3 text-emerald-300" />
               </span>
             )}
           </label>
@@ -389,11 +389,11 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
                 const bgClass = isWarning 
                   ? "bg-red-500/10 border-red-500/20 text-red-200" 
                   : isInfo 
-                  ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-200" 
+                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" 
                   : "bg-green-500/10 border-green-500/20 text-green-200";
                 return (
                   <div key={i} className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs ${bgClass} animate-fadeIn`}>
-                    <Info className={`w-4 h-4 shrink-0 mt-0.5 ${isWarning ? "text-red-400" : isInfo ? "text-cyan-400" : "text-green-400"}`} />
+                    <Info className={`w-4 h-4 shrink-0 mt-0.5 ${isWarning ? "text-red-400" : isInfo ? "text-emerald-400" : "text-green-400"}`} />
                     <span className="leading-relaxed font-semibold">{adj.message}</span>
                   </div>
                 );
@@ -547,14 +547,14 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             {/* Scheduling summary */}
             <div className="bg-slate-900/40 border border-white/5 rounded-xl p-4.5 space-y-3.5 flex-1">
               <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Scale className="w-3.5 h-3.5 text-cyan-400" />
+                <Scale className="w-3.5 h-3.5 text-emerald-400" />
                 Application Timing & Schedule
               </h4>
               
               <div className="space-y-3 text-xs leading-relaxed">
                 {pricedRecommendations.some(r => r.name === "DAP") && (
-                  <div className="p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/10">
-                    <p className="font-semibold text-cyan-300">DAP (Diammonium Phosphate)</p>
+                  <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                    <p className="font-semibold text-emerald-300">DAP (Diammonium Phosphate)</p>
                     <p className="text-slate-400 mt-1">Apply total dose at sowing. Incorporate into the root zone to secure initial root growth support.</p>
                   </div>
                 )}

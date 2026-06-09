@@ -111,7 +111,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         <p className="text-slate-300 mb-4">No soil analysis found for this field.</p>
         <button
           onClick={handleRunAnalysis}
-          className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-900/50"
+          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-900/50"
         >
           Run First Analysis
         </button>
@@ -150,8 +150,8 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-cyan-400" />Soil Profile</h3>
-          <p className="text-sm text-cyan-200 mt-0.5">Top Layer (0-5cm)</p>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-emerald-400" />Soil Profile</h3>
+          <p className="text-sm text-emerald-200 mt-0.5">Top Layer (0-5cm)</p>
         </div>
         <div className="text-right">
           <div className={`text-3xl font-black ${scoreColor}`}>{score}</div>
@@ -221,7 +221,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
           <h3 className="text-lg font-bold text-white">Historical Trends</h3>
           <button
             onClick={handleRunAnalysis}
-            className="px-4 py-2 bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-800 text-cyan-200 text-sm font-semibold rounded-lg transition-colors"
+            className="px-4 py-2 bg-emerald-950/50 hover:bg-emerald-900 border border-emerald-800 text-emerald-200 text-sm font-semibold rounded-lg transition-colors"
           >
             Update Analysis
           </button>
