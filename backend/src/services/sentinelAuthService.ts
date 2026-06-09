@@ -14,6 +14,9 @@ let tokenExpiryTime: number = 0; // Unix timestamp in ms
 /**
  * Fetches and caches a Sentinel Hub OAuth2 access token.
  * Automatically refreshes the token if it has expired or is about to expire.
+ * 
+ * @returns {Promise<string>} The Sentinel Hub access token.
+ * @throws {Error} If the authentication request fails.
  */
 export const getSentinelAccessToken = async (): Promise<string> => {
   // Return cached token if valid (with 60 seconds buffer)

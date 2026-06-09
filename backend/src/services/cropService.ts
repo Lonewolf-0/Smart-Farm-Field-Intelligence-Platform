@@ -4,6 +4,15 @@ import { findLatestSoilByFieldId } from "../repositories/soilRepository";
 import { getWeatherData } from "./weatherService";
 import { calculateCropSuitability } from "./cropSuitabilityService";
 
+/**
+ * Retrieves the crop suitability for a specific field based on its soil analysis and local weather data.
+ * Concurrently fetches field and latest soil data, verifies ownership, and calculates suitability.
+ * 
+ * @param {string} userId - The ID of the user requesting the data.
+ * @param {string} fieldId - The ID of the field to calculate suitability for.
+ * @returns {Promise<CropSuitabilityV2[]>} An array of suitable crops with their suitability scores.
+ * @throws {Object} If the field is not found, access is denied, or no soil analysis exists.
+ */
 export const getCropSuitabilityService = async (
   userId: string,
   fieldId: string,

@@ -7,6 +7,18 @@ import { getWeatherData } from "./weatherService";
 import { cropSchedules, defaultSchedule } from "../data/applicationSchedules";
 import { getNDVIData } from "./ndviService";
 
+/**
+ * Calculates a fertilizer plan including required quantities of Urea, DAP, and MOP.
+ * It computes the nutrient deficits based on crop requirements and available soil nutrients,
+ * converting these deficits into practical fertilizer quantities scaled by field area.
+ * Generates an application schedule based on the crop's typical growth stages.
+ * 
+ * @param {SoilNPK} soilNPK - The available Nitrogen, Phosphorus, and Potassium in the soil.
+ * @param {string} cropName - The name of the crop to fertilize.
+ * @param {number} fieldArea - The area of the field to scale the fertilizer amounts.
+ * @returns {FertilizerPlan} The computed fertilizer plan including deficits, recommendations, and schedules.
+ * @throws {Error} If the specified crop is not supported.
+ */
 export const calculateFertilizer = (
   soilNPK: SoilNPK,
   cropName: string,
@@ -158,6 +170,13 @@ export const calculateFertilizer = (
   };
 };
 
+/**
+ * Estimates dynamic soil nutrients (Phosphorus and Potassium) based on other soil properties.
+ * Phosphorus is adjusted based on pH and organic carbon, while Potassium is adjusted based on clay/sand texture.
+ * 
+ * @param {any} layer - The soil layer data containing pH, organicCarbon, sand, clay, and nitrogen.
+ * @returns {SoilNPK} The estimated Nitrogen, Phosphorus, and Potassium levels.
+ */
 const estimateDynamicNutrients = (layer: any) => {
   // Dynamic P estimation based on pH & OC
   const ph = layer.ph || 6.5;
@@ -190,6 +209,14 @@ const estimateDynamicNutrients = (layer: any) => {
   };
 };
 
+/**
+ * Generates live alerts and actionable advice for fertilizer application based on weather forecasts and NDVI data.
+ * Checks for heavy rainfall risks, dry spells, and crop stress (low NDVI) to adjust application strategies.
+ * 
+ * @param {any} weather - The weather data containing precipitation forecasts.
+ * @param {any} polygon - The field's polygon coordinates used for NDVI lookup.
+ * @returns {Promise<Array<{type: string, message: string}>>} An array of alert objects containing type and message.
+ */
 const generateLiveAlerts = async (weather: any, polygon: any) => {
   const liveDataAdjustments = [];
 
@@ -238,6 +265,17 @@ const generateLiveAlerts = async (weather: any, polygon: any) => {
   return liveDataAdjustments;
 };
 
+/**
+ * Main service to retrieve a comprehensive fertilizer recommendation for a field.
+ * Handles fetching field data, soil analysis, crop suitability (if not provided), 
+ * dynamic nutrient estimation, live alerts generation, and final plan calculation.
+ * 
+ * @param {string} userId - The ID of the user requesting the service.
+ * @param {string} fieldId - The ID of the field to get recommendations for.
+ * @param {any} body - Optional overrides for crop, soilN, soilP, and soilK.
+ * @returns {Promise<Object>} An object containing the selected crop, fertilizer plan, live alerts, and soil baselines.
+ * @throws {Object} If the field is not found, access is denied, soil analysis is missing, or crop cannot be determined.
+ */
 export const getFertilizerService = async (
   userId: string,
   fieldId: string,

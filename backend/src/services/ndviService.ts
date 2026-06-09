@@ -30,7 +30,12 @@ function evaluatePixel(sample) {
 `;
 
 /**
- * Fetches NDVI statistical data for a given polygon using Sentinel Hub.
+ * Fetches NDVI (Normalized Difference Vegetation Index) statistical data for a given polygon using Sentinel Hub.
+ * Analyzes the returned image histogram to assess field health and identify stress zones.
+ *
+ * @param polygon - The GeoJSON polygon representing the field boundaries.
+ * @param daysBack - The number of days back to search for valid satellite imagery (defaults to 30).
+ * @returns A promise resolving to the calculated NDVI statistics, health score, and stress zones.
  */
 export const getNDVIData = async (polygon: Polygon, daysBack: number = 30): Promise<NDVIData> => {
   const token = await getSentinelAccessToken();
@@ -128,9 +133,12 @@ export const getNDVIData = async (polygon: Polygon, daysBack: number = 30): Prom
     const histogram = mostRecent.outputs.default.bands.B0.histogram.bins;
 
     // Convert mapped mean back to true NDVI (-1 to 1)
+    // The Evalscript mapped the NDVI (-1 to 1) range to (0 to 255) for JSON output compatibility.
     const averageNDVI = (stats.mean / 127.5) - 1;
     
     // Calculate stress zones vs healthy zones from histogram bins
+    // A histogram bin represents the frequency of pixels with a specific mapped NDVI value.
+    // We aggregate these counts to determine the percentage of the field in stress or healthy states.
     let totalValidPixels = 0;
     let stressPixels = 0; // NDVI < 0.3 -> Mapped < 166
     let healthyPixels = 0; // NDVI > 0.6 -> Mapped >= 204

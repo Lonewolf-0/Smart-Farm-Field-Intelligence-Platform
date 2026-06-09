@@ -15,6 +15,13 @@ export interface SoilData {
   layers: SoilLayerData[];
 }
 
+/**
+ * Calculates the soil texture class based on clay and sand percentages.
+ * 
+ * @param {number | null} clay - The percentage of clay in the soil.
+ * @param {number | null} sand - The percentage of sand in the soil.
+ * @returns {string} The computed soil texture class (e.g., "Clay", "Sandy", "Loam").
+ */
 const calculateTexture = (clay: number | null, sand: number | null): string => {
   if (clay === null || sand === null) return "Unknown";
   
@@ -25,6 +32,17 @@ const calculateTexture = (clay: number | null, sand: number | null): string => {
   return "Loam";
 };
 
+/**
+ * Fetches soil properties for a given latitude and longitude from the SoilGrids API.
+ * Retrieves data for multiple depths (0-5cm, 5-15cm, 15-30cm) and properties
+ * (pH, organic carbon, clay, sand, nitrogen).
+ * 
+ * @param {number} lat - The latitude coordinate.
+ * @param {number} lon - The longitude coordinate.
+ * @param {number} [retries=3] - Number of retry attempts in case of API failure.
+ * @returns {Promise<SoilData>} The aggregated soil data across different depth layers.
+ * @throws {Error} If the API request fails after all retries.
+ */
 export const getSoilProperties = async (lat: number, lon: number, retries = 3): Promise<SoilData> => {
   const url = `https://rest.isric.org/soilgrids/v2.0/properties/query`;
   const params = {
@@ -116,6 +134,13 @@ export const getSoilProperties = async (lat: number, lon: number, retries = 3): 
   throw new Error("Failed to fetch soil data");
 };
 
+/**
+ * Analyzes historical soil records to detect trends in pH, organic carbon, and nitrogen,
+ * and generates actionable agricultural alerts if negative trends are identified.
+ * 
+ * @param {any[]} recentRecords - An array of recent soil data records, sorted by time.
+ * @returns {Array<{ type: string, severity: string, message: string }>} A list of alerts based on soil degradation trends.
+ */
 export const analyzeSoilTrends = (recentRecords: any[]) => {
   const alerts: Array<{ type: string, severity: string, message: string }> = [];
   

@@ -2,6 +2,16 @@ import { cropRequirements } from "../data/cropRequirements";
 import { SoilAnalysisInput, CropSuitabilityV2 } from "../types";
 import { WeatherData } from "../types";
 
+/**
+ * Calculates the suitability of various crops based on given soil and weather conditions.
+ * Computes individual scores for pH, temperature, rainfall, and soil texture, and aggregates 
+ * them into a final weighted score to rank the suitable crops.
+ * 
+ * @param {SoilAnalysisInput} soil - The soil parameters (pH, organic carbon, soil texture).
+ * @param {WeatherData} weather - The weather parameters (average temperature and daily rainfall).
+ * @param {boolean} [returnAll=false] - Whether to return all crops or just the top 10. Default is false.
+ * @returns {CropSuitabilityV2[]} An array of crops ordered by suitability score descending.
+ */
 export const calculateCropSuitability = (
   soil: SoilAnalysisInput,
   weather: WeatherData,
