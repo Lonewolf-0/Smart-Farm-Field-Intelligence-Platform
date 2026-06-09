@@ -1,4 +1,4 @@
-import { BarChart3, Map, AlertTriangle, Eye, Sprout, ShieldAlert, RefreshCw } from "lucide-react";
+import { BarChart3, Map, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field, RiskAlert } from "../types";
@@ -114,22 +114,65 @@ function DashboardPage() {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/15 text-cyan-200">
-            <BarChart3 className="h-6 w-6" />
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/15 text-cyan-200">
+              <BarChart3 className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
+                Dashboard
+              </p>
+              <h2 className="text-3xl font-semibold text-white">
+                Field Analytics
+              </h2>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
-              Dashboard
-            </p>
-            <h2 className="text-3xl font-semibold text-white">
-              Field Analytics
-            </h2>
+          
+          {/* Segmented Control */}
+          <div className="relative grid grid-cols-3 gap-1 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[450px]">
+            <div 
+              className="absolute inset-y-1 left-1 bg-cyan-500 rounded-lg transition-transform duration-300 ease-out shadow-md"
+              style={{
+                width: "calc(33.333% - 5.33px)",
+                transform: 
+                  activeTab === "overview" ? "translateX(0)" : 
+                  activeTab === "nutrition" ? "translateX(calc(100% + 4px))" : 
+                  "translateX(calc(200% + 8px))"
+              }}
+            />
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+                activeTab === "overview" ? "text-slate-950" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <CloudSun className="w-4 h-4" />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab("nutrition")}
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+                activeTab === "nutrition" ? "text-slate-950" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Sprout className="w-4 h-4" />
+              Soil
+            </button>
+            <button
+              onClick={() => setActiveTab("operations")}
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+                activeTab === "operations" ? "text-slate-950" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Tractor className="w-4 h-4" />
+              Operations
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           {/* Field Selector */}
           <div className="flex items-center gap-3 bg-slate-950/50 p-2 pl-4 rounded-xl border border-white/10">
             <Map className="h-5 w-5 text-cyan-200" />
@@ -157,7 +200,7 @@ function DashboardPage() {
             <button
               onClick={handleAnalyzeField}
               disabled={isAnalyzing}
-              className="flex items-center gap-2 px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-cyan-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               <RefreshCw className={`w-4 h-4 ${isAnalyzing ? "animate-spin" : ""}`} />
               {isAnalyzing ? "Analyzing..." : "Analyze Field"}
@@ -194,42 +237,7 @@ function DashboardPage() {
             </div>
           )}
 
-          {/* Premium Glassmorphism Tab Selector */}
-          <div className="mt-6 flex flex-wrap gap-2 p-1.5 rounded-2xl bg-slate-950/45 border border-white/10 backdrop-blur-md max-w-lg">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-                activeTab === "overview"
-                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <Eye className="w-4 h-4" />
-              Overview & Weather
-            </button>
-            <button
-              onClick={() => setActiveTab("nutrition")}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-                activeTab === "nutrition"
-                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <Sprout className="w-4 h-4" />
-              Soil & Nutrients
-            </button>
-            <button
-              onClick={() => setActiveTab("operations")}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-                activeTab === "operations"
-                  ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-105"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <ShieldAlert className="w-4 h-4" />
-              Operations
-            </button>
-          </div>
+
 
           {/* Tab Contents */}
           <div key={refreshKey}>
