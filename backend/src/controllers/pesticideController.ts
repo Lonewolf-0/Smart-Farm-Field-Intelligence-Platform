@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import { sendResponse } from "../utils/response";
-import { findFieldById } from "../repositories/fieldRepository";
+import { findFieldByIdService } from "../services/fieldService";
 import { getWeatherData } from "../services/weatherService";
 import { assessPestRisk } from "../services/pesticideService";
 import { getCropSuitabilityService } from "../services/cropService";
@@ -24,7 +24,7 @@ export const getPesticideRecommendation = async (
     const { crop, growthStage } = req.body || {};
 
     // 1. Fetch field and verify ownership
-    const field = await findFieldById(fieldId);
+    const field = await findFieldByIdService(fieldId);
     if (!field) {
       return sendResponse(res, 404, "Field not found");
     }

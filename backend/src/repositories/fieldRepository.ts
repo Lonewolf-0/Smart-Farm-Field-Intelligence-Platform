@@ -9,6 +9,14 @@ export const findFieldById = async (fieldId: string) => {
   return result.rows[0] || null;
 };
 
+export const findFieldByIdAndUserId = async (fieldId: string, userId: string) => {
+  const result = await pool.query(
+    `SELECT id, polygon FROM fields WHERE id = $1 AND user_id = $2`,
+    [fieldId, userId]
+  );
+  return result.rows[0] || null;
+};
+
 export const createField = async (
   userId: string,
   name: string,
