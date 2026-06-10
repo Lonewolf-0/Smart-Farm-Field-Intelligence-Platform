@@ -11,7 +11,7 @@ import { getFieldNDVI } from "../controllers/ndviController";
 import { getFertilizerPlan } from "../controllers/fertilizerController";
 import { getRiskAlerts } from "../controllers/riskController";
 import { getPesticideRecommendation } from "../controllers/pesticideController";
-
+import { streamRiskAlerts } from "../controllers/riskController";
 const router = Router();
 
 router.post("/:fieldId/weather", authenticate, getFieldWeather);
@@ -23,5 +23,5 @@ router.post("/:fieldId/ndvi", authenticate, getFieldNDVI);
 router.post("/:fieldId/fertilizer", authenticate, getFertilizerPlan);
 router.post("/:fieldId/risks", authenticate, getRiskAlerts);
 router.post("/:fieldId/pesticide", authenticate, getPesticideRecommendation);
-
+router.get("/:fieldId/risks/stream", authenticate, streamRiskAlerts);
 export default router;

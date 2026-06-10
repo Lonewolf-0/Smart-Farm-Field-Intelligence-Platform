@@ -2,6 +2,8 @@ import { BarChart3, Map, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor } f
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field, RiskAlert } from "../types";
+import { connectRiskStream } from "../services/riskStream";
+import { showNotification } from "../utils/notification";
 import SoilCard from "../components/Dashboard/SoilCard";
 import IrrigationCard from "../components/Dashboard/IrrigationCard";
 import WeatherCard from "../components/Dashboard/WeatherCard";
@@ -66,6 +68,58 @@ function DashboardPage() {
       setAnalysisData(null);
       setLastAnalyzedTimestamp(null);
     }
+  }, [selectedFieldId]);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        void Notification.requestPermission();
+      }
+    }
+  }, []);
+
+  // SSE Real-time Risk Alerts listener
+  useEffect(() => {
+    if (!selectedFieldId) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const eventSource = connectRiskStream(selectedFieldId, token, (newAlerts: RiskAlert[]) => {
+      // 1. Filter out already-dismissed alerts from triggering notifications
+      let dismissed: string[] = [];
+      try {
+        const stored = localStorage.getItem("dismissed_risks");
+        dismissed = stored ? JSON.parse(stored) : [];
+      } catch (err) {
+        console.error(err);
+      }
+
+      newAlerts.forEach((alert) => {
+        const uniqueKey = `${selectedFieldId}_${alert.type}_${alert.expectedDate}`;
+        if (!dismissed.includes(uniqueKey)) {
+          const notificationSessionKey = `notified_${uniqueKey}`;
+          if (!sessionStorage.getItem(notificationSessionKey)) {
+            showNotification(alert);
+            sessionStorage.setItem(notificationSessionKey, "true");
+          }
+        }
+      });
+
+      // 2. Dynamically merge incoming high/critical alerts into the active Analysis context
+      setAnalysisData((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          risks: newAlerts,
+        };
+      });
+    });
+
+    return () => {
+      eventSource.close();
+    };
   }, [selectedFieldId]);
 
   const handleAnalyzeField = async () => {
