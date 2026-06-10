@@ -7,3 +7,6 @@ aidlc-docs
 .gemini
 CLAUDE.md
 .agents/
+node_modules/
+coverage/
+dist/
