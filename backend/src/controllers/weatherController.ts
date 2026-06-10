@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getWeatherData } from "../services/weatherService";
 import { sendResponse } from "../utils/response";
-import { findFieldById } from "../repositories/fieldRepository";
+import { findFieldByIdService } from "../services/fieldService";
 import { AuthRequest } from "../types";
 export const getWeatherController = async (req: Request, res: Response) => {
   try {
@@ -23,7 +23,7 @@ export const getFieldWeather = async (req: AuthRequest, res: Response) => {
   try {
     const { fieldId } = req.params;
     const userId = req.user?.id;
-    const field = await findFieldById(fieldId);
+    const field = await findFieldByIdService(fieldId);
 
     if (!field) {
       return sendResponse(res, 404, "Field not found");

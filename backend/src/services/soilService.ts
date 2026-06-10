@@ -1,5 +1,11 @@
 import axios from 'axios';
 import https from 'https';
+import { 
+  findLatestSoilByFieldId, 
+  findLatestSoilByCreatedAt, 
+  getHistoryByFieldId, 
+  insertSoilData 
+} from '../repositories/soilRepository';
 
 export interface SoilLayerData {
   depthLabel: string;
@@ -193,5 +199,21 @@ export const analyzeSoilTrends = (recentRecords: any[]) => {
     }
   }
   
-  return alerts;
+    return alerts;
+};
+
+export const findLatestSoilByFieldIdService = async (fieldId: string) => {
+  return await findLatestSoilByFieldId(fieldId);
+};
+
+export const findLatestSoilByCreatedAtService = async (fieldId: string) => {
+  return await findLatestSoilByCreatedAt(fieldId);
+};
+
+export const getHistoryByFieldIdService = async (fieldId: string) => {
+  return await getHistoryByFieldId(fieldId);
+};
+
+export const insertSoilDataService = async (fieldId: string, year: number, season: string, data: any) => {
+  return await insertSoilData(fieldId, year, season, data);
 };

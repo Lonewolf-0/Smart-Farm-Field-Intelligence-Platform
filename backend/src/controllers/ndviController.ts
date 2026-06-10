@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
-import { pool } from "../config/db";
+import { findFieldByIdAndUserIdService } from "../services/fieldService";
 import { getNDVIData } from "../services/ndviService";
 import { sendResponse } from "../utils/response";
 
@@ -14,16 +14,12 @@ export const getFieldNDVI = async (req: AuthRequest, res: Response) => {
     }
 
     // 1. Fetch field and verify ownership
-    const fieldResult = await pool.query(
-      "SELECT id, polygon FROM fields WHERE id = $1 AND user_id = $2",
-      [fieldId, userId]
-    );
+    const field = await findFieldByIdAndUserIdService(fieldId, userId);
 
-    if (fieldResult.rows.length === 0) {
+    if (!field) {
       return sendResponse(res, 404, "Field not found", null, "Field not found");
     }
 
-    const field = fieldResult.rows[0];
     const polygon = typeof field.polygon === "string" ? JSON.parse(field.polygon) : field.polygon;
 
     try {

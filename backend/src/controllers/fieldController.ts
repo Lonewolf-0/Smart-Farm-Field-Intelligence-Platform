@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import * as turf from "@turf/turf";
-import { createField, getFieldsByUserId, deleteField, updateFieldName } from "../repositories/fieldRepository";
+import { createFieldService, getFieldsByUserIdService, deleteFieldService, updateFieldNameService } from "../services/fieldService";
 import { sendResponse } from "../utils/response";
 
 export const updateField = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -21,7 +21,7 @@ export const updateField = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
-    const updatedField = await updateFieldName(id, user.id, name.trim());
+    const updatedField = await updateFieldNameService(id, user.id, name.trim());
     if (!updatedField) {
       sendResponse(res, 404, "Field not found or unauthorized", null, "Field not found or unauthorized");
       return;
@@ -44,7 +44,7 @@ export const deleteUserField = async (req: AuthRequest, res: Response): Promise<
       return;
     }
 
-    const deleted = await deleteField(id, user.id);
+    const deleted = await deleteFieldService(id, user.id);
     if (!deleted) {
       sendResponse(res, 404, "Field not found or unauthorized to delete", null, "Field not found or unauthorized to delete");
       return;
@@ -61,7 +61,7 @@ export const getUserFields = async (req: AuthRequest, res: Response): Promise<vo
   try {
     const user = req.user!;
 
-    const fields = await getFieldsByUserId(user.id);
+    const fields = await getFieldsByUserIdService(user.id);
     const formattedFields = fields.map((f: any) => ({
       id: f.id,
       name: f.name,
@@ -98,7 +98,7 @@ export const saveField = async (req: AuthRequest, res: Response): Promise<void> 
     const centroid = turf.centroid(turf.polygon(polygon.coordinates));
     const [centroidLng, centroidLat] = centroid.geometry.coordinates;
 
-    const newField = await createField(
+    const newField = await createFieldService(
       user.id,
       name,
       polygon,

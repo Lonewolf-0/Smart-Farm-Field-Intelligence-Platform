@@ -1,9 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
-import { findFieldById } from "../repositories/fieldRepository";
-import { getHistoryByFieldId } from "../repositories/soilRepository";
-import { getSoilProperties, analyzeSoilTrends } from "../services/soilService";
-import { pool } from "../config/db";
+import { findFieldByIdService } from "../services/fieldService";
+import { getHistoryByFieldIdService, insertSoilDataService, getSoilProperties, analyzeSoilTrends } from "../services/soilService";
 import { sendResponse } from "../utils/response";
 
 const getSeason = (month: number): string => {
@@ -22,7 +20,7 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
       return;
     }
 
-    const field = await findFieldById(fieldId);
+    const field = await findFieldByIdService(fieldId);
     if (!field) {
       sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
@@ -34,7 +32,7 @@ export const getFieldSoilHistory = async (req: AuthRequest, res: Response): Prom
     }
 
     // Fetch history from database
-    const historyResult = await getHistoryByFieldId(fieldId);
+    const historyResult = await getHistoryByFieldIdService(fieldId);
     
     // Generate alerts via trend analysis service
     const alerts = analyzeSoilTrends(historyResult.rows.slice(0, 3));
@@ -58,7 +56,7 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
       return;
     }
 
-    const field = await findFieldById(fieldId);
+    const field = await findFieldByIdService(fieldId);
     if (!field) {
       sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
@@ -78,11 +76,7 @@ export const getFieldSoil = async (req: AuthRequest, res: Response): Promise<voi
     const season = getSeason(now.getMonth());
 
     // Save to database
-    await pool.query(
-      `INSERT INTO soil_data (field_id, year, season, data)
-       VALUES ($1, $2, $3, $4)`,
-      [fieldId, year, season, JSON.stringify(soilData)]
-    );
+    await insertSoilDataService(fieldId, year, season, soilData);
 
     // Return the newly created record format
     const newRecord = {

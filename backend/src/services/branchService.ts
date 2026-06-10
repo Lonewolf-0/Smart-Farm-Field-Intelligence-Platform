@@ -1,4 +1,9 @@
-import { pool } from "../config/db";
+import { 
+  getAllBranchesFromDb, 
+  getBranchByIdFromDb, 
+  getBranchPricesFromDb, 
+  getNearestBranchesFromDb 
+} from "../repositories/branchRepository";
 import { NutrienBranch } from "../types";
 
 /**
@@ -41,6 +46,18 @@ export function calculateDistance(
   return R * c;
 }
 
+export async function getAllBranchesService() {
+  return await getAllBranchesFromDb();
+}
+
+export async function getBranchByIdService(id: string) {
+  return await getBranchByIdFromDb(id);
+}
+
+export async function getBranchPricesService(id: string) {
+  return await getBranchPricesFromDb(id);
+}
+
 /**
  * Finds the nearest branches to a given set of coordinates.
  *
@@ -54,22 +71,9 @@ export async function findNearestBranches(
   lng: number,
   limit: number = 5
 ): Promise<BranchWithDistance[]> {
-  // Fetch nearest branches from the database using SQL Haversine formula
-  const query = `
-    SELECT *, (
-      6371 * acos(
-        cos(radians($2)) * cos(radians(latitude)) * cos(radians(longitude) - radians($1)) +
-        sin(radians($2)) * sin(radians(latitude))
-      )
-    ) AS distance
-    FROM branches
-    ORDER BY distance ASC
-    LIMIT $3
-  `;
+  const rows = await getNearestBranchesFromDb(lat, lng, limit);
   
-  const result = await pool.query(query, [lng, lat, limit]);
-  
-  const branchesWithDistances: BranchWithDistance[] = result.rows.map((row) => ({
+  const branchesWithDistances: BranchWithDistance[] = rows.map((row: any) => ({
     id: row.id,
     name: row.name,
     latitude: row.latitude,

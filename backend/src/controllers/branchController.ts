@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
-import { pool } from "../config/db";
-import { findNearestBranches } from "../services/branchService";
+import { 
+  findNearestBranches, 
+  getAllBranchesService, 
+  getBranchByIdService, 
+  getBranchPricesService 
+} from "../services/branchService";
 
 export const getAllBranches = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await pool.query("SELECT * FROM branches");
-    res.json({ success: true, data: result.rows });
+    const rows = await getAllBranchesService();
+    res.json({ success: true, data: rows });
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to fetch branches" });
   }
@@ -32,12 +36,12 @@ export const getNearestBranches = async (req: Request, res: Response): Promise<v
 export const getBranchById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await pool.query("SELECT * FROM branches WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
+    const branch = await getBranchByIdService(id);
+    if (!branch) {
       res.status(404).json({ success: false, error: "Branch not found" });
       return;
     }
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: branch });
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to fetch branch" });
   }
@@ -46,12 +50,12 @@ export const getBranchById = async (req: Request, res: Response): Promise<void> 
 export const getBranchPrices = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await pool.query("SELECT products FROM branches WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
+    const branchPrices = await getBranchPricesService(id);
+    if (!branchPrices) {
       res.status(404).json({ success: false, error: "Branch not found" });
       return;
     }
-    res.json({ success: true, data: result.rows[0].products });
+    res.json({ success: true, data: branchPrices.products });
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to fetch branch prices" });
   }

@@ -1,11 +1,11 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
-import { findFieldById } from "../repositories/fieldRepository";
+import { findFieldByIdService } from "../services/fieldService";
 import { getWeatherData } from "../services/weatherService";
 import { getNasaPowerData } from "../services/nasaPowerService";
 import { calculateIrrigation } from "../services/irrigationService";
 import { sendResponse } from "../utils/response";
-import { pool } from "../config/db";
+import { findLatestSoilByCreatedAtService } from "../services/soilService";
 
 export const getIrrigationPlan = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -21,7 +21,7 @@ export const getIrrigationPlan = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
-    const field = await findFieldById(fieldId);
+    const field = await findFieldByIdService(fieldId);
     if (!field) {
       sendResponse(res, 404, "Field not found", null, "Field not found");
       return;
@@ -33,17 +33,14 @@ export const getIrrigationPlan = async (req: AuthRequest, res: Response): Promis
     }
 
     // 1. Get latest soil data
-    const soilResult = await pool.query(
-      `SELECT data FROM soil_data WHERE field_id = $1 ORDER BY created_at DESC LIMIT 1`,
-      [fieldId]
-    );
+    const latestSoilRecord = await findLatestSoilByCreatedAtService(fieldId);
 
-    if (soilResult.rows.length === 0 || !soilResult.rows[0].data || !soilResult.rows[0].data.layers) {
+    if (!latestSoilRecord || !latestSoilRecord.data || !latestSoilRecord.data.layers) {
       sendResponse(res, 400, "Run soil analysis first", null, "Missing soil data");
       return;
     }
 
-    const latestSoil = soilResult.rows[0].data;
+    const latestSoil = latestSoilRecord.data;
     const topLayer = latestSoil.layers[0];
     
     if (!topLayer || !topLayer.texture) {
