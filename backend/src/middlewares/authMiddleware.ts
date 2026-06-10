@@ -12,13 +12,18 @@ export const authenticate = async (
 ) => {
   try {
     // 1. Extract token
+    let token: string | undefined;
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return sendResponse(res, 401, "Unauthorized", null, "NO_TOKEN");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    } else if (req.query && typeof req.query.token === "string") {
+      token = req.query.token;
     }
 
-    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return sendResponse(res, 401, "Unauthorized", null, "NO_TOKEN");
+    }
 
     // 2. Verify token
     const decoded = jwt.verify(token, ENV.JWT_SECRET) as JwtPayload;
