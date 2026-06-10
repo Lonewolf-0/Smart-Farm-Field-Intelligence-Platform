@@ -301,7 +301,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
 
         {/* N input */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+          <label htmlFor="soil-n-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
             <span>Soil N (kg/ha)</span>
             {useSoilTestData && (
               <span title="Loaded from database">
@@ -310,6 +310,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             )}
           </label>
           <input
+            id="soil-n-input"
             type="number"
             value={soilN}
             disabled={useSoilTestData}
@@ -322,7 +323,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
 
         {/* P input */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+          <label htmlFor="soil-p-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
             <span>Soil P (kg/ha)</span>
             {useSoilTestData && (
               <span title="Defaulted available">
@@ -331,6 +332,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             )}
           </label>
           <input
+            id="soil-p-input"
             type="number"
             value={soilP}
             disabled={useSoilTestData}
@@ -343,7 +345,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
 
         {/* K input & Recalculate Button */}
         <div className="flex flex-col gap-1.5 relative">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+          <label htmlFor="soil-k-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
             <span>Soil K (kg/ha)</span>
             {useSoilTestData && (
               <span title="Defaulted available">
@@ -353,6 +355,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
           </label>
           <div className="flex gap-2">
             <input
+              id="soil-k-input"
               type="number"
               value={soilK}
               disabled={useSoilTestData}
