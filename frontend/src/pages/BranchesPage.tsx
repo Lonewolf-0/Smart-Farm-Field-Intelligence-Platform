@@ -15,7 +15,7 @@ const BranchesPage: React.FC = () => {
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [selectedFieldId, setSelectedFieldId] = useState<string>("");
+  const [selectedFieldId, setSelectedFieldId] = useState<string>(() => localStorage.getItem("selectedFieldId") || "");
 
   // Fetch fields once on mount
   useEffect(() => {
@@ -26,7 +26,10 @@ const BranchesPage: React.FC = () => {
         if (res.data?.success) {
           const fetchedFields = res.data.data;
           setFields(fetchedFields);
-          if (fetchedFields.length > 0) {
+          const savedId = localStorage.getItem("selectedFieldId");
+          if (savedId && fetchedFields.some((f: Field) => f.id === savedId)) {
+            setSelectedFieldId(savedId);
+          } else if (fetchedFields.length > 0) {
             setSelectedFieldId("all");
           }
         }
@@ -36,6 +39,12 @@ const BranchesPage: React.FC = () => {
     };
     void fetchFields();
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (selectedFieldId && selectedFieldId !== "all") {
+      localStorage.setItem("selectedFieldId", selectedFieldId);
+    }
+  }, [selectedFieldId]);
 
   // Fetch branches whenever selectedFieldId changes (or initially if no fields)
   useEffect(() => {

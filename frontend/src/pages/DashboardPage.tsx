@@ -18,7 +18,7 @@ import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext"
 
 function DashboardPage() {
   const [fields, setFields] = useState<Field[]>([]);
-  const [selectedFieldId, setSelectedFieldId] = useState<string>("");
+  const [selectedFieldId, setSelectedFieldId] = useState<string>(() => localStorage.getItem("selectedFieldId") || "");
   const [loadingFields, setLoadingFields] = useState(true);
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
   const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations">("overview");
@@ -36,9 +36,15 @@ function DashboardPage() {
       try {
         const res = await api.get("/fields");
         if (res.data?.success) {
-          setFields(res.data.data);
-          if (res.data.data.length > 0) {
-            setSelectedFieldId(res.data.data[0].id);
+          const fetchedFields = res.data.data;
+          setFields(fetchedFields);
+          if (fetchedFields.length > 0) {
+            const savedId = localStorage.getItem("selectedFieldId");
+            if (savedId && fetchedFields.some((f: Field) => f.id === savedId)) {
+              setSelectedFieldId(savedId);
+            } else {
+              setSelectedFieldId(fetchedFields[0].id);
+            }
           }
         }
       } catch (err) {
@@ -49,6 +55,12 @@ function DashboardPage() {
     };
     void fetchFields();
   }, []);
+
+  useEffect(() => {
+    if (selectedFieldId) {
+      localStorage.setItem("selectedFieldId", selectedFieldId);
+    }
+  }, [selectedFieldId]);
 
   useEffect(() => {
     if (!selectedFieldId) return;
