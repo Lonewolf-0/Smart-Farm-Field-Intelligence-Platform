@@ -51,13 +51,13 @@ const CustomTooltip = ({ active, payload }: any) => {
           <span className="text-slate-400 flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span> Max Temp:
           </span>
-          <span className="font-bold text-red-200">{maxTemp}°C</span>
+          <span className="font-bold text-red-200">{maxTemp}°F</span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400 flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-400"></span> Min Temp:
           </span>
-          <span className="font-bold text-blue-200">{minTemp}°C</span>
+          <span className="font-bold text-blue-200">{minTemp}°F</span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400 flex items-center gap-1.5">
@@ -76,8 +76,8 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
   const chartData = forecast.map((day) => ({
     name: formatDayName(day.date),
     fullDate: formatFullDate(day.date),
-    "Max Temp": Math.round(day.tempMax),
-    "Min Temp": Math.round(day.tempMin),
+    "Max Temp": Math.round((day.tempMax * 9/5) + 32),
+    "Min Temp": Math.round((day.tempMin * 9/5) + 32),
     Precipitation: parseFloat(day.precipitation.toFixed(1)),
   }));
 
@@ -106,7 +106,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
             fontSize={10}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(val) => `${val}°C`}
+            tickFormatter={(val) => `${val}°F`}
             width={35}
           />
           

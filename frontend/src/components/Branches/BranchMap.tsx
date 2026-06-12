@@ -140,7 +140,7 @@ const BranchMap: React.FC<BranchMapProps> = ({
                 
                 {branch.distance !== undefined && (
                   <p className="text-sm text-slate-700 mb-2 font-medium">
-                    Distance: <span className="text-green-600">{branch.distance.toFixed(1)} km</span>
+                    Distance: <span className="text-green-600">{(branch.distance * 0.621371).toFixed(1)} miles</span>
                   </p>
                 )}
                 

@@ -185,7 +185,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
             <strong>Best window:</strong> Tomorrow 6-9 AM (low wind, no rain expected)
           </p>
           <p className="text-slate-400 mt-1 flex items-center gap-1">
-            <Droplets className="w-3.5 h-3.5" /> Avoid: rain within 6 hours, wind &gt; 15 km/h
+            <Droplets className="w-3.5 h-3.5" /> Avoid: rain within 6 hours, wind &gt; 9 mph
           </p>
         </div>
       )}

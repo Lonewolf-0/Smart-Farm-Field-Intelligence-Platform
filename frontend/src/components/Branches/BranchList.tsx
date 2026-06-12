@@ -106,7 +106,7 @@ const BranchList: React.FC<BranchListProps> = ({
                     {branch.address}
                     {branch.distance !== undefined && (
                       <span className="block mt-1 text-slate-300 font-medium">
-                        {branch.distance.toFixed(1)} km away
+                        {(branch.distance * 0.621371).toFixed(1)} miles away
                       </span>
                     )}
                   </p>

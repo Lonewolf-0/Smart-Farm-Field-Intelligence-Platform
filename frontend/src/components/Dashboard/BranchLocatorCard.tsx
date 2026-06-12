@@ -86,7 +86,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
             <h3 className="font-bold text-xl text-white">Nearest Branch</h3>
             <div className="flex items-center gap-1 text-sm text-slate-400 mt-0.5">
               <MapPin className="w-3 h-3" />
-              <span>{nearestBranch.distance.toFixed(1)} km away</span>
+              <span>{(nearestBranch.distance * 0.621371).toFixed(1)} miles away</span>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                   {urea.name}
                 </span>
-                <span className="font-medium text-emerald-400">₹{urea.price}<span className="text-xs text-slate-500">/{urea.unit}</span></span>
+                <span className="font-medium text-emerald-400">${urea.price}<span className="text-xs text-slate-500">/{urea.unit}</span></span>
               </div>
             )}
             {dap && (
@@ -115,7 +115,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                   {dap.name}
                 </span>
-                <span className="font-medium text-emerald-400">₹{dap.price}<span className="text-xs text-slate-500">/{dap.unit}</span></span>
+                <span className="font-medium text-emerald-400">${dap.price}<span className="text-xs text-slate-500">/{dap.unit}</span></span>
               </div>
             )}
             {!urea && !dap && (

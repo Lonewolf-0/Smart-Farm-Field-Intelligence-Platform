@@ -28,7 +28,7 @@ const PRODUCTS = [
   "Seed",
 ];
 
-const COST_PER_KM_FACTOR = 0.5; // Example cost factor: ₹0.5 per km travel cost
+const COST_PER_MILE_FACTOR = 0.8; // Example cost factor: $0.8 per mile travel cost
 
 const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch }) => {
   const [selectedProduct, setSelectedProduct] = useState<string>("Urea");
@@ -72,7 +72,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
   // Calculate Best Value (Price + Distance * factor)
   const resultsWithValue = results.map((r) => ({
     ...r,
-    effectiveCost: r.price + r.distance * COST_PER_KM_FACTOR,
+    effectiveCost: r.price + (r.distance * 0.621371) * COST_PER_MILE_FACTOR,
   }));
 
   const cheapestPrice = results.length > 0 ? results[0].price : 0;
@@ -131,7 +131,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                   <h3 className="font-semibold text-slate-200">{branch.branchName}</h3>
                   <div className="flex flex-col items-end gap-1">
                     <span className="text-lg font-bold text-emerald-400">
-                      ₹{branch.price} <span className="text-xs text-slate-500 font-normal">/{branch.unit}</span>
+                      ${branch.price} <span className="text-xs text-slate-500 font-normal">/{branch.unit}</span>
                     </span>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-4 h-4 text-slate-500 shrink-0" />
                   <span className="text-sm text-slate-400">
-                    {Math.round(branch.distance)} km away
+                    {Math.round(branch.distance * 0.621371)} miles away
                   </span>
                 </div>
 
@@ -156,14 +156,14 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                   )}
                   {!isCheapest && diff > 0 && (
                     <span className="text-[11px] font-bold tracking-wider uppercase bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full flex items-center gap-1">
-                      +₹{diff} vs cheapest
+                      +${diff} vs cheapest
                     </span>
                   )}
                 </div>
 
                 {!isCheapest && (
                   <p className="text-xs text-slate-400 mb-3 bg-white/5 p-2 rounded-lg border border-white/5">
-                    Save <span className="text-emerald-400 font-bold">₹{diff}</span> by going to {results[0].branchName} instead.
+                    Save <span className="text-emerald-400 font-bold">${diff}</span> by going to {results[0].branchName} instead.
                   </p>
                 )}
 
