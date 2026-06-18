@@ -11,7 +11,6 @@ import morganMiddleware from "./middlewares/morganMiddleware";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 
 const app = express();
-// const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
 // Middleware
 app.use(morganMiddleware);
