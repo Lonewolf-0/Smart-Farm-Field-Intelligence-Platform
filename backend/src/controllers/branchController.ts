@@ -75,25 +75,25 @@ export const comparePrices = async (req: Request, res: Response): Promise<void> 
     );
     
     // filter branches that have the product and extract its price
-    const comparison = nearest.map(branch => {
+    const comparison = nearest.flatMap(branch => {
       const prod = (branch.products || []).find((p: any) => 
         p.name.toLowerCase().includes((product as string).toLowerCase())
       );
       if (prod) {
-        return {
+        return [{
           branchId: branch.id,
           branchName: branch.name,
           distance: branch.distance,
           product: prod.name,
           price: prod.price,
           unit: prod.unit
-        };
+        }];
       }
-      return null;
-    }).filter(Boolean);
+      return [];
+    });
     
     // Sort by price ascending
-    comparison.sort((a: any, b: any) => a.price - b.price);
+    comparison.sort((a, b) => a.price - b.price);
     
     res.json({ success: true, data: comparison });
   } catch (error) {
