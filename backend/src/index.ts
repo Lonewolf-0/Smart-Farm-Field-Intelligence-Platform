@@ -6,7 +6,6 @@ import weatherRoutes from "./routes/weatherRoutes";
 import analysisRoutes from "./routes/analysisRoutes";
 import fieldRoutes from "./routes/fieldRoutes";
 import branchRoutes from "./routes/branchRoutes";
-import { authenticate } from "./middlewares/authMiddleware";
 import morganMiddleware from "./middlewares/morganMiddleware";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 
