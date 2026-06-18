@@ -4,6 +4,11 @@ import { sendResponse } from "../utils/response";
 
 import { getRiskAnalysisService } from "../services/riskAnalysisService";
 
+// Cache for risk analysis data
+// Key: `${userId}_${fieldId}`
+const riskCache = new Map<string, { data: any; expiry: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 // API CONTROLLER
 export const getRiskAlerts = async (req: AuthRequest, res: Response) => {
   try {
@@ -42,16 +47,32 @@ export const streamRiskAlerts = async (req: AuthRequest, res: Response) => {
 
   res.write(`data: ${JSON.stringify({ message: "connected" })}\n\n`);
 
+  let lastSentData = "";
+
   const interval = setInterval(async () => {
     try {
-      const risks = await getRiskAnalysisService(userId, fieldId);
+      const cacheKey = `${userId}_${fieldId}`;
+      const now = Date.now();
+      let risks;
+
+      const cached = riskCache.get(cacheKey);
+      if (cached && cached.expiry > now) {
+        risks = cached.data;
+      } else {
+        risks = await getRiskAnalysisService(userId, fieldId);
+        riskCache.set(cacheKey, { data: risks, expiry: now + CACHE_TTL });
+      }
 
       const highRisks = risks.filter(
-        (r) => r.severity === "high" || r.severity === "critical",
+        (r: any) => r.severity === "high" || r.severity === "critical",
       );
 
       if (highRisks.length > 0) {
-        res.write(`data: ${JSON.stringify(highRisks)}\n\n`);
+        const newData = JSON.stringify(highRisks);
+        if (newData !== lastSentData) {
+          res.write(`data: ${newData}\n\n`);
+          lastSentData = newData;
+        }
       }
     } catch (err) {
       res.write(`data: ${JSON.stringify({ error: "failed" })}\n\n`);
