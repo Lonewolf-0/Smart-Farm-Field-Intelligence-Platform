@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import { ENV } from "./config/env";
-import { pool } from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import weatherRoutes from "./routes/weatherRoutes";
 import analysisRoutes from "./routes/analysisRoutes";
