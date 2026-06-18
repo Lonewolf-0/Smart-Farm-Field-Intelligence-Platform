@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { ENV } from "../config/env";
 import { WeatherData } from "../types";
+import logger from "../utils/logger";
 
 const API_KEY = ENV.OPENWEATHER_API_KEY;
 const BASE_URL = ENV.OPENWEATHER_BASE_URL;
@@ -76,7 +77,7 @@ export const getWeatherData = async (
     };
     return weatherData;
   } catch (error: any) {
-    console.log("Weather API Error : ", error.message);
+    logger.error(`Weather API Error : ${error.message}`);
     throw new Error("WEATHER_API_ERROR");
   }
 };
