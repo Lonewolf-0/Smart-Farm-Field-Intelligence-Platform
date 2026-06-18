@@ -8,6 +8,7 @@ import fieldRoutes from "./routes/fieldRoutes";
 import branchRoutes from "./routes/branchRoutes";
 import morganMiddleware from "./middlewares/morganMiddleware";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
+import logger from "./utils/logger";
 
 const app = express();
 
@@ -46,8 +47,7 @@ app.use(errorMiddleware);
 //start server
 if (process.env.NODE_ENV !== "test") {
   app.listen(ENV.PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend listening on http://localhost:${ENV.PORT}`);
+    logger.info(`Backend listening on http://localhost:${ENV.PORT}`);
   });
 }
 
