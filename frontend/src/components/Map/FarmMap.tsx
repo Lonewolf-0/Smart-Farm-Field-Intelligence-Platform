@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { Crosshair } from "lucide-react";
-import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON, Tooltip } from "react-leaflet";
+import { useEffect, useState, useRef } from "react";
+import { Crosshair, Search, MapPin, X, Loader2 } from "lucide-react";
+import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON, Tooltip, Marker } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
+import L from "leaflet";
 import GeomanControl from "./GeomanControl";
 
 // Default center: India
@@ -25,6 +26,31 @@ const FlyToLocation: React.FC<FlyToLocationProps> = ({ center, zoom }) => {
   return null;
 };
 
+const formatPhotonName = (feature: any): string => {
+  if (!feature || !feature.properties) return "";
+  const { name, street, city, state, country } = feature.properties;
+  const parts: string[] = [];
+  if (name) parts.push(name);
+  if (street && street !== name) parts.push(street);
+  if (city && city !== name) parts.push(city);
+  if (state && state !== name && state !== city) parts.push(state);
+  if (country && country !== name) parts.push(country);
+  return parts.length > 0 ? parts.join(", ") : "Unknown Location";
+};
+
+const customMarkerIcon = L.divIcon({
+  className: "custom-marker-icon",
+  html: `
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10b981" width="36" height="36" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    </div>
+  `,
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+});
+
 export interface DrawnPolygon {
   geoJSON: GeoJSON.Polygon;
 }
@@ -36,7 +62,7 @@ interface FarmMapProps {
   onSelectField?: (id: string) => void;
 }
 
-const FarmMap: React.FC<FarmMapProps> = ({ 
+const FarmMap: React.FC<FarmMapProps> = ({
   onPolygonChange,
   savedFields = [],
   selectedFieldId = null,
@@ -54,6 +80,80 @@ const FarmMap: React.FC<FarmMapProps> = ({
   const [locationStatus, setLocationStatus] = useState<
     "loading" | "granted" | "denied" | "unavailable"
   >(hasGeolocation ? "loading" : "unavailable");
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchedLocation, setSearchedLocation] = useState<LatLngExpression | null>(null);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const skipSearchRef = useRef(false);
+
+  // Reset suggestions list selection index when results change
+  useEffect(() => {
+    setActiveSuggestionIndex(-1);
+  }, [searchResults]);
+
+  // Scroll active suggestion into view within the dropdown container
+  useEffect(() => {
+    if (activeSuggestionIndex >= 0) {
+      const activeEl = document.getElementById(`suggestion-${activeSuggestionIndex}`);
+      if (activeEl) {
+        activeEl.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+    }
+  }, [activeSuggestionIndex]);
+
+  // Debounced geocoding search as the user types
+  useEffect(() => {
+    if (skipSearchRef.current) {
+      skipSearchRef.current = false;
+      return;
+    }
+
+    if (!searchQuery.trim() || searchQuery.length < 3) {
+      setSearchResults([]);
+      setSearchError(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      setSearchError(null);
+      try {
+        let biasParams = "";
+        if (Array.isArray(mapCenter)) {
+          biasParams = `&lat=${mapCenter[0]}&lon=${mapCenter[1]}`;
+        } else if (mapCenter && typeof mapCenter === "object" && "lat" in mapCenter && "lng" in mapCenter) {
+          biasParams = `&lat=${mapCenter.lat}&lon=${(mapCenter as any).lng}`;
+        }
+
+        const response = await fetch(
+          `https://photon.komoot.io/api?q=${encodeURIComponent(
+            searchQuery
+          )}&limit=25${biasParams}`
+        );
+        if (!response.ok) {
+          throw new Error("Search failed");
+        }
+        const data = await response.json();
+        setSearchResults(data.features || []);
+        if (!data.features || data.features.length === 0) {
+          setSearchError("No locations found");
+        }
+      } catch (err) {
+        console.error("Geocoding autocomplete failed:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Geolocation
   useEffect(() => {
@@ -108,6 +208,95 @@ const FarmMap: React.FC<FarmMapProps> = ({
     }
   };
 
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    skipSearchRef.current = true;
+    setIsSearching(true);
+    setSearchError(null);
+    try {
+      let biasParams = "";
+      if (Array.isArray(mapCenter)) {
+        biasParams = `&lat=${mapCenter[0]}&lon=${mapCenter[1]}`;
+      } else if (mapCenter && typeof mapCenter === "object" && "lat" in mapCenter && "lng" in mapCenter) {
+        biasParams = `&lat=${mapCenter.lat}&lon=${(mapCenter as any).lng}`;
+      }
+
+      const response = await fetch(
+        `https://photon.komoot.io/api?q=${encodeURIComponent(
+          searchQuery
+        )}&limit=25${biasParams}`
+      );
+      if (!response.ok) {
+        throw new Error("Search failed");
+      }
+      const data = await response.json();
+      const features = data.features || [];
+      if (features.length > 0) {
+        const topResult = features[0];
+        const [lon, lat] = topResult.geometry.coordinates;
+        setMapCenter([lat, lon]);
+        setZoom(18);
+        setSearchedLocation([lat, lon]);
+        setSearchQuery(formatPhotonName(topResult));
+        setSearchResults([]); // Hide the suggestions dropdown immediately
+      } else {
+        setSearchError("No locations found");
+        setSearchResults([]);
+      }
+    } catch (err) {
+      console.error("Geocoding search failed:", err);
+      setSearchError("Failed to fetch location search results.");
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleClearSearch = () => {
+    skipSearchRef.current = true;
+    setSearchQuery("");
+    setSearchResults([]);
+    setSearchError(null);
+    setSearchedLocation(null);
+  };
+
+  const handleSelectResult = (result: any) => {
+    const [lon, lat] = result.geometry.coordinates;
+    setMapCenter([lat, lon]);
+    setZoom(18);
+    setSearchedLocation([lat, lon]);
+    skipSearchRef.current = true;
+    setSearchQuery(formatPhotonName(result));
+    setSearchResults([]);
+    setSearchError(null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (searchResults.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveSuggestionIndex((prev) =>
+        prev < searchResults.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveSuggestionIndex((prev) =>
+        prev > 0 ? prev - 1 : searchResults.length - 1
+      );
+    } else if (e.key === "Enter") {
+      if (activeSuggestionIndex >= 0 && activeSuggestionIndex < searchResults.length) {
+        e.preventDefault();
+        handleSelectResult(searchResults[activeSuggestionIndex]);
+      }
+    } else if (e.key === "Escape") {
+      setSearchResults([]);
+      setSearchError(null);
+    }
+  };
+
   return (
     <div className="relative w-full h-[calc(100vh-64px)]">
       {/* Location Status Banner */}
@@ -127,6 +316,78 @@ const FarmMap: React.FC<FarmMapProps> = ({
           </span>
         </div>
       )}
+
+      {/* Search Location Bar */}
+      <div className="absolute top-4 left-16 z-[1000] w-72 sm:w-80">
+        <form onSubmit={handleSearch} className="flex items-center bg-slate-950/80 border border-white/10 rounded-xl shadow-2xl backdrop-blur-md transition-all focus-within:border-emerald-500/50 overflow-hidden">
+          <div className="pl-3.5 text-slate-400 shrink-0">
+            <Search className="h-4 w-4" />
+          </div>
+          <div className="flex-1 flex items-center min-w-0 relative">
+            <input
+              type="text"
+              placeholder="Search location..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (searchError) setSearchError(null);
+              }}
+              onKeyDown={handleKeyDown}
+              className="w-full bg-transparent text-white placeholder-slate-400 text-sm pl-2.5 pr-8 py-3 focus:outline-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="absolute right-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={isSearching}
+            className="bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-600 disabled:opacity-50 text-slate-950 text-xs font-bold px-4 py-3 shrink-0 h-full transition-colors flex items-center justify-center min-w-[70px] self-stretch cursor-pointer"
+          >
+            {isSearching ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Search"
+            )}
+          </button>
+        </form>
+
+        {/* Search Results Dropdown */}
+        {(searchResults.length > 0 || searchError) && (
+          <div className="mt-2 bg-slate-950/95 border border-white/10 rounded-xl shadow-2xl overflow-hidden divide-y divide-white/5 backdrop-blur-md max-h-[400px] overflow-y-auto">
+            {searchError && (
+              <div className="px-4 py-3 text-xs text-amber-400/90 text-center">
+                {searchError}
+              </div>
+            )}
+             {searchResults.map((result, index) => {
+              const isActive = index === activeSuggestionIndex;
+              return (
+                <button
+                  key={result.properties.osm_id || Math.random()}
+                  id={`suggestion-${index}`}
+                  type="button"
+                  onClick={() => handleSelectResult(result)}
+                  className={`w-full text-left px-4 py-3 text-xs transition-colors flex items-start gap-2.5 cursor-pointer ${
+                    isActive 
+                      ? "bg-emerald-500 text-slate-950 font-bold" 
+                      : "text-slate-300 hover:bg-emerald-500 hover:text-slate-950"
+                  }`}
+                >
+                  <MapPin className={`h-4 w-4 shrink-0 mt-0.5 ${isActive ? "opacity-100" : "opacity-70"}`} />
+                  <span className="leading-relaxed">{formatPhotonName(result)}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Recenter Button */}
       {userLocation && locationStatus === "granted" && (
@@ -166,9 +427,21 @@ const FarmMap: React.FC<FarmMapProps> = ({
         {/* Zoom Controls */}
         <ZoomControl position="topright" />
 
-        {/* Fly to user location */}
-        {locationStatus === "granted" && userLocation && (
-          <FlyToLocation center={mapCenter} zoom={zoom} />
+        {/* Fly to location */}
+        <FlyToLocation center={mapCenter} zoom={zoom} />
+
+        {/* Searched Location Marker */}
+        {searchedLocation && (
+          <Marker
+            position={searchedLocation}
+            icon={customMarkerIcon}
+            eventHandlers={{
+              click: () => {
+                setZoom(18);
+                setMapCenter(searchedLocation);
+              },
+            }}
+          />
         )}
 
         {/* Saved Polygons */}
