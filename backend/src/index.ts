@@ -10,6 +10,7 @@ import branchRoutes from "./routes/branchRoutes";
 import { authenticate } from "./middlewares/authMiddleware";
 import morganMiddleware from "./middlewares/morganMiddleware";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
+import logger from "./utils/logger";
 
 const app = express();
 // const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -49,8 +50,7 @@ app.use(errorMiddleware);
 //start server
 if (process.env.NODE_ENV !== "test") {
   app.listen(ENV.PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend listening on http://localhost:${ENV.PORT}`);
+    logger.info(`Backend listening on http://localhost:${ENV.PORT}`);
   });
 }
 
