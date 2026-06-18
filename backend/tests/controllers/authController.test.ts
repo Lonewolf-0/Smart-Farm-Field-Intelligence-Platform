@@ -52,16 +52,14 @@ describe("Auth Controller - Register", () => {
       .spyOn(service, "registerUser")
       .mockRejectedValue(new Error("UNKNOWN_ERROR"));
 
-    const consoleSpy = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(require("../../src/utils/logger").default, "error").mockImplementation(() => {});
 
     const res = await request(app).post("/register").send({});
 
     expect(res.status).toBe(500);
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(loggerSpy).toHaveBeenCalled();
 
-    consoleSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 });
 
@@ -120,16 +118,14 @@ describe("Auth Controller - Login", () => {
   it("should return 500 and log error", async () => {
     jest.spyOn(service, "loginUser").mockRejectedValue(new Error("UNKNOWN"));
 
-    const consoleSpy = jest
-      .spyOn(console, "log") // ✅ this line was missing
-      .mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(require("../../src/utils/logger").default, "error").mockImplementation(() => {});
 
     const res = await request(app).post("/login").send({});
 
     expect(res.status).toBe(500);
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(loggerSpy).toHaveBeenCalled();
 
-    consoleSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 });
 
