@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { registerUser, loginUser } from "../services/authService";
 import { sendResponse } from "../utils/response";
 import { AuthRequest } from "../types";
+import logger from "../utils/logger";
 
 export const registerController = async (req: Request, res: Response) => {
   try {
@@ -19,7 +20,7 @@ export const registerController = async (req: Request, res: Response) => {
       );
     }
 
-    console.error(error);
+    logger.error(error);
 
     return sendResponse(res, 500, "Internal server error", null, error.message);
   }
@@ -50,7 +51,7 @@ export const loginController = async (req: Request, res: Response) => {
     if (error.message === "INVALID_PASSWORD") {
       return sendResponse(res, 401, "Invalid Password", null, error.message);
     }
-    console.log(error);
+    logger.error(error);
     return sendResponse(res, 500, "Internal server error", null, error.message);
   }
 };
