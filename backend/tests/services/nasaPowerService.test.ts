@@ -34,12 +34,16 @@ describe("Nasa Power Service", () => {
     jest.resetModules();
 
     // ✅ FIXED MOCK
-    jest.doMock("axios", () => ({
-      __esModule: true,
-      default: {
-        get: jest.fn(),
-      },
-    }));
+    jest.doMock("axios", () => {
+      const mockGet = jest.fn();
+      return {
+        __esModule: true,
+        default: {
+          get: mockGet,
+        },
+        get: mockGet,
+      };
+    });
 
     mockedAxios = require("axios").default;
   });
