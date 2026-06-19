@@ -14,11 +14,10 @@ import PesticideCard from "../components/Dashboard/PesticideCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 import CustomSelect from "../components/UI/CustomSelect";
 import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext";
+import { useField } from "../context/FieldContext";
 
 function DashboardPage() {
-  const [fields, setFields] = useState<Field[]>([]);
-  const [selectedFieldId, setSelectedFieldId] = useState<string>(() => localStorage.getItem("selectedFieldId") || "");
-  const [loadingFields, setLoadingFields] = useState(true);
+  const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
   const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations" | "fertilizer">("overview");
 
@@ -29,37 +28,6 @@ function DashboardPage() {
   // Cache State
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
   const [lastAnalyzedTimestamp, setLastAnalyzedTimestamp] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchFields = async () => {
-      try {
-        const res = await api.get("/fields");
-        if (res.data?.success) {
-          const fetchedFields = res.data.data;
-          setFields(fetchedFields);
-          if (fetchedFields.length > 0) {
-            const savedId = localStorage.getItem("selectedFieldId");
-            if (savedId && fetchedFields.some((f: Field) => f.id === savedId)) {
-              setSelectedFieldId(savedId);
-            } else {
-              setSelectedFieldId(fetchedFields[0].id);
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch fields", err);
-      } finally {
-        setLoadingFields(false);
-      }
-    };
-    void fetchFields();
-  }, []);
-
-  useEffect(() => {
-    if (selectedFieldId) {
-      localStorage.setItem("selectedFieldId", selectedFieldId);
-    }
-  }, [selectedFieldId]);
 
   useEffect(() => {
     if (!selectedFieldId) return;

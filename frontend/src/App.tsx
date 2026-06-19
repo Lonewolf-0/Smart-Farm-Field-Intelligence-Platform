@@ -6,14 +6,16 @@ import BranchesPage from "./pages/BranchesPage.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import { AuthProvider } from "./context/AuthContext";
+import { FieldProvider } from "./context/FieldContext";
 import Layout from "./components/Layout/Layout";
 import ProtectedRoute from "./components/Layout/ProtectedRoute";
 
 function App() {
   return (
     <AuthProvider>
-      <Layout>
-        <Routes>
+      <FieldProvider>
+        <Layout>
+          <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -23,8 +25,9 @@ function App() {
           <Route path="/branches" element={<ProtectedRoute><BranchesPage /></ProtectedRoute>} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
+          </Routes>
+        </Layout>
+      </FieldProvider>
     </AuthProvider>
   );
 }

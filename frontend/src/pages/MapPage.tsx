@@ -3,6 +3,7 @@ import { Save, CheckCircle } from "lucide-react";
 import FarmMap from "../components/Map/FarmMap";
 import type { DrawnPolygon } from "../components/Map/FarmMap";
 import { useAuth } from "../context/AuthContext";
+import { useField } from "../context/FieldContext";
 import SaveFieldModal from "../components/Map/SaveFieldModal";
 import FieldSidebar from "../components/Map/FieldSidebar";
 import api from "../services/api";
@@ -16,29 +17,9 @@ const MapPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
-  const [savedFields, setSavedFields] = useState<Field[]>([]);
-  const [isLoadingFields, setIsLoadingFields] = useState(false);
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const { fields: savedFields, isLoadingFields, selectedFieldId, setSelectedFieldId, refreshFields } = useField();
+  
   const [currentAreaHa, setCurrentAreaHa] = useState<number | null>(null);
-
-  const fetchFields = useCallback(async () => {
-    if (!isAuthenticated) return;
-    try {
-      setIsLoadingFields(true);
-      const res = await api.get("/fields");
-      if (res.data?.success) {
-        setSavedFields(res.data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch fields:", err);
-    } finally {
-      setIsLoadingFields(false);
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    void fetchFields();
-  }, [fetchFields]);
 
   const handlePolygonChange = (polygon: DrawnPolygon | null) => {
     setCurrentPolygon(polygon);
@@ -62,7 +43,7 @@ const MapPage: React.FC = () => {
       });
       setSaveSuccess(`Field "${name}" saved successfully!`);
       setIsModalOpen(false);
-      void fetchFields(); // Refresh the list
+      void refreshFields();
     } catch (error) {
       console.error("Failed to save field:", error);
       alert("Failed to save field. Please try again.");
@@ -83,7 +64,7 @@ const MapPage: React.FC = () => {
       if (selectedFieldId === id) {
         setSelectedFieldId(null);
       }
-      void fetchFields();
+      void refreshFields();
     } catch (error) {
       console.error("Failed to delete field:", error);
       alert("Failed to delete field. Please try again.");
@@ -93,7 +74,7 @@ const MapPage: React.FC = () => {
   const handleEditField = async (id: string, newName: string) => {
     try {
       await api.put(`/fields/${id}`, { name: newName });
-      void fetchFields();
+      void refreshFields();
     } catch (error) {
       console.error("Failed to rename field:", error);
       alert("Failed to rename field. Please try again.");

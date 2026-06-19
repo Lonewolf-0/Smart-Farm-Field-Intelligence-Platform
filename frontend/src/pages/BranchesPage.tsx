@@ -4,47 +4,17 @@ import BranchMap from "../components/Branches/BranchMap";
 import BranchList from "../components/Branches/BranchList";
 import PriceCompare from "../components/Branches/PriceCompare";
 import { useAuth } from "../context/AuthContext";
+import { useField } from "../context/FieldContext";
 import api from "../services/api";
 import type { Field, NutrienBranch } from "../types";
 import CustomSelect from "../components/UI/CustomSelect";
 
 const BranchesPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const [fields, setFields] = useState<Field[]>([]);
+  const { fields, isLoadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const [branches, setBranches] = useState<(NutrienBranch & { distance?: number })[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [selectedFieldId, setSelectedFieldId] = useState<string>(() => localStorage.getItem("selectedFieldId") || "");
-
-  // Fetch fields once on mount
-  useEffect(() => {
-    const fetchFields = async () => {
-      if (!isAuthenticated) return;
-      try {
-        const res = await api.get("/fields");
-        if (res.data?.success) {
-          const fetchedFields = res.data.data;
-          setFields(fetchedFields);
-          const savedId = localStorage.getItem("selectedFieldId");
-          if (savedId && fetchedFields.some((f: Field) => f.id === savedId)) {
-            setSelectedFieldId(savedId);
-          } else if (fetchedFields.length > 0) {
-            setSelectedFieldId("all");
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch fields:", err);
-      }
-    };
-    void fetchFields();
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (selectedFieldId && selectedFieldId !== "all") {
-      localStorage.setItem("selectedFieldId", selectedFieldId);
-    }
-  }, [selectedFieldId]);
 
   // Fetch branches whenever selectedFieldId changes (or initially if no fields)
   useEffect(() => {
@@ -52,25 +22,18 @@ const BranchesPage: React.FC = () => {
       try {
         setIsLoading(true);
         
-        if (selectedFieldId === "all") {
-          const res = await api.get("/branches");
+        const selectedField = fields.find(f => f.id === selectedFieldId);
+        if (selectedField && selectedField.centroid) {
+          const { lat, lng } = selectedField.centroid;
+          const res = await api.get(`/branches/nearest?lat=${lat}&lng=${lng}&limit=100`);
           if (res.data?.success) {
             setBranches(res.data.data);
           }
         } else {
-          const selectedField = fields.find(f => f.id === selectedFieldId);
-          if (selectedField && selectedField.centroid) {
-            const { lat, lng } = selectedField.centroid;
-            const res = await api.get(`/branches/nearest?lat=${lat}&lng=${lng}&limit=100`);
-            if (res.data?.success) {
-              setBranches(res.data.data);
-            }
-          } else {
-            // If no field selected or no fields available
-            const res = await api.get("/branches");
-            if (res.data?.success) {
-              setBranches(res.data.data);
-            }
+          // If no field selected or no fields available
+          const res = await api.get("/branches");
+          if (res.data?.success) {
+            setBranches(res.data.data);
           }
         }
       } catch (err) {
@@ -103,16 +66,9 @@ const BranchesPage: React.FC = () => {
             <span className="text-sm text-slate-400 whitespace-nowrap">Current Field:</span>
             <div className="w-full sm:w-64">
               <CustomSelect
-                value={
-                  selectedFieldId === "all"
-                    ? { id: "all", name: "Show All Branches" }
-                    : fields.find((f) => f.id === selectedFieldId) || { id: "all", name: "Show All Branches" }
-                }
+                value={fields.find((f) => f.id === selectedFieldId) || null}
                 onChange={(val) => setSelectedFieldId(val.id as string)}
-                options={[
-                  { id: "all", name: "Show All Branches" },
-                  ...fields.map((f) => ({ id: f.id, name: f.name }))
-                ]}
+                options={fields.map((f) => ({ id: f.id, name: f.name }))}
               />
             </div>
           </div>
