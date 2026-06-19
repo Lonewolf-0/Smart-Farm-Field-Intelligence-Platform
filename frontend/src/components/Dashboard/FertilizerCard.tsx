@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 import { 
   FlaskConical, 
-  Info, 
   AlertCircle, 
   RefreshCw, 
   Leaf, 
@@ -12,7 +11,6 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
-import Toast from "../UI/Toast";
 import type { Field, FertilizerPlan } from "../../types";
 import FertilizerTimeline from "./FertilizerTimeline";
 import { useAnalysisContext } from "../../context/AnalysisContext";
@@ -52,7 +50,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   
   const [field, setField] = useState<Field | null>(null);
   const [cropsList] = useState<string[]>(Object.keys(cropNutrients));
-  const [selectedCrop, setSelectedCrop] = useState<string>("Wheat");
+  const [selectedCrop, setSelectedCrop] = useState<string>(() => {
+    return localStorage.getItem("selectedCrop") || "Wheat";
+  });
   
   // Soil NPK input states (kg/ha)
   const [soilN, setSoilN] = useState<number>(60);
@@ -65,7 +65,6 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [calculating, setCalculating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "info" | "warning" | "error" } | null>(null);
   const [isCostExpanded, setIsCostExpanded] = useState<boolean>(false);
 
   // Sync context data
@@ -108,7 +107,6 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
         setError(null);
       } else {
         setUseSoilTestData(false);
-        setToast({ message: "No soil test records found. Please enter NPK values manually.", type: "warning" });
       }
     } catch (err) {
       console.error("Failed to load soil data", err);
@@ -167,7 +165,6 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   }, [fieldId, useSoilTestData, selectedCrop]);
 
   const handleRecalculate = () => {
-    setToast({ message: `Recalculating plan for ${selectedCrop}...`, type: "info" });
     void calculatePlan();
   };
 
@@ -270,7 +267,11 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Crop</span>
             <select
               value={selectedCrop}
-              onChange={(e) => setSelectedCrop(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedCrop(val);
+                localStorage.setItem("selectedCrop", val);
+              }}
               className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1 flex-1 text-right h-full py-0"
             >
               {cropsList.map((c) => (

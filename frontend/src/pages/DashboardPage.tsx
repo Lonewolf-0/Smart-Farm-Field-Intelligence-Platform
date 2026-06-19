@@ -1,4 +1,4 @@
-import { BarChart3, Map, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor, FlaskConical } from "lucide-react";
+import { BarChart3, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor, FlaskConical } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field, RiskAlert } from "../types";
@@ -11,7 +11,6 @@ import CropSuitabilityCard from "../components/Dashboard/CropSuitabilityCard";
 import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
 import PesticideCard from "../components/Dashboard/PesticideCard";
-import BranchLocatorCard from "../components/Dashboard/BranchLocatorCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 import CustomSelect from "../components/UI/CustomSelect";
 import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext";
@@ -403,10 +402,7 @@ function DashboardPage() {
 
               {activeTab === "operations" && (
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
-                  <div className="flex flex-col gap-4">
-                    <IrrigationCard fieldId={selectedFieldId} />
-                    <BranchLocatorCard fieldId={selectedFieldId} />
-                  </div>
+                  <IrrigationCard fieldId={selectedFieldId} />
                   <PesticideCard fieldId={selectedFieldId} />
                 </div>
               )}
