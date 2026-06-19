@@ -96,21 +96,17 @@ describe("FertilizerCard Component Tests", () => {
     expect(container.firstChild).toHaveClass("animate-pulse");
   });
 
-  it("should render NPK input fields as disabled when 'Using Soil Test Data' is active", async () => {
+  it("should not render NPK input fields when 'Using Soil Test Data' is active", async () => {
     render(<FertilizerCard fieldId="field1" />);
 
     await waitFor(() => {
       expect(api.get).toHaveBeenCalledWith("/fields");
     });
 
-    // Inputs should be loaded and disabled by default
-    const nInput = screen.getByLabelText(/Soil N/);
-    const pInput = screen.getByLabelText(/Soil P/);
-    const kInput = screen.getByLabelText(/Soil K/);
-
-    expect(nInput).toBeDisabled();
-    expect(pInput).toBeDisabled();
-    expect(kInput).toBeDisabled();
+    // Inputs should not be in the DOM by default
+    expect(screen.queryByLabelText(/Soil N/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Soil P/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Soil K/)).not.toBeInTheDocument();
   });
 
   it("should enable input fields and allow typing when toggled to 'Manual NPK Override'", async () => {
@@ -120,11 +116,11 @@ describe("FertilizerCard Component Tests", () => {
       expect(api.get).toHaveBeenCalledWith("/fields");
     });
 
-    const toggleBtn = screen.getByRole("button", { name: /Using Soil Test Data/ });
+    const toggleBtn = screen.getByRole("button", { name: /Soil Data/ });
     fireEvent.click(toggleBtn);
 
     // Toggle text should update
-    expect(screen.getByText("Manual NPK Override")).toBeInTheDocument();
+    expect(screen.getByText("Manual NPK")).toBeInTheDocument();
 
     const nInput = screen.getByLabelText(/Soil N/);
     const pInput = screen.getByLabelText(/Soil P/);
@@ -166,7 +162,7 @@ describe("FertilizerCard Component Tests", () => {
     });
 
     // Toggle to manual override to test custom NPK recalculation payload
-    const toggleBtn = screen.getByRole("button", { name: /Using Soil Test Data/ });
+    const toggleBtn = screen.getByRole("button", { name: /Soil Data/ });
     fireEvent.click(toggleBtn);
 
     const nInput = screen.getByLabelText(/Soil N/);
@@ -199,5 +195,38 @@ describe("FertilizerCard Component Tests", () => {
     // Check quantities in table
     expect(screen.getByText("435.0 kg")).toBeInTheDocument(); // totalKg = 174 * 2.5 = 435
     expect(screen.getByText("240.0 kg")).toBeInTheDocument();
+  });
+
+  it("should allow collapsing and expanding the Cost Estimation card", async () => {
+    render(<FertilizerCard fieldId="field1" />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /Cost Estimation/i })).toBeInTheDocument();
+    });
+
+    const toggleBtn = screen.getByRole("button", { name: /Cost Estimation/i });
+    expect(toggleBtn.textContent).toContain("Cost Estimation");
+    expect(toggleBtn.textContent).toContain("$482.75");
+
+    // Initially details should be hidden because isCostExpanded defaults to false
+    expect(screen.queryByText("Total Field Area")).not.toBeInTheDocument();
+
+    // Click to expand
+    fireEvent.click(toggleBtn);
+
+    // Header text should now hide the price and show only the title
+    expect(toggleBtn.textContent).not.toContain("$482.75");
+    expect(toggleBtn.textContent).toContain("Cost Estimation");
+
+    // Now details should be visible
+    expect(screen.getByText("Total Field Area")).toBeInTheDocument();
+
+    // Click to collapse again
+    fireEvent.click(toggleBtn);
+    expect(screen.queryByText("Total Field Area")).not.toBeInTheDocument();
+    
+    // Price should be back in header
+    expect(toggleBtn.textContent).toContain("Cost Estimation");
+    expect(toggleBtn.textContent).toContain("$482.75");
   });
 });

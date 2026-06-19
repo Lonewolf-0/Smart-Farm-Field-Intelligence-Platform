@@ -396,19 +396,6 @@ describe("Fertilizer Service Tests", () => {
         expect(result.liveDataAdjustments?.[0].type).toBe("info");
         expect(result.liveDataAdjustments?.[0].message).toContain("Irrigation Advised");
       });
-
-      it("should add a success adjustment for moderate rainfall", async () => {
-        mockFindFieldById.mockResolvedValue(mockField);
-        mockFindLatestSoilByFieldId.mockResolvedValue(mockSoilRecord);
-        mockGetWeatherData.mockResolvedValue({
-          forecast: [{ precipitation: 5 }, { precipitation: 10 }],
-        });
-        mockGetNDVIData.mockResolvedValue(null);
-
-        const result = await getFertilizerService("user1", "field1", { crop: "Wheat" });
-        expect(result.liveDataAdjustments?.[0].type).toBe("success");
-        expect(result.liveDataAdjustments?.[0].message).toContain("Favorable Weather");
-      });
     });
 
     describe("NDVI Satellite Adjustments", () => {

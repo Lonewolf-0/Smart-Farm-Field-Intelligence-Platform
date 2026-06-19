@@ -235,11 +235,6 @@ const generateLiveAlerts = async (weather: any, polygon: any) => {
       type: "info",
       message: "💡 Irrigation Advised: No rainfall forecast in the next 7 days. Apply light watering after fertilizing to help dissolve granular nutrients."
     });
-  } else {
-    liveDataAdjustments.push({
-      type: "success",
-      message: `✅ Favorable Weather: Light rain (${totalForecastRain.toFixed(1)}mm) expected, which will help dissolve the fertilizer naturally.`
-    });
   }
 
   try {

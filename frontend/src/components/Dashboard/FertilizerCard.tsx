@@ -7,9 +7,10 @@ import {
   RefreshCw, 
   Leaf, 
   DollarSign, 
-  Scale, 
   ToggleLeft, 
-  ToggleRight 
+  ToggleRight,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import Toast from "../UI/Toast";
 import type { Field, FertilizerPlan } from "../../types";
@@ -65,6 +66,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   const [calculating, setCalculating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "info" | "warning" | "error" } | null>(null);
+  const [isCostExpanded, setIsCostExpanded] = useState<boolean>(false);
 
   // Sync context data
   useEffect(() => {
@@ -262,123 +264,107 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
           <p className="text-sm text-emerald-200 mt-0.5">Optimized feeding plan for {field?.name || "field"}</p>
         </div>
 
-        {/* Use Soil Test Data Toggle */}
-        <button
-          onClick={() => setUseSoilTestData(prev => !prev)}
-          className="flex items-center gap-2 bg-white/5 hover:bg-white/10 transition-colors px-3 py-1.5 rounded-lg border border-white/10 text-xs font-semibold cursor-pointer shrink-0"
-        >
-          {useSoilTestData ? (
-            <>
-              <ToggleRight className="w-5 h-5 text-green-400" />
-              <span className="text-green-300">Using Soil Test Data</span>
-            </>
-          ) : (
-            <>
-              <ToggleLeft className="w-5 h-5 text-slate-400" />
-              <span className="text-slate-400">Manual NPK Override</span>
-            </>
-          )}
-        </button>
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          {/* Crop Select */}
+          <div className="flex items-center gap-2 bg-white/5 px-3 rounded-lg border border-white/10 shrink-0 w-[145px] h-[34px] justify-between">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Crop</span>
+            <select
+              value={selectedCrop}
+              onChange={(e) => setSelectedCrop(e.target.value)}
+              className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1 flex-1 text-right h-full py-0"
+            >
+              {cropsList.map((c) => (
+                <option key={c} value={c} className="bg-slate-900 text-white">
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Use Soil Test Data Toggle */}
+          <button
+            onClick={() => setUseSoilTestData(prev => !prev)}
+            className={`flex items-center gap-2 px-3 rounded-lg border text-xs font-semibold cursor-pointer shrink-0 transition-all duration-300 w-[145px] h-[34px] ${
+              useSoilTestData 
+                ? "bg-emerald-500/10 hover:bg-emerald-500/15 border-emerald-500/20 hover:border-emerald-500/30 text-emerald-300"
+                : "bg-amber-500/10 hover:bg-amber-500/15 border-amber-500/20 hover:border-amber-500/30 text-amber-300"
+            }`}
+          >
+            {useSoilTestData ? (
+              <>
+                <ToggleRight className="w-5 h-5 text-emerald-400 transition-colors duration-300 shrink-0" />
+                <span className="truncate">Soil Data</span>
+              </>
+            ) : (
+              <>
+                <ToggleLeft className="w-5 h-5 text-amber-400 transition-colors duration-300 shrink-0" />
+                <span className="truncate">Manual NPK</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Main Settings Panel */}
-      <div className="grid gap-6 md:grid-cols-4 mb-6 bg-white/5 p-4 rounded-xl border border-white/5 shrink-0">
-        {/* Crop Select */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Crop</label>
-          <select
-            value={selectedCrop}
-            onChange={(e) => setSelectedCrop(e.target.value)}
-            className="bg-slate-900 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50 cursor-pointer"
-          >
-            {cropsList.map((c) => (
-              <option key={c} value={c} className="bg-slate-900 text-white">
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* N input */}
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="soil-n-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <span>Soil N (kg/ha)</span>
-            {useSoilTestData && (
-              <span title="Loaded from database">
-                <Info className="w-3 h-3 text-emerald-300" />
-              </span>
-            )}
-          </label>
-          <input
-            id="soil-n-input"
-            type="number"
-            value={soilN}
-            disabled={useSoilTestData}
-            onChange={(e) => setSoilN(Math.max(0, Number(e.target.value)))}
-            className={`bg-slate-900 border rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50 ${
-              useSoilTestData ? "border-white/5 opacity-50 cursor-not-allowed" : "border-white/10"
-            }`}
-          />
-        </div>
-
-        {/* P input */}
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="soil-p-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <span>Soil P (kg/ha)</span>
-            {useSoilTestData && (
-              <span title="Defaulted available">
-                <Info className="w-3 h-3 text-emerald-300" />
-              </span>
-            )}
-          </label>
-          <input
-            id="soil-p-input"
-            type="number"
-            value={soilP}
-            disabled={useSoilTestData}
-            onChange={(e) => setSoilP(Math.max(0, Number(e.target.value)))}
-            className={`bg-slate-900 border rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50 ${
-              useSoilTestData ? "border-white/5 opacity-50 cursor-not-allowed" : "border-white/10"
-            }`}
-          />
-        </div>
-
-        {/* K input & Recalculate Button */}
-        <div className="flex flex-col gap-1.5 relative">
-          <label htmlFor="soil-k-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <span>Soil K (kg/ha)</span>
-            {useSoilTestData && (
-              <span title="Defaulted available">
-                <Info className="w-3 h-3 text-emerald-300" />
-              </span>
-            )}
-          </label>
-          <div className="flex gap-2">
+      {/* Main Settings Panel - Visible only under Manual NPK Override */}
+      {!useSoilTestData && (
+        <div className="grid gap-6 md:grid-cols-3 mb-6 bg-white/5 p-4 rounded-xl border border-white/5 shrink-0 animate-fadeIn">
+          {/* N input */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="soil-n-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Soil N (kg/ha)
+            </label>
             <input
-              id="soil-k-input"
+              id="soil-n-input"
               type="number"
-              value={soilK}
-              disabled={useSoilTestData}
-              onChange={(e) => setSoilK(Math.max(0, Number(e.target.value)))}
-              className={`bg-slate-900 border rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50 flex-1 ${
-                useSoilTestData ? "border-white/5 opacity-50 cursor-not-allowed" : "border-white/10"
-              }`}
+              value={soilN}
+              onChange={(e) => setSoilN(Math.max(0, Number(e.target.value)))}
+              className="bg-slate-900 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50"
             />
-            <button
-              onClick={handleRecalculate}
-              disabled={calculating}
-              className="px-3 bg-amber-500 hover:bg-amber-400 disabled:bg-amber-700 text-slate-950 font-bold rounded-lg transition-colors flex items-center justify-center cursor-pointer shrink-0"
-              title="Calculate fertilizer requirements"
-            >
-              {calculating ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <RefreshCw className="w-4 h-4" />
-              )}
-            </button>
+          </div>
+
+          {/* P input */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="soil-p-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Soil P (kg/ha)
+            </label>
+            <input
+              id="soil-p-input"
+              type="number"
+              value={soilP}
+              onChange={(e) => setSoilP(Math.max(0, Number(e.target.value)))}
+              className="bg-slate-900 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50"
+            />
+          </div>
+
+          {/* K input & Recalculate Button */}
+          <div className="flex flex-col gap-1.5 relative">
+            <label htmlFor="soil-k-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Soil K (kg/ha)
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="soil-k-input"
+                type="number"
+                value={soilK}
+                onChange={(e) => setSoilK(Math.max(0, Number(e.target.value)))}
+                className="bg-slate-900 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500/50 flex-1"
+              />
+              <button
+                onClick={handleRecalculate}
+                disabled={calculating}
+                className="px-3 bg-amber-500 hover:bg-amber-400 disabled:bg-amber-700 text-slate-950 font-bold rounded-lg transition-colors flex items-center justify-center cursor-pointer shrink-0"
+                title="Calculate fertilizer requirements"
+              >
+                {calculating ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {error ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center p-6 bg-red-950/20 border border-red-500/20 rounded-xl min-h-[200px]">
@@ -395,34 +381,11 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
         </div>
       ) : (
         <>
-          {/* Live Recommendations & Alerts */}
-          {plan?.liveDataAdjustments && plan.liveDataAdjustments.length > 0 && (
-            <div className="grid gap-2.5 mb-6 shrink-0">
-              {plan.liveDataAdjustments.map((adj, i) => {
-                const isWarning = adj.type === "warning";
-                const isInfo = adj.type === "info";
-                const bgClass = isWarning 
-                  ? "bg-red-500/10 border-red-500/20 text-red-200" 
-                  : isInfo 
-                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" 
-                  : "bg-green-500/10 border-green-500/20 text-green-200";
-                return (
-                  <div key={i} className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs ${bgClass} animate-fadeIn`}>
-                    <Info className={`w-4 h-4 shrink-0 mt-0.5 ${isWarning ? "text-red-400" : isInfo ? "text-emerald-400" : "text-green-400"}`} />
-                    <span className="leading-relaxed font-semibold">{adj.message}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
-          <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] flex-1">
-          
-          {/* Deficit Visuals & Schedule */}
-          <div className="space-y-6">
-            
-            {/* Visual deficit bars */}
-            <div className="bg-slate-900/40 border border-white/5 rounded-xl p-4.5 space-y-4">
+
+          <div className="grid gap-6 md:grid-cols-2 items-stretch mb-6">
+            {/* Left side: Nutrient Deficiency Profile */}
+            <div className="bg-slate-900/40 border border-white/5 rounded-xl p-4.5 space-y-4 flex flex-col justify-between h-full">
               <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                 <Leaf className="w-3.5 h-3.5 text-green-400" />
                 Nutrient Deficiency Profile
@@ -522,109 +485,92 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
               </div>
             </div>
 
-            {/* Products recommendations table */}
-            <div className="overflow-x-auto border border-white/5 rounded-xl bg-slate-900/40">
-              <table className="w-full border-collapse text-left text-xs">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">
-                    <th className="p-3">Fertilizer Product</th>
-                    <th className="p-3 text-right">Per Hectare</th>
-                    <th className="p-3 text-right">Total ({area.toFixed(1)} ha)</th>
-                    <th className="p-3 text-right">Bags needed (50kg)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 font-medium text-slate-300">
-                  {pricedRecommendations.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="p-4 text-center text-slate-400">
-                        No fertilizer replenishment required. Available nutrients meet or exceed requirements.
-                      </td>
+            {/* Right side: Products recommendations table + Cost estimate breakdown */}
+            <div className="flex flex-col gap-4 h-full justify-between">
+              {/* Products recommendations table */}
+              <div className="overflow-x-auto border border-white/5 rounded-xl bg-slate-900/40 flex-1 flex flex-col justify-center">
+                <table className="w-full border-collapse text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">
+                      <th className="p-2.5">Fertilizer Product</th>
+                      <th className="p-2.5 text-right">Per Hectare</th>
+                      <th className="p-2.5 text-right">Total ({area.toFixed(1)} ha)</th>
+                      <th className="p-2.5 text-right">Bags (50kg)</th>
                     </tr>
-                  ) : (
-                    pricedRecommendations.map((prod) => (
-                      <tr key={prod.name} className="hover:bg-white/5">
-                        <td className="p-3 font-semibold text-white">{prod.name}</td>
-                        <td className="p-3 text-right text-slate-200">{prod.quantity.toFixed(1)} kg/ha</td>
-                        <td className="p-3 text-right text-slate-200">{(prod.quantity * area).toFixed(1)} kg</td>
-                        <td className="p-3 text-right text-slate-200">{prod.bagsNeeded}</td>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 font-medium text-slate-300">
+                    {pricedRecommendations.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="p-3 text-center text-slate-400">
+                          No fertilizer replenishment required. Available nutrients meet or exceed requirements.
+                        </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ) : (
+                      pricedRecommendations.map((prod) => (
+                        <tr key={prod.name} className="hover:bg-white/5">
+                          <td className="p-2.5 font-semibold text-white">{prod.name}</td>
+                          <td className="p-2.5 text-right text-slate-200">{prod.quantity.toFixed(1)} kg/ha</td>
+                          <td className="p-2.5 text-right text-slate-200">{(prod.quantity * area).toFixed(1)} kg</td>
+                          <td className="p-2.5 text-right text-slate-200">{prod.bagsNeeded}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-          </div>
-
-          {/* Schedule & Cost Details */}
-          <div className="space-y-6 flex flex-col justify-between">
-            
-            {/* Scheduling summary */}
-            <div className="bg-slate-900/40 border border-white/5 rounded-xl p-4.5 space-y-3.5 flex-1">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Scale className="w-3.5 h-3.5 text-emerald-400" />
-                Application Timing & Schedule
-              </h4>
-              
-              <div className="space-y-3 text-xs leading-relaxed">
-                {pricedRecommendations.some(r => r.name === "DAP") && (
-                  <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-                    <p className="font-semibold text-emerald-300">DAP (Diammonium Phosphate)</p>
-                    <p className="text-slate-400 mt-1">Apply total dose at sowing. Incorporate into the root zone to secure initial root growth support.</p>
+              {/* Cost estimate dashboard */}
+              <div className="bg-slate-900/60 border border-white/10 rounded-xl p-4.5 space-y-3">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setIsCostExpanded(!isCostExpanded)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setIsCostExpanded(!isCostExpanded);
+                    }
+                  }}
+                  className="w-full flex items-center justify-between cursor-pointer select-none outline-none"
+                >
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5 text-green-400" />
+                    <span>Cost Estimation</span>
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    {!isCostExpanded && (
+                      <span className="text-green-400 font-bold text-xs normal-case">
+                        ${grandTotalCost.toFixed(2)}
+                      </span>
+                    )}
+                    {isCostExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-slate-400" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                    )}
                   </div>
-                )}
+                </div>
 
-                {pricedRecommendations.some(r => r.name === "Urea") && (
-                  <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/10">
-                    <p className="font-semibold text-amber-300">Urea</p>
-                    <p className="text-slate-400 mt-1">Apply in 2 split applications: 50% at sowing, and remaining 50% top-dressed after 30 days of planting.</p>
-                  </div>
-                )}
+                {isCostExpanded && (
+                  <div className="space-y-2 pt-2.5 border-t border-white/5 animate-fadeIn">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Total Field Area</span>
+                      <span className="font-semibold text-white">{area.toFixed(2)} ha</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Estimate Per Hectare</span>
+                      <span className="font-semibold text-white">${totalCostPerHa.toFixed(2)}</span>
+                    </div>
 
-                {pricedRecommendations.some(r => r.name === "MOP") && (
-                  <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-                    <p className="font-semibold text-emerald-300">MOP (Muriate of Potash)</p>
-                    <p className="text-slate-400 mt-1">Apply total dose at sowing. Supports plant stress tolerance and overall cell water regulation.</p>
-                  </div>
-                )}
-
-                {pricedRecommendations.length === 0 && (
-                  <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/10 text-center">
-                    <p className="font-semibold text-green-300">No Action Required</p>
-                    <p className="text-slate-400 mt-1">Soil reserves are adequate for this cropping season.</p>
+                    <div className="border-t border-white/5 pt-2 flex justify-between items-baseline">
+                      <span className="text-xs font-semibold text-slate-200">Total Field Cost</span>
+                      <span className="text-lg font-black text-green-400">${grandTotalCost.toFixed(2)}</span>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-
-            {/* Cost estimate dashboard */}
-            <div className="bg-slate-900/60 border border-white/10 rounded-xl p-4.5 space-y-4">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <DollarSign className="w-3.5 h-3.5 text-green-400" />
-                Cost Estimate Breakdown
-              </h4>
-
-              <div className="space-y-3">
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-400">Total Field Area</span>
-                  <span className="font-semibold text-white">{area.toFixed(2)} ha</span>
-                </div>
-                
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-400">Estimate Per Hectare</span>
-                  <span className="font-semibold text-white">${totalCostPerHa.toFixed(2)}</span>
-                </div>
-
-                <div className="border-t border-white/5 pt-2.5 flex justify-between items-baseline">
-                  <span className="text-sm font-semibold text-slate-200">Total Field Cost</span>
-                  <span className="text-2xl font-black text-green-400">${grandTotalCost.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-
           </div>
-
-        </div>
 
         {/* Timeline Visualization */}
         {plan && (
@@ -634,14 +580,6 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
           />
         )}
         </>
-      )}
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
       )}
     </div>
   );
