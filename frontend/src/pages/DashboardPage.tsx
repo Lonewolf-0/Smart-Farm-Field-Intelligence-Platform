@@ -394,7 +394,7 @@ function DashboardPage() {
               )}
 
               {activeTab === "nutrition" && (
-                <div className="mt-8 grid gap-4 md:grid-cols-2 animate-fadeIn">
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <SoilCard fieldId={selectedFieldId} />
                   <CropSuitabilityCard fieldId={selectedFieldId} />
                 </div>
