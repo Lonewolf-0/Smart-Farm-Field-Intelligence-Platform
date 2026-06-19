@@ -1,4 +1,4 @@
-import { BarChart3, Map, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor } from "lucide-react";
+import { BarChart3, Map, AlertTriangle, Sprout, RefreshCw, CloudSun, Tractor, FlaskConical } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import type { Field, RiskAlert } from "../types";
@@ -21,7 +21,7 @@ function DashboardPage() {
   const [selectedFieldId, setSelectedFieldId] = useState<string>(() => localStorage.getItem("selectedFieldId") || "");
   const [loadingFields, setLoadingFields] = useState(true);
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
-  const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations" | "fertilizer">("overview");
 
   // Analysis State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -228,15 +228,16 @@ function DashboardPage() {
           </div>
           
           {/* Segmented Control */}
-          <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[450px]">
+          <div className="relative grid grid-cols-4 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[580px]">
             <div 
               className="absolute inset-y-1 bg-emerald-500 rounded-lg transition-all duration-300 ease-out shadow-md"
               style={{
-                width: "calc((100% - 8px) / 3)",
+                width: "calc((100% - 8px) / 4)",
                 transform: 
                   activeTab === "overview" ? "translateX(4px)" : 
                   activeTab === "nutrition" ? "translateX(calc(100% + 4px))" : 
-                  "translateX(calc(200% + 4px))"
+                  activeTab === "operations" ? "translateX(calc(200% + 4px))" :
+                  "translateX(calc(300% + 4px))"
               }}
             />
             <button
@@ -265,6 +266,15 @@ function DashboardPage() {
             >
               <Tractor className="w-4 h-4" />
               Operations
+            </button>
+            <button
+              onClick={() => setActiveTab("fertilizer")}
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+                activeTab === "fertilizer" ? "text-slate-950" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <FlaskConical className="w-4 h-4" />
+              Fertilizer
             </button>
           </div>
         </div>
@@ -398,9 +408,12 @@ function DashboardPage() {
                     <BranchLocatorCard fieldId={selectedFieldId} />
                   </div>
                   <PesticideCard fieldId={selectedFieldId} />
-                  <div className="md:col-span-2">
-                    <FertilizerCard fieldId={selectedFieldId} />
-                  </div>
+                </div>
+              )}
+
+              {activeTab === "fertilizer" && (
+                <div className="mt-8 animate-fadeIn">
+                  <FertilizerCard fieldId={selectedFieldId} />
                 </div>
               )}
             </div>
