@@ -229,4 +229,16 @@ describe("FertilizerCard Component Tests", () => {
     expect(toggleBtn.textContent).toContain("Cost Estimation");
     expect(toggleBtn.textContent).toContain("$482.75");
   });
+
+  it("should initialize selected crop from localStorage if present and update it when changed", async () => {
+    localStorage.setItem("selectedCrop", "Rice");
+    render(<FertilizerCard fieldId="field1" />);
+
+    const cropSelect = screen.getByRole("combobox") as HTMLSelectElement;
+    expect(cropSelect.value).toBe("Rice");
+
+    await userEvent.selectOptions(cropSelect, "Maize");
+    expect(localStorage.getItem("selectedCrop")).toBe("Maize");
+    localStorage.removeItem("selectedCrop");
+  });
 });

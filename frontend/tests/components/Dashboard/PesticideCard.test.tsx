@@ -140,4 +140,23 @@ describe("PesticideCard Component Tests", () => {
       expect(screen.queryByText("PestShield Extra")).not.toBeInTheDocument();
     }
   });
+
+  it("should initialize selected crop from localStorage if present and update it when changed", async () => {
+    mockUseAnalysisContext.mockReturnValue({
+      data: { pesticide: mockPestData },
+      isLoading: false,
+    });
+    vi.mocked(api.post).mockResolvedValueOnce({
+      data: { success: true, data: { ...mockPestData, crop: "Rice" } }
+    });
+    localStorage.setItem("selectedCrop", "Rice");
+    render(<PesticideCard fieldId="field1" />);
+
+    const cropSelect = await screen.findByRole("combobox") as HTMLSelectElement;
+    expect(cropSelect.value).toBe("Rice");
+
+    await userEvent.selectOptions(cropSelect, "Maize");
+    expect(localStorage.getItem("selectedCrop")).toBe("Maize");
+    localStorage.removeItem("selectedCrop");
+  });
 });

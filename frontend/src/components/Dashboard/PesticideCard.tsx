@@ -43,12 +43,14 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
   const [localData, setLocalData] = useState<PesticideData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCrop, setSelectedCrop] = useState<string>("Wheat");
+  const [selectedCrop, setSelectedCrop] = useState<string>(() => {
+    return localStorage.getItem("selectedCrop") || "Wheat";
+  });
   const [expandedPest, setExpandedPest] = useState<string | null>(null);
 
   // Sync selectedCrop with context if context data is available and we haven't selected anything yet
   useEffect(() => {
-    if (contextData?.pesticide?.crop) {
+    if (contextData?.pesticide?.crop && !localStorage.getItem("selectedCrop")) {
       setSelectedCrop(contextData.pesticide.crop);
     }
   }, [contextData]);
@@ -118,8 +120,8 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
   let overallBg = "bg-green-500/10 border-green-500/20";
   let overallText = "Low Risk — No spray needed";
 
-  const hasHigh = data.assessments.some((a) => a.riskLevel === "High");
-  const hasMedium = data.assessments.some((a) => a.riskLevel === "Medium");
+  const hasHigh = data.assessments.some((a: PestRiskAssessment) => a.riskLevel === "High");
+  const hasMedium = data.assessments.some((a: PestRiskAssessment) => a.riskLevel === "Medium");
 
   if (hasHigh) {
     overallRisk = "High";
@@ -144,15 +146,19 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
           </h3>
           <p className="text-sm text-emerald-200 mt-0.5">Season: {data.season}</p>
         </div>
-        <div className="flex flex-col gap-1 text-right">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Crop Select</label>
+        <div className="flex items-center gap-2 bg-white/5 px-3 rounded-lg border border-white/10 shrink-0 w-[145px] h-[34px] justify-between">
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Crop</span>
           <select
             value={selectedCrop}
-            onChange={(e) => setSelectedCrop(e.target.value)}
-            className="bg-slate-900 border border-white/10 rounded-lg p-1.5 text-sm text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedCrop(val);
+              localStorage.setItem("selectedCrop", val);
+            }}
+            className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1 flex-1 text-right h-full py-0"
           >
             {CROPS.map((c) => (
-              <option key={c} value={c}>
+              <option key={c} value={c} className="bg-slate-900 text-white">
                 {c}
               </option>
             ))}
@@ -193,7 +199,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
       {/* Pest Assessments List */}
       <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 shrink-0">Identified Threats</h4>
       <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar max-h-[280px] md:max-h-none pr-1">
-        {data.assessments.map((pest, idx) => {
+        {data.assessments.map((pest: PestRiskAssessment, idx: number) => {
           const isHigh = pest.riskLevel === "High";
           const isExpanded = expandedPest === pest.pestName;
 
@@ -274,7 +280,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
                   <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
                     <p className="text-xs font-semibold text-red-300 mb-2">Safety Precautions</p>
                     <ul className="list-disc pl-4 text-xs text-slate-400 space-y-1">
-                      {pest.treatment.precautions.map((p, i) => (
+                      {pest.treatment.precautions.map((p: string, i: number) => (
                         <li key={i}>{p}</li>
                       ))}
                       <li>Wear protective gloves and mask</li>
