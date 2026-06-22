@@ -51,12 +51,13 @@ const BranchesPage: React.FC = () => {
     }
   }, [selectedFieldId, fields]);
 
+  // No automatic selection - user just wants visual highlight
   const [activeTab, setActiveTab] = useState<"list" | "compare">("list");
 
   return (
     <div className="w-full h-[calc(100vh-8rem)] flex flex-col gap-4 lg:gap-6 overflow-hidden">
       {/* Header with Field Selector */}
-      <div className="flex items-center justify-between p-4 rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl shrink-0">
+      <div className="relative z-50 flex items-center justify-between p-4 rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl shrink-0">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <Store className="h-5 w-5 text-emerald-400" /> Branches Map
         </h2>
