@@ -178,7 +178,7 @@ function DashboardPage() {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+      <div className="relative z-50 flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-300/15 text-emerald-200">

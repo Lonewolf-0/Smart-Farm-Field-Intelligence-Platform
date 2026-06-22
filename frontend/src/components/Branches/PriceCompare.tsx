@@ -88,10 +88,10 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 w-full overflow-hidden">
+    <div className="flex flex-col h-full bg-transparent w-full overflow-hidden">
       <div className="p-4 border-b border-white/10 shrink-0">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-green-400" />
+          <DollarSign className="w-5 h-5 text-emerald-400" />
           Compare Prices
         </h2>
         <div className="w-full">
@@ -106,7 +106,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
         {isLoading ? (
           <div className="flex justify-center py-8">
-            <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : results.length === 0 ? (
           <div className="text-center py-8 text-slate-500 text-sm">
@@ -123,8 +123,8 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                 key={branch.branchId}
                 className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                   isBestValue
-                    ? "bg-emerald-900/20 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-                    : "bg-slate-900 border-white/5"
+                    ? "bg-emerald-900/20 border-emerald-500/50 shadow-sm shadow-emerald-900/20"
+                    : "bg-white/5 border-white/10 hover:border-emerald-500/30 hover:bg-white/10"
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
@@ -145,7 +145,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {isCheapest && (
-                    <span className="text-[10px] font-bold tracking-wider uppercase bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">
                       Best Price
                     </span>
                   )}
@@ -169,7 +169,7 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
 
                 <button
                   onClick={() => onSelectBranch(branch.branchId)}
-                  className="w-full flex items-center justify-center gap-2 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors border border-white/5 hover:border-white/10"
+                  className="w-full flex items-center justify-center gap-2 py-2 bg-black/20 hover:bg-black/40 text-slate-300 rounded-lg text-sm transition-colors border border-white/10 hover:border-white/20"
                 >
                   View on Map <ArrowRight className="w-4 h-4" />
                 </button>

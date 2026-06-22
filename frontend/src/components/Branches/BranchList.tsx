@@ -77,6 +77,7 @@ const BranchList: React.FC<BranchListProps> = ({
         ) : (
           filteredBranches.map((branch, index) => {
             const isSelected = branch.id === selectedBranchId;
+            const isHighlighted = isSelected || (!selectedBranchId && index === 0);
             const isNearest = index === 0 && branch.distance !== undefined && branch.distance < 50;
 
             return (
@@ -84,13 +85,13 @@ const BranchList: React.FC<BranchListProps> = ({
                 key={branch.id}
                 onClick={() => onSelectBranch(branch.id)}
                 className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
-                  isSelected
+                  isHighlighted
                     ? "bg-emerald-900/20 border-emerald-500/50 shadow-sm shadow-emerald-900/20"
                     : "bg-white/5 border-white/10 hover:border-emerald-500/30 hover:bg-white/10"
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className={`font-semibold ${isSelected ? "text-emerald-400" : "text-white"}`}>
+                  <h3 className={`font-semibold ${isHighlighted ? "text-emerald-400" : "text-white"}`}>
                     {branch.name}
                   </h3>
                   {isNearest && (
