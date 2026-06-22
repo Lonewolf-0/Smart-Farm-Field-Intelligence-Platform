@@ -487,9 +487,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
             </div>
 
             {/* Right side: Products recommendations table + Cost estimate breakdown */}
-            <div className="flex flex-col gap-4 h-full justify-between">
+            <div className="flex flex-col gap-4">
               {/* Products recommendations table */}
-              <div className="overflow-x-auto border border-white/5 rounded-xl bg-slate-900/40 flex-1 flex flex-col justify-center">
+              <div className="overflow-x-auto border border-white/5 rounded-xl bg-slate-900/40">
                 <table className="w-full border-collapse text-left text-xs">
                   <thead>
                     <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">

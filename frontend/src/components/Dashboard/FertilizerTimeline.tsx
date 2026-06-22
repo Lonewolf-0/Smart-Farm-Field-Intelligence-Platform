@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import type { FertilizerStep } from "../../types";
 
 interface FertilizerTimelineProps {
@@ -9,6 +9,7 @@ interface FertilizerTimelineProps {
 
 const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({ scheduleSteps = [], fieldArea }) => {
   const [activeStepIdx, setActiveStepIdx] = useState<number>(0);
+  const [isTimelineExpanded, setIsTimelineExpanded] = useState<boolean>(true);
 
   useEffect(() => {
     setActiveStepIdx(0);
@@ -27,7 +28,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({ scheduleSteps =
 
       <div className="grid gap-6 md:grid-cols-12 items-stretch">
         {/* Left Column: Vertical Timeline */}
-        <div className="md:col-span-4 bg-slate-900/20 border border-white/5 rounded-xl p-5 flex flex-col justify-center">
+        <div className="md:col-span-4 bg-slate-900/20 border border-white/5 rounded-xl p-5 flex flex-col justify-start">
           <div className="relative pl-6 py-2 flex flex-col gap-6">
             {/* Vertical connecting track */}
             <div className="absolute left-[44px] top-6 bottom-6 w-0.5 bg-slate-800 z-0"></div>
@@ -89,7 +90,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({ scheduleSteps =
         </div>
 
         {/* Right Column: Active Step Details & Recommendations Table */}
-        <div className="md:col-span-8 bg-slate-900/40 border border-white/5 rounded-xl p-5 flex flex-col justify-between h-full animate-fadeIn min-h-[250px]">
+        <div className="md:col-span-8 bg-slate-900/40 border border-white/5 rounded-xl p-5 flex flex-col justify-start animate-fadeIn min-h-[250px]">
           <div>
             <h5 className="text-sm font-bold text-white flex items-center gap-2">
               <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[10px] uppercase font-bold tracking-wider shrink-0">
