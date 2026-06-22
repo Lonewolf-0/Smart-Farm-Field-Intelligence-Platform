@@ -82,21 +82,24 @@ const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] flex overflow-hidden">
-      {/* Sidebar */}
+    <div className="w-full h-[calc(100vh-8rem)] flex overflow-hidden">
+      <div className="w-full h-full flex rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl overflow-hidden gap-6">
+        {/* Sidebar */}
       {isAuthenticated && (
-        <FieldSidebar
-          fields={savedFields}
-          isLoading={isLoadingFields}
-          selectedFieldId={selectedFieldId}
-          onSelectField={handleSelectField}
-          onDeleteField={handleDeleteField}
-          onEditField={handleEditField}
-        />
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/20 shrink-0">
+          <FieldSidebar
+            fields={savedFields}
+            isLoading={isLoadingFields}
+            selectedFieldId={selectedFieldId}
+            onSelectField={handleSelectField}
+            onDeleteField={handleDeleteField}
+            onEditField={handleEditField}
+          />
+        </div>
       )}
 
       {/* Map Area */}
-      <div className="flex-1 h-full relative z-0">
+      <div className="flex-1 h-full relative z-0 rounded-2xl overflow-hidden border border-white/10">
         <FarmMap 
           onPolygonChange={handlePolygonChange}
           savedFields={savedFields}
@@ -142,6 +145,7 @@ const MapPage: React.FC = () => {
           onCancel={() => setIsModalOpen(false)}
           areaHectares={currentAreaHa}
         />
+      </div>
       </div>
     </div>
   );
