@@ -318,7 +318,7 @@ const FarmMap: React.FC<FarmMapProps> = ({
       )}
 
       {/* Search Location Bar */}
-      <div className="absolute top-4 left-16 z-[1000] w-72 sm:w-80">
+      <div className="absolute top-4 right-4 z-[1000] w-72 sm:w-80">
         <form onSubmit={handleSearch} className="flex items-center bg-slate-950/80 border border-white/10 rounded-xl shadow-2xl backdrop-blur-md transition-all focus-within:border-emerald-500/50 overflow-hidden">
           <div className="pl-3.5 text-slate-400 shrink-0">
             <Search className="h-4 w-4" />
@@ -424,8 +424,7 @@ const FarmMap: React.FC<FarmMapProps> = ({
           opacity={0.8}
         />
 
-        {/* Zoom Controls */}
-        <ZoomControl position="topright" />
+
 
         {/* Fly to location */}
         <FlyToLocation center={mapCenter} zoom={zoom} />

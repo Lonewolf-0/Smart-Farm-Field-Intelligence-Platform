@@ -30,8 +30,8 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
     }
   };
   return (
-    <div className="w-80 h-full border-r border-white/10 bg-slate-950 flex flex-col z-[1000] shadow-xl relative overflow-hidden shrink-0">
-      <div className="p-4 border-b border-white/10 bg-slate-900">
+    <div className="w-80 h-full flex flex-col z-[1000] relative overflow-hidden shrink-0">
+      <div className="p-4 border-b border-white/10 bg-transparent">
         <h2 className="text-lg font-bold text-white">My Fields</h2>
         <p className="text-sm text-slate-400">Saved boundaries</p>
       </div>

@@ -54,15 +54,15 @@ const BranchesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"list" | "compare">("list");
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] flex flex-col bg-slate-900">
+    <div className="w-full h-[calc(100vh-8rem)] flex flex-col gap-4 lg:gap-6 overflow-hidden">
       {/* Header with Field Selector */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10 shrink-0 bg-slate-950">
+      <div className="flex items-center justify-between p-4 rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl shrink-0">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <Store className="h-5 w-5 text-emerald-400" /> Branches Map
         </h2>
         
         {fields.length > 0 && (
-          <div className="flex items-center gap-3 bg-slate-900 p-2 pl-4 rounded-xl border border-white/10 w-full sm:w-auto">
+          <div className="flex items-center gap-3 bg-black/20 p-2 pl-4 rounded-xl border border-white/10 w-full sm:w-auto">
             <span className="text-sm text-slate-400 whitespace-nowrap">Current Field:</span>
             <div className="w-full sm:w-64">
               <CustomSelect
@@ -75,22 +75,22 @@ const BranchesPage: React.FC = () => {
         )}
       </div>
 
-      <div className="w-full flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="w-full flex-1 flex flex-col lg:flex-row rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl overflow-hidden gap-6">
         {isLoading ? (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center rounded-2xl border border-white/10 bg-black/20">
             <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           <>
-            <div className="flex flex-col h-full bg-slate-950 border-r border-white/10 w-full lg:w-96 shrink-0 overflow-hidden">
-              <div className="flex bg-slate-900 border-b border-white/10 shrink-0">
+            <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-white/10 bg-black/20 w-full lg:w-96 shrink-0">
+              <div className="flex bg-transparent border-b border-white/10 shrink-0">
               <button
                 className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                   activeTab === "list" ? "text-emerald-400 border-b-2 border-emerald-400" : "text-slate-400 hover:text-slate-200"
                 }`}
                 onClick={() => setActiveTab("list")}
               >
-                <List className="h-4 w-4" /> Branch List
+                <List className="h-4 w-4" /> Nearby Branches
               </button>
               <button
                 className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
@@ -100,9 +100,8 @@ const BranchesPage: React.FC = () => {
               >
                 <ArrowLeftRight className="h-4 w-4" /> Compare Prices
               </button>
-            </div>
-            
-            <div className="flex-1 overflow-hidden">
+              </div>
+              
               {activeTab === "list" ? (
                 <BranchList
                   branches={branches}
@@ -116,8 +115,8 @@ const BranchesPage: React.FC = () => {
                 />
               )}
             </div>
-          </div>
-            <div className="flex-1 h-full relative z-0 p-4">
+
+            <div className="flex-1 h-full relative z-0 rounded-2xl overflow-hidden border border-white/10">
               <BranchMap
                 branches={branches}
                 savedFields={fields}

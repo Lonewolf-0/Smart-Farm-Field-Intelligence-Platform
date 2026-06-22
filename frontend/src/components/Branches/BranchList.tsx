@@ -32,7 +32,7 @@ const BranchList: React.FC<BranchListProps> = ({
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 border-r border-white/10 w-full lg:w-96 shrink-0 overflow-hidden">
+    <div className="flex flex-col h-full bg-transparent w-full lg:w-96 shrink-0 overflow-hidden">
       {/* Header & Filters */}
       <div className="p-4 border-b border-white/10 shrink-0">
         <h2 className="text-xl font-bold text-white mb-4">Nearby Branches</h2>
@@ -46,7 +46,7 @@ const BranchList: React.FC<BranchListProps> = ({
               placeholder="Search branches..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-shadow"
+              className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors"
             />
           </div>
 
@@ -56,7 +56,7 @@ const BranchList: React.FC<BranchListProps> = ({
             <select
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none transition-shadow"
+              className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-400 appearance-none transition-colors"
             >
               {allServices.map((service) => (
                 <option key={service} value={service}>
@@ -85,16 +85,16 @@ const BranchList: React.FC<BranchListProps> = ({
                 onClick={() => onSelectBranch(branch.id)}
                 className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                   isSelected
-                    ? "bg-green-900/20 border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.1)]"
-                    : "bg-slate-900 border-white/5 hover:border-white/20 hover:bg-slate-800"
+                    ? "bg-emerald-900/20 border-emerald-500/50 shadow-sm shadow-emerald-900/20"
+                    : "bg-white/5 border-white/10 hover:border-emerald-500/30 hover:bg-white/10"
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className={`font-semibold ${isSelected ? "text-green-400" : "text-slate-200"}`}>
+                  <h3 className={`font-semibold ${isSelected ? "text-emerald-400" : "text-white"}`}>
                     {branch.name}
                   </h3>
                   {isNearest && (
-                    <span className="shrink-0 ml-2 text-[10px] uppercase font-bold tracking-wider bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                    <span className="shrink-0 ml-2 text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">
                       Nearest
                     </span>
                   )}
