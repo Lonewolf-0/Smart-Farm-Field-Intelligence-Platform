@@ -9,7 +9,10 @@ import { getFieldSoil, getFieldSoilHistory } from "../../src/controllers/soilCon
 let mockUser: any = { id: "user1" };
 
 jest.mock("../../src/middlewares/authMiddleware", () => ({
-  authenticate: (req: any, _res: any, next: any) => {
+  authenticate: (req: any, res: any, next: any) => {
+    if (!mockUser) {
+      return res.status(401).json({ success: false, error: "Unauthorized" });
+    }
     req.user = mockUser;
     next();
   },
@@ -52,7 +55,7 @@ describe("Soil API Integration Tests", () => {
           },
         ],
       });
-      (pool.query as jest.Mock).mockResolvedValue({ rowCount: 1 });
+      (pool.query as jest.Mock).mockResolvedValue({ rowCount: 1, rows: [] });
 
       const res = await request(app).post("/api/analysis/field1/soil");
 
@@ -132,7 +135,7 @@ describe("Soil API Integration Tests", () => {
     it("should return season correctly for other months (Kharif prep, Rabi prep, Rabi)", async () => {
       jest.spyOn(fieldRepo, "findFieldById").mockResolvedValue(mockField as any);
       jest.spyOn(soilService, "getSoilProperties").mockResolvedValue({ layers: [] } as any);
-      (pool.query as jest.Mock).mockResolvedValue({ rowCount: 1 });
+      (pool.query as jest.Mock).mockResolvedValue({ rowCount: 1, rows: [] });
 
       const months = [3, 9, 11]; // March -> Kharif preparation, October -> Rabi preparation, December -> Rabi
       for (const m of months) {
