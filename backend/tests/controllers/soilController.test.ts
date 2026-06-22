@@ -8,6 +8,7 @@ jest.mock("../../src/repositories/fieldRepository", () => ({
 jest.mock("../../src/repositories/soilRepository", () => ({
   getHistoryByFieldId: jest.fn(),
   findLatestSoilByFieldId: jest.fn(),
+  insertSoilData: jest.fn(),
 }));
 
 jest.mock("../../src/services/soilService", () => ({

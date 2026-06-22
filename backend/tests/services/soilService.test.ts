@@ -21,12 +21,76 @@ jest.mock('../../src/repositories/soilRepository', () => ({
   findLatestSoilByFieldId: jest.fn(),
   findLatestSoilByCreatedAt: jest.fn(),
   getHistoryByFieldId: jest.fn(),
-  insertSoilData: jest.fn()
+  insertSoilData: jest.fn(),
 }));
 
 describe('Soil Service', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('findLatestSoilByFieldIdService', () => {
+    it('should call the repository function and return the result', async () => {
+      const mockFieldId = 'field-123';
+      const mockResult = { id: 1, field_id: mockFieldId, year: 2023, season: 'Spring', data: {} };
+      (findLatestSoilByFieldId as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await findLatestSoilByFieldIdService(mockFieldId);
+
+      expect(findLatestSoilByFieldId).toHaveBeenCalledWith(mockFieldId);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should return null if no soil data is found', async () => {
+      const mockFieldId = 'field-123';
+      (findLatestSoilByFieldId as jest.Mock).mockResolvedValue(null);
+
+      const result = await findLatestSoilByFieldIdService(mockFieldId);
+
+      expect(findLatestSoilByFieldId).toHaveBeenCalledWith(mockFieldId);
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findLatestSoilByCreatedAtService', () => {
+    it('should call the repository function and return the result', async () => {
+      const mockFieldId = 'field-123';
+      const mockResult = { data: { layers: [] } };
+      (findLatestSoilByCreatedAt as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await findLatestSoilByCreatedAtService(mockFieldId);
+
+      expect(findLatestSoilByCreatedAt).toHaveBeenCalledWith(mockFieldId);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should return null if no soil data is found', async () => {
+      const mockFieldId = 'field-123';
+      (findLatestSoilByCreatedAt as jest.Mock).mockResolvedValue(null);
+
+      const result = await findLatestSoilByCreatedAtService(mockFieldId);
+
+      expect(findLatestSoilByCreatedAt).toHaveBeenCalledWith(mockFieldId);
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getHistoryByFieldIdService', () => {
+    it('should call the repository function and return the result', async () => {
+      const mockFieldId = 'field-123';
+      const mockResult = {
+        rows: [
+          { id: 1, field_id: mockFieldId, year: 2023, season: 'Spring', data: {} },
+          { id: 2, field_id: mockFieldId, year: 2022, season: 'Autumn', data: {} }
+        ]
+      };
+      (getHistoryByFieldId as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await getHistoryByFieldIdService(mockFieldId);
+
+      expect(getHistoryByFieldId).toHaveBeenCalledWith(mockFieldId);
+      expect(result).toEqual(mockResult);
+    });
   });
 
   describe('analyzeSoilTrends', () => {
