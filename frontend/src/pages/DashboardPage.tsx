@@ -144,8 +144,20 @@ function DashboardPage() {
     }
   };
 
-  const isStale24h = lastAnalyzedTimestamp ? Date.now() - lastAnalyzedTimestamp > 24 * 60 * 60 * 1000 : false;
-  const isStale7d = lastAnalyzedTimestamp ? Date.now() - lastAnalyzedTimestamp > 7 * 24 * 60 * 60 * 1000 : false;
+  const [now, setNow] = useState(Date.now);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (lastAnalyzedTimestamp) {
+      setNow(Date.now());
+      // Optionally update `now` every minute so it's not permanently stale for the whole session
+      interval = setInterval(() => setNow(Date.now()), 60000);
+    }
+    return () => clearInterval(interval);
+  }, [lastAnalyzedTimestamp]);
+
+  const isStale24h = lastAnalyzedTimestamp ? now - lastAnalyzedTimestamp > 24 * 60 * 60 * 1000 : false;
+  const isStale7d = lastAnalyzedTimestamp ? now - lastAnalyzedTimestamp > 7 * 24 * 60 * 60 * 1000 : false;
 
   const formatDate = (ts: number) => {
     return new Date(ts).toLocaleString("en-US", {

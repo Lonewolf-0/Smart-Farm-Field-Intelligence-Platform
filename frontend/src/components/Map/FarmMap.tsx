@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Crosshair, Search, MapPin, X, Loader2 } from "lucide-react";
-import { MapContainer, TileLayer, ZoomControl, useMap, GeoJSON, Tooltip, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, useMap, GeoJSON, Tooltip, Marker } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import L from "leaflet";
 import GeomanControl from "./GeomanControl";

@@ -53,7 +53,7 @@ const MapPage: React.FC = () => {
   };
 
   const handleSelectField = (id: string) => {
-    setSelectedFieldId((prev) => (prev === id ? null : id));
+    setSelectedFieldId(selectedFieldId === id ? null : id);
   };
 
   const handleDeleteField = async (id: string) => {

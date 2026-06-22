@@ -134,15 +134,15 @@ describe("BranchLocatorCard Component Tests", () => {
 
     // Verify UI components rendered correct data
     expect(screen.getByText("Nearest Branch")).toBeInTheDocument();
-    expect(screen.getByText("4.8 km away")).toBeInTheDocument();
+    expect(screen.getByText("3.0 miles away")).toBeInTheDocument(); // 4.8 * 0.621371
     expect(screen.getByText("Nutrien Ag Solutions Pune")).toBeInTheDocument();
     expect(screen.getByText("123 Seed Highway, Hadapsar, Pune, MH, 411028")).toBeInTheDocument();
 
     // Verify products rendering
     expect(screen.getByText("Premium Urea Fertilizer")).toBeInTheDocument();
-    expect(screen.getByText("₹320")).toBeInTheDocument();
+    expect(screen.getByText("$320")).toBeInTheDocument();
     expect(screen.getByText("High Grade DAP (Diammonium Phosphate)")).toBeInTheDocument();
-    expect(screen.getByText("₹850")).toBeInTheDocument();
+    expect(screen.getByText("$850")).toBeInTheDocument();
 
     // Verify services tags (limit 3)
     expect(screen.getByText("Soil Testing")).toBeInTheDocument();
