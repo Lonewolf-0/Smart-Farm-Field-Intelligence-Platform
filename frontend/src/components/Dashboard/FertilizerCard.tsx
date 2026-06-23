@@ -55,11 +55,39 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
   });
   
   // Soil NPK input states (kg/ha)
-  const [soilN, setSoilN] = useState<number>(60);
-  const [soilP, setSoilP] = useState<number>(40);
-  const [soilK, setSoilK] = useState<number>(50);
-  const [useSoilTestData, setUseSoilTestData] = useState<boolean>(true);
+  const [soilN, setSoilN] = useState<number>(() => {
+    const val = localStorage.getItem("soilN");
+    return val !== null ? Number(val) : 60;
+  });
+  const [soilP, setSoilP] = useState<number>(() => {
+    const val = localStorage.getItem("soilP");
+    return val !== null ? Number(val) : 40;
+  });
+  const [soilK, setSoilK] = useState<number>(() => {
+    const val = localStorage.getItem("soilK");
+    return val !== null ? Number(val) : 50;
+  });
+  const [useSoilTestData, setUseSoilTestData] = useState<boolean>(() => {
+    const val = localStorage.getItem("useSoilTestData");
+    return val !== null ? val === "true" : true;
+  });
   
+  useEffect(() => {
+    localStorage.setItem("useSoilTestData", useSoilTestData.toString());
+  }, [useSoilTestData]);
+
+  useEffect(() => {
+    localStorage.setItem("soilN", soilN.toString());
+  }, [soilN]);
+
+  useEffect(() => {
+    localStorage.setItem("soilP", soilP.toString());
+  }, [soilP]);
+
+  useEffect(() => {
+    localStorage.setItem("soilK", soilK.toString());
+  }, [soilK]);
+
   // API plan output state
   const [plan, setPlan] = useState<FertilizerPlan | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -70,8 +98,13 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
 
   // Sync context data
   useEffect(() => {
-    if (contextData?.fertilizer && useSoilTestData && selectedCrop === "Wheat") {
+    if (contextData?.fertilizer && useSoilTestData) {
       setPlan(contextData.fertilizer);
+      if (selectedCrop === "Wheat") {
+        const calculatedCrop = contextData.fertilizer.crop || "Wheat";
+        setSelectedCrop(calculatedCrop);
+        localStorage.setItem("selectedCrop", calculatedCrop);
+      }
       if (contextData.fertilizer.soilBaselines) {
         setSoilN(contextData.fertilizer.soilBaselines.nitrogen);
         setSoilP(contextData.fertilizer.soilBaselines.phosphorus);

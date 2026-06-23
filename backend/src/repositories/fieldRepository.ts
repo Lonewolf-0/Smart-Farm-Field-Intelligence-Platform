@@ -2,8 +2,7 @@ import { pool } from "../config/db";
 
 export const findFieldById = async (fieldId: string) => {
   const result = await pool.query(
-    `SELECT id,user_id,centroid_lat,
-        centroid_lng FROM fields where ID=$1`,
+    `SELECT id, user_id, name, area, centroid_lat, centroid_lng, polygon FROM fields WHERE id = $1`,
     [fieldId],
   );
   return result.rows[0] || null;

@@ -68,7 +68,9 @@ const SummaryCard: React.FC = () => {
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Crop Vigor</h3>
         </div>
         <div>
-          <p className="text-2xl font-black text-white">{ndvi ? `${ndvi.averageNDVI.toFixed(2)} NDVI` : "No Data"}</p>
+          <p className="text-2xl font-black text-white">
+            {ndvi && typeof ndvi.averageNDVI === "number" ? `${ndvi.averageNDVI.toFixed(2)} NDVI` : "No Data"}
+          </p>
           <p className={`text-sm mt-1 font-medium ${healthIsGood ? 'text-emerald-400' : 'text-yellow-400'}`}>
             {healthScore} Health
           </p>
