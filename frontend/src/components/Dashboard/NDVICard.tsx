@@ -91,7 +91,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
 
       <div className="flex flex-col items-center justify-center mb-6">
         <p className="text-slate-400 text-sm mb-1 uppercase tracking-wider">Average NDVI</p>
-        <p className={`text-5xl font-black ${textColor}`}>
+        <p className={`font-mono text-5xl font-black ${textColor}`}>
           {data.averageNDVI.toFixed(2)}
         </p>
       </div>

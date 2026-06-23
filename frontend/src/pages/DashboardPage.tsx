@@ -810,7 +810,7 @@ function DashboardPage() {
         <div className="mb-6 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 animate-fadeIn flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-emerald-200">
             <PremiumLoader className="w-10 h-10" />
-            <span className="font-semibold text-sm">Analyzing Field Data...</span>
+            <span className="font-mono font-bold text-sm tracking-wider">ANALYZING_FIELD_DATA</span>
           </div>
           <div className="flex-1 w-full max-w-md">
             <div className="flex justify-between text-xs mb-1.5">
@@ -1025,7 +1025,7 @@ function DashboardPage() {
               {activeTab === "agronomy" && (
                 <div className="mt-8 space-y-6 animate-fadeIn">
                   {/* Agronomy Report Banner */}
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4.5 rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur-md gap-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4.5 rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md gap-4">
                     <div>
                       <h3 className="text-base font-bold text-white flex items-center gap-2">
                         <FileText className="w-5 h-5 text-emerald-400" />
@@ -1037,7 +1037,7 @@ function DashboardPage() {
                       <button
                         onClick={() => handleAgronomyReport("view")}
                         disabled={generatingReport}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-white rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/5 text-white rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
                       >
                         {generatingReport ? (
                           <>
