@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import React from "react";
@@ -29,6 +29,7 @@ vi.mock("../../src/components/Dashboard/PesticideCard", () => ({
   default: () => <div data-testid="pesticide-card">PesticideCard</div>,
 }));
 vi.mock("../../src/components/Dashboard/RiskAlertCard", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: ({ onCriticalAlerts }: any) => {
     // Provide a way to manually trigger critical alerts for testing
     return (
@@ -73,6 +74,68 @@ vi.mock("../../src/context/FieldContext", () => ({
   useField: () => mockUseField(),
 }));
 
+// Mock the auth context hook
+const mockUseAuth = vi.fn();
+vi.mock("../../src/context/AuthContext", () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
+const mockSave = vi.fn();
+const mockOutput = vi.fn().mockReturnValue("blob://some-url");
+const mockAddPage = vi.fn();
+const mockSetPage = vi.fn();
+const mockSetFont = vi.fn();
+const mockSetFontSize = vi.fn();
+const mockSetTextColor = vi.fn();
+const mockSetFillColor = vi.fn();
+const mockSetDrawColor = vi.fn();
+const mockSetLineWidth = vi.fn();
+const mockLine = vi.fn();
+const mockRect = vi.fn();
+const mockText = vi.fn();
+const mockSplitTextToSize = vi.fn().mockImplementation((text) => [text]);
+const mockGetTextWidth = vi.fn().mockReturnValue(10);
+
+vi.mock("jspdf", () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        internal: {
+          pageSize: {
+            getWidth: () => 210,
+            getHeight: () => 297,
+          },
+          getNumberOfPages: () => 1,
+        },
+        save: mockSave,
+        output: mockOutput,
+        addPage: mockAddPage,
+        setPage: mockSetPage,
+        setFont: mockSetFont,
+        setFontSize: mockSetFontSize,
+        setTextColor: mockSetTextColor,
+        setFillColor: mockSetFillColor,
+        setDrawColor: mockSetDrawColor,
+        setLineWidth: mockSetLineWidth,
+        line: mockLine,
+        rect: mockRect,
+        text: mockText,
+        splitTextToSize: mockSplitTextToSize,
+        getTextWidth: mockGetTextWidth,
+        lastAutoTable: { finalY: 100 },
+      };
+    }),
+  };
+});
+
+vi.mock("jspdf-autotable", () => {
+  return {
+    default: vi.fn().mockImplementation((doc) => {
+      doc.lastAutoTable = { finalY: 150 };
+    }),
+  };
+});
+
 describe("DashboardPage Component Tests", () => {
   const mockFields = [
     { id: "field-1", name: "Field 1", area: 10 },
@@ -83,6 +146,25 @@ describe("DashboardPage Component Tests", () => {
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
+    mockSave.mockClear();
+    mockOutput.mockClear();
+    mockAddPage.mockClear();
+    mockSetPage.mockClear();
+    mockSetFont.mockClear();
+    mockSetFontSize.mockClear();
+    mockSetTextColor.mockClear();
+    mockSetFillColor.mockClear();
+    mockSetDrawColor.mockClear();
+    mockSetLineWidth.mockClear();
+    mockLine.mockClear();
+    mockRect.mockClear();
+    mockText.mockClear();
+    mockSplitTextToSize.mockClear();
+    mockGetTextWidth.mockClear();
+
+    mockUseAuth.mockReturnValue({
+      user: { name: "Test User", email: "testuser@example.com" },
+    });
 
     // Default mock setup for FieldContext
     mockUseField.mockReturnValue({
@@ -92,9 +174,9 @@ describe("DashboardPage Component Tests", () => {
       setSelectedFieldId: vi.fn(),
     });
 
-    // Default mock setup for connectRiskStream
     vi.mocked(connectRiskStream).mockReturnValue({
       close: vi.fn(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     // Default mock setup for window.Notification
@@ -148,14 +230,14 @@ describe("DashboardPage Component Tests", () => {
 
     // Check if overview components are rendered
     expect(screen.getByTestId("weather-card")).toBeInTheDocument();
-    expect(screen.getByTestId("risk-alert-card")).toBeInTheDocument();
-    expect(screen.getByTestId("ndvi-card")).toBeInTheDocument();
 
     // Check if other components are not rendered
     expect(screen.queryByTestId("soil-card")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("ndvi-card")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("risk-alert-card")).not.toBeInTheDocument();
   });
 
-  it("should switch to soil tab when clicked", async () => {
+  it("should switch to crop health tab when clicked", async () => {
     localStorage.setItem(
       "dashboard_analysis_field-1",
       JSON.stringify({ timestamp: Date.now(), results: { soil: {} } })
@@ -163,11 +245,10 @@ describe("DashboardPage Component Tests", () => {
 
     render(<DashboardPage />);
 
-    const soilTab = screen.getByRole("button", { name: /soil/i });
-    await userEvent.click(soilTab);
+    const cropHealthTab = screen.getByRole("button", { name: /crop health/i });
+    await userEvent.click(cropHealthTab);
 
     expect(screen.getByTestId("soil-card")).toBeInTheDocument();
-    expect(screen.getByTestId("crop-card")).toBeInTheDocument();
   });
 
   it("should display stale warning if data is older than 24 hours", () => {
@@ -201,7 +282,7 @@ describe("DashboardPage Component Tests", () => {
     });
   });
 
-  it("should display critical alert banner when RiskAlertCard triggers it", () => {
+  it("should display critical alert banner when RiskAlertCard triggers it", async () => {
     localStorage.setItem(
       "dashboard_analysis_field-1",
       JSON.stringify({ timestamp: Date.now(), results: { weather: {} } })
@@ -209,10 +290,114 @@ describe("DashboardPage Component Tests", () => {
 
     render(<DashboardPage />);
 
-    const triggerButton = screen.getByTestId("trigger-critical-alert");
+    const cropHealthTab = screen.getByRole("button", { name: /crop health/i });
+    fireEvent.click(cropHealthTab);
+
+    const triggerButton = await screen.findByTestId("trigger-critical-alert");
     fireEvent.click(triggerButton);
 
     expect(screen.getByText("CRITICAL WARNING ACTIVE")).toBeInTheDocument();
     expect(screen.getByText(/Test Critical Alert/i)).toBeInTheDocument();
+  });
+
+  it("should render View Report and Download PDF buttons on the agronomy tab", async () => {
+    localStorage.setItem(
+      "dashboard_analysis_field-1",
+      JSON.stringify({ timestamp: Date.now(), results: { crop: [], irrigation: {}, fertilizer: {} } })
+    );
+
+    render(<DashboardPage />);
+
+    const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
+    fireEvent.click(agronomyTab);
+
+    expect(screen.getByRole("button", { name: /View Report/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Download PDF/i })).toBeInTheDocument();
+  });
+
+  it("should trigger PDF download with correct filename when Download PDF is clicked", async () => {
+    localStorage.setItem(
+      "dashboard_analysis_field-1",
+      JSON.stringify({ timestamp: Date.now(), results: { crop: [], irrigation: {}, fertilizer: {} } })
+    );
+    localStorage.setItem("selectedCrop", "Wheat");
+
+    vi.mocked(api.post).mockResolvedValue({
+      data: {
+        success: true,
+        data: {
+          soilBaselines: { nitrogen: 60, phosphorus: 40, potassium: 50 },
+          recommendations: [
+            { name: "Urea", quantity: 50, unit: "kg" }
+          ],
+          scheduleSteps: [
+            { days: 0, stage: "Basal", description: "Apply Urea", recommendations: [{ name: "Urea", quantity: 50 }] }
+          ]
+        }
+      }
+    });
+
+    render(<DashboardPage />);
+
+    const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
+    fireEvent.click(agronomyTab);
+
+    const downloadButton = screen.getByRole("button", { name: /Download PDF/i });
+    fireEvent.click(downloadButton);
+
+    await waitFor(() => {
+      expect(mockSave).toHaveBeenCalledWith("test_user_field_1_wheat.pdf");
+    });
+  });
+
+  it("should open a new window and load the generated blob URL when View Report is clicked", async () => {
+    localStorage.setItem(
+      "dashboard_analysis_field-1",
+      JSON.stringify({ timestamp: Date.now(), results: { crop: [], irrigation: {}, fertilizer: {} } })
+    );
+    localStorage.setItem("selectedCrop", "Rice");
+
+    const mockWrite = vi.fn();
+    const mockLocation = { href: "" };
+    const mockWindow = {
+      document: {
+        write: mockWrite,
+      },
+      location: mockLocation,
+      close: vi.fn(),
+    };
+    const mockWindowOpen = vi.fn().mockReturnValue(mockWindow);
+    vi.stubGlobal("open", mockWindowOpen);
+
+    vi.mocked(api.post).mockResolvedValue({
+      data: {
+        success: true,
+        data: {
+          soilBaselines: { nitrogen: 60, phosphorus: 40, potassium: 50 },
+          recommendations: [
+            { name: "Urea", quantity: 50, unit: "kg" }
+          ],
+          scheduleSteps: [
+            { days: 0, stage: "Basal", description: "Apply Urea", recommendations: [{ name: "Urea", quantity: 50 }] }
+          ]
+        }
+      }
+    });
+
+    render(<DashboardPage />);
+
+    const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
+    fireEvent.click(agronomyTab);
+
+    const viewButton = screen.getByRole("button", { name: /View Report/i });
+    fireEvent.click(viewButton);
+
+    expect(mockWindowOpen).toHaveBeenCalledWith("", "_blank");
+    expect(mockWrite).toHaveBeenCalledWith(expect.stringContaining("Generating PDF report..."));
+
+    await waitFor(() => {
+      expect(mockOutput).toHaveBeenCalledWith("bloburl");
+      expect(mockLocation.href).toBe("blob://some-url");
+    });
   });
 });

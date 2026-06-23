@@ -346,7 +346,8 @@ export const getFertilizerService = async (
   }
 
   // Live Calculations (Weather & NDVI)
-  const liveDataAdjustments = await generateLiveAlerts(weather, field.polygon);
+  const polygon = field.polygon ? (typeof field.polygon === "string" ? JSON.parse(field.polygon) : field.polygon) : undefined;
+  const liveDataAdjustments = await generateLiveAlerts(weather, polygon);
 
   //4.Calculate fertilizer
   const plan = calculateFertilizer(soilData, selectedCrop, 1);
