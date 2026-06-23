@@ -18,7 +18,7 @@ import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext"
 import { useField } from "../context/FieldContext";
 import { useAuth } from "../context/AuthContext";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import "jspdf-autotable";
 
 function DashboardPage() {
   const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
@@ -326,7 +326,7 @@ function DashboardPage() {
         cropRows.push(["No suitability data", "-", "-", "-", "-", "-"]);
       }
 
-      autoTable(doc, {
+      (doc as any).autoTable({
         startY: yPos,
         head: cropHeaders,
         body: cropRows,
@@ -370,7 +370,7 @@ function DashboardPage() {
         ["7-Day Rainfall Forecast", `${irrigation.rainfallNext7Days || 0} mm`, "Expected local rainfall quantity."],
       ];
 
-      autoTable(doc, {
+      (doc as any).autoTable({
         startY: yPos,
         head: irrigationHeaders,
         body: irrigationRows,
@@ -452,7 +452,7 @@ function DashboardPage() {
         ["Potassium (K)", (baseline.potassium || 0).toFixed(1), reqK.toFixed(1), defK > 0 ? `${defK.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
       ];
 
-      autoTable(doc, {
+      (doc as any).autoTable({
         startY: yPos,
         head: nutrientHeaders,
         body: nutrientRows,
@@ -536,7 +536,7 @@ function DashboardPage() {
         ]);
       }
 
-      autoTable(doc, {
+      (doc as any).autoTable({
         startY: yPos,
         head: recHeaders,
         body: recRows,
