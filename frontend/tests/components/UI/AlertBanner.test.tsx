@@ -13,8 +13,8 @@ describe("AlertBanner Component", () => {
 
     // Check classes for danger
     const container = screen.getByText("Critical error").closest("div")?.parentElement;
-    expect(container).toHaveClass("bg-red-500/20");
-    expect(container).toHaveClass("border-red-500/30");
+    expect(container).toHaveClass("bg-slate-900/40");
+    expect(container).toHaveClass("border-red-500/50");
     expect(container).toHaveClass("text-red-200");
   });
 
@@ -27,8 +27,8 @@ describe("AlertBanner Component", () => {
 
     // Check classes for warning
     const container = screen.getByText("Just a warning").closest("div")?.parentElement;
-    expect(container).toHaveClass("bg-amber-500/15");
-    expect(container).toHaveClass("border-amber-500/25");
+    expect(container).toHaveClass("bg-slate-900/40");
+    expect(container).toHaveClass("border-amber-500/50");
     expect(container).toHaveClass("text-amber-200");
   });
 

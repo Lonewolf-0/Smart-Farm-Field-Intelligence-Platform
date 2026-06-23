@@ -74,10 +74,10 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   // Calculations
   const ph = topLayer.ph;
   const phText = ph === null ? "Unknown" : ph < 6.0 ? "Acidic" : ph > 7.5 ? "Alkaline" : "Neutral";
-  const phColor = ph === null ? "text-slate-400" : (ph >= 6.0 && ph <= 7.5) ? "text-green-400" : (ph < 5.5 || ph > 8.0) ? "text-red-400" : "text-yellow-400";
+  const phColor = ph === null ? "text-slate-400" : (ph >= 6.0 && ph <= 7.5) ? "text-emerald-400" : (ph < 5.5 || ph > 8.0) ? "text-red-400" : "text-yellow-400";
   
   const ocPercentage = topLayer.organicCarbon !== null ? topLayer.organicCarbon / 10 : null;
-  const ocColor = ocPercentage === null ? "text-slate-400" : ocPercentage > 1.5 ? "text-green-400" : ocPercentage < 0.5 ? "text-red-400" : "text-yellow-400";
+  const ocColor = ocPercentage === null ? "text-slate-400" : ocPercentage > 1.5 ? "text-emerald-400" : ocPercentage < 0.5 ? "text-red-400" : "text-yellow-400";
   const ocRating = ocPercentage === null ? "Unknown" : ocPercentage > 1.5 ? "High" : ocPercentage < 0.5 ? "Poor" : "Moderate";
 
   // Health Score Calculation
@@ -175,7 +175,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
             {/* Ideal zone indicator for pH (6.0 - 7.5) -> 42% to 53% */}
             <div className="absolute top-0 bottom-0 left-[42%] w-[11%] bg-green-500/10 border-x border-green-500/20 z-0"></div>
             <div 
-              className={`h-full rounded-full transition-all duration-1000 relative z-10 ${ph === null ? "bg-slate-400" : (ph >= 6.0 && ph <= 7.5) ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" : (ph < 5.5 || ph > 8.0) ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" : "bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"}`}
+              className={`h-full rounded-full transition-all duration-1000 relative z-10 ${ph === null ? "bg-slate-400" : (ph >= 6.0 && ph <= 7.5) ? "bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : (ph < 5.5 || ph > 8.0) ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" : "bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"}`}
               style={{ width: `${Math.min((ph || 0) / 14 * 100, 100)}%` }}
             />
           </div>
@@ -192,7 +192,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
           </div>
           <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-white/5 relative shadow-inner">
             <div 
-              className={`h-full rounded-full transition-all duration-1000 relative z-10 ${ocPercentage === null ? "bg-slate-400" : ocPercentage > 1.5 ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" : ocPercentage < 0.5 ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" : "bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"}`}
+              className={`h-full rounded-full transition-all duration-1000 relative z-10 ${ocPercentage === null ? "bg-slate-400" : ocPercentage > 1.5 ? "bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : ocPercentage < 0.5 ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" : "bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"}`}
               style={{ width: `${Math.min(((ocPercentage || 0) / 3) * 100, 100)}%` }}
             />
           </div>

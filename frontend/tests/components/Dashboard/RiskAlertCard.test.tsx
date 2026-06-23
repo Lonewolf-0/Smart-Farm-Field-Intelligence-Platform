@@ -89,23 +89,23 @@ describe("RiskAlertCard Component Tests", () => {
     expect(screen.getByTestId("risk-alert-critical")).toBeInTheDocument();
 
     const criticalCard = screen.getByTestId("risk-alert-critical");
-    expect(criticalCard).toHaveClass("bg-red-500/10");
-    expect(criticalCard).toHaveClass("border-red-500/30");
+    expect(criticalCard).toHaveClass("bg-slate-900/40");
+    expect(criticalCard).toHaveClass("border-red-500/50");
     expect(screen.getByText("Critical Alert")).toBeInTheDocument();
 
     const highCard = screen.getByTestId("risk-alert-high");
-    expect(highCard).toHaveClass("bg-orange-500/10");
-    expect(highCard).toHaveClass("border-orange-500/30");
+    expect(highCard).toHaveClass("bg-slate-900/40");
+    expect(highCard).toHaveClass("border-orange-500/50");
     expect(screen.getByText("High Risk")).toBeInTheDocument();
 
     const mediumCard = screen.getByTestId("risk-alert-medium");
-    expect(mediumCard).toHaveClass("bg-amber-500/10");
-    expect(mediumCard).toHaveClass("border-amber-500/30");
+    expect(mediumCard).toHaveClass("bg-slate-900/40");
+    expect(mediumCard).toHaveClass("border-amber-500/50");
     expect(screen.getByText("Medium Risk")).toBeInTheDocument();
 
     const lowCard = screen.getByTestId("risk-alert-low");
-    expect(lowCard).toHaveClass("bg-blue-500/10");
-    expect(lowCard).toHaveClass("border-blue-500/30");
+    expect(lowCard).toHaveClass("bg-slate-900/40");
+    expect(lowCard).toHaveClass("border-emerald-500/30");
     expect(screen.getByText("Informational")).toBeInTheDocument();
   });
 

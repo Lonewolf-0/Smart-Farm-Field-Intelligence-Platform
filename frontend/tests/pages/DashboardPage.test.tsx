@@ -92,6 +92,7 @@ const mockSetDrawColor = vi.fn();
 const mockSetLineWidth = vi.fn();
 const mockLine = vi.fn();
 const mockRect = vi.fn();
+const mockCircle = vi.fn();
 const mockText = vi.fn();
 const mockSplitTextToSize = vi.fn().mockImplementation((text) => [text]);
 const mockGetTextWidth = vi.fn().mockReturnValue(10);
@@ -99,7 +100,7 @@ const mockGetTextWidth = vi.fn().mockReturnValue(10);
 vi.mock("jspdf", () => {
   return {
     default: vi.fn().mockImplementation(() => {
-      return {
+      const doc = {
         internal: {
           pageSize: {
             getWidth: () => 210,
@@ -119,11 +120,16 @@ vi.mock("jspdf", () => {
         setLineWidth: mockSetLineWidth,
         line: mockLine,
         rect: mockRect,
+        circle: mockCircle,
         text: mockText,
         splitTextToSize: mockSplitTextToSize,
         getTextWidth: mockGetTextWidth,
         lastAutoTable: { finalY: 100 },
+        autoTable: vi.fn().mockImplementation(function (this: any) {
+          this.lastAutoTable = { finalY: 150 };
+        }),
       };
+      return doc;
     }),
   };
 });
