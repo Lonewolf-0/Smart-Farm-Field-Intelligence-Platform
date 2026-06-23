@@ -46,7 +46,7 @@ const FERTILIZER_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number;
 };
 
 const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
-  const { data: contextData, isLoading: contextLoading } = useAnalysisContext();
+  const { data: contextData, isLoading: contextLoading, updateAnalysisData } = useAnalysisContext();
   
   const [field, setField] = useState<Field | null>(null);
   const [cropsList] = useState<string[]>(Object.keys(cropNutrients));
@@ -132,6 +132,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
       if (res.data?.success) {
         const planData = res.data.data;
         setPlan(planData);
+        if (updateAnalysisData && useSoilTestData) {
+          updateAnalysisData(prev => prev ? { ...prev, fertilizer: planData } : prev);
+        }
         if (useSoilTestData && planData.soilBaselines) {
           setSoilN(planData.soilBaselines.nitrogen);
           setSoilP(planData.soilBaselines.phosphorus);

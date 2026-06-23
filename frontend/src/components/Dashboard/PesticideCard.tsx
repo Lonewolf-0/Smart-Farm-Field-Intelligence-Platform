@@ -39,7 +39,7 @@ const CROPS = [
 ];
 
 const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
-  const { data: contextData, isLoading: contextLoading } = useAnalysisContext();
+  const { data: contextData, isLoading: contextLoading, updateAnalysisData } = useAnalysisContext();
   const [localData, setLocalData] = useState<PesticideData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +73,9 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
         const res = await api.post(`/analysis/${fieldId}/pesticide`, { crop: selectedCrop });
         if (res.data?.success) {
           setLocalData(res.data.data);
+          if (updateAnalysisData) {
+            updateAnalysisData(prev => prev ? { ...prev, pesticide: res.data.data } : prev);
+          }
         } else {
           throw new Error("Failed to fetch pesticide data");
         }
@@ -116,9 +119,10 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
 
   // Determine overall risk
   let overallRisk: "High" | "Medium" | "Low" = "Low";
-  let overallColor = "text-green-400";
-  let overallBg = "bg-green-500/10 border-green-500/20";
+  let overallColor = "text-emerald-400";
+  let overallBg = "bg-slate-900/40 border-emerald-500/30";
   let overallText = "Low Risk — No spray needed";
+  let outerBorder = "border-emerald-500/30";
 
   const hasHigh = data.assessments.some((a: PestRiskAssessment) => a.riskLevel === "High");
   const hasMedium = data.assessments.some((a: PestRiskAssessment) => a.riskLevel === "Medium");
@@ -126,17 +130,19 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
   if (hasHigh) {
     overallRisk = "High";
     overallColor = "text-red-400";
-    overallBg = "bg-red-500/10 border-red-500/20";
+    overallBg = "bg-slate-900/40 border-red-500/50";
     overallText = "High Risk — Spray recommended";
+    outerBorder = "border-red-500/50";
   } else if (hasMedium) {
     overallRisk = "Medium";
     overallColor = "text-amber-400";
-    overallBg = "bg-amber-500/10 border-amber-500/20";
+    overallBg = "bg-slate-900/40 border-amber-500/50";
     overallText = "Medium Risk — Monitor closely";
+    outerBorder = "border-amber-500/50";
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200`}>
       {/* Header */}
       <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
         <div>
@@ -203,13 +209,13 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
           const isHigh = pest.riskLevel === "High";
           const isExpanded = expandedPest === pest.pestName;
 
-          let badgeColor = "bg-green-500/20 text-green-400 border-green-500/30";
-          let barColor = "bg-green-500";
+          let badgeColor = "text-emerald-400 border-emerald-500/30 bg-slate-900/40";
+          let barColor = "bg-emerald-500";
           if (pest.riskLevel === "High") {
-            badgeColor = "bg-red-500/20 text-red-400 border-red-500/30";
+            badgeColor = "text-red-400 border-red-500/50 bg-slate-900/40";
             barColor = "bg-red-500";
           } else if (pest.riskLevel === "Medium") {
-            badgeColor = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+            badgeColor = "text-amber-400 border-amber-500/50 bg-slate-900/40";
             barColor = "bg-amber-500";
           }
 

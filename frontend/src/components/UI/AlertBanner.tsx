@@ -12,8 +12,8 @@ const AlertBanner: React.FC<AlertBannerProps> = ({ type, message, onDismiss }) =
 
   // Glassmorphic color palettes that fit the dark dashboard theme while providing high visual hierarchy
   const containerStyle = isDanger
-    ? "bg-red-500/20 border-red-500/30 text-red-200"
-    : "bg-amber-500/15 border-amber-500/25 text-amber-200";
+    ? "bg-slate-900/40 border-red-500/50 text-red-200"
+    : "bg-slate-900/40 border-amber-500/50 text-amber-200";
 
   const iconStyle = isDanger ? "text-red-400" : "text-amber-400";
   const Icon = isDanger ? ShieldAlert : AlertTriangle;

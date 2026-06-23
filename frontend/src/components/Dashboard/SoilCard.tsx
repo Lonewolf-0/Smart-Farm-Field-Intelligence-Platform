@@ -98,22 +98,23 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   };
 
   const score = calculateScore(topLayer);
-  const scoreColor = score >= 80 ? "text-green-400" : score >= 60 ? "text-yellow-400" : "text-red-400";
+  const scoreColor = score >= 80 ? "text-emerald-400" : score >= 60 ? "text-yellow-400" : "text-red-400";
+  const outerBorder = score >= 80 ? "border-emerald-500/30" : score >= 60 ? "border-yellow-500/50" : "border-red-500/50";
 
   let trendText = null;
-  let trendColor = "text-slate-400 bg-slate-800";
+  let trendColor = "text-slate-400 bg-slate-900/40";
   if (history.length > 1 && history[1].data?.layers?.[0]) {
     const prevScore = calculateScore(history[1].data.layers[0]);
     const diff = score - prevScore;
     if (diff > 0) {
       trendText = `Score: +${diff} pts`;
-      trendColor = "text-green-400 bg-green-500/10 border-green-500/20";
+      trendColor = "text-emerald-400 bg-slate-900/40 border-emerald-500/30";
     } else if (diff < 0) {
       trendText = `Score: ${diff} pts`;
-      trendColor = "text-red-400 bg-red-500/10 border-red-500/20";
+      trendColor = "text-red-400 bg-slate-900/40 border-red-500/50";
     } else {
       trendText = "Score: Unchanged";
-      trendColor = "text-slate-400 bg-slate-500/10 border-slate-500/20";
+      trendColor = "text-slate-400 bg-slate-900/40 border-slate-500/30";
     }
   }
 
@@ -127,7 +128,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-emerald-400" />Soil Profile</h3>
@@ -148,7 +149,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         <div className="mb-6 space-y-2">
           {alerts.map((alert, i) => (
             <div key={i} className={`p-3 rounded-lg border flex items-start gap-3 ${
-              alert.severity === 'critical' ? 'bg-red-950/50 border-red-500/30 text-red-200' : 'bg-yellow-950/50 border-yellow-500/30 text-yellow-200'
+              alert.severity === 'critical' ? 'bg-slate-900/40 border-red-500/50 text-red-400' : 'bg-slate-900/40 border-yellow-500/50 text-yellow-400'
             }`}>
               <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
               <div>

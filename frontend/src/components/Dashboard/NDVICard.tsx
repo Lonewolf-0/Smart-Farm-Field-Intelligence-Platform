@@ -40,23 +40,20 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
       </div>
     );
   }
-  let colorBadge = "bg-green-500/20 text-green-400 border-green-500/30";
-  let textColor = "text-green-400";
-  let bgGlow = "shadow-green-900/20";
+  let colorBadge = "text-emerald-400 border-emerald-500/30 bg-slate-900/40";
+  let textColor = "text-emerald-400";
+  let bgGlow = "";
+  let outerBorder = "border-emerald-500/30";
   const healthyArea = 100 - data.stressAreas;
 
   if (data.healthScore === "Poor") {
-    colorBadge = "bg-red-500/20 text-red-400 border-red-500/30";
+    colorBadge = "text-red-400 border-red-500/50 bg-slate-900/40";
     textColor = "text-red-400";
-    bgGlow = "shadow-red-900/20";
+    outerBorder = "border-red-500/50";
   } else if (data.healthScore === "Moderate") {
-    colorBadge = "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+    colorBadge = "text-yellow-400 border-yellow-500/50 bg-slate-900/40";
     textColor = "text-yellow-400";
-    bgGlow = "shadow-yellow-900/20";
-  } else if (data.healthScore === "Excellent") {
-    colorBadge = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-    textColor = "text-emerald-400";
-    bgGlow = "shadow-emerald-900/20";
+    outerBorder = "border-yellow-500/50";
   }
 
   const pieData = [
@@ -72,7 +69,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
   });
 
   return (
-    <div className={`rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col ${bgGlow}`}>
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col ${bgGlow}`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">

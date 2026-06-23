@@ -22,27 +22,27 @@ interface RiskAlertCardProps {
 // Map alert severity to Tailwind classes
 const severityStyles: Record<string, { bg: string; border: string; text: string; label: string }> = {
   critical: {
-    bg: "bg-red-500/10",
-    border: "border-red-500/30",
+    bg: "bg-slate-900/40",
+    border: "border-red-500/50",
     text: "text-red-400",
     label: "Critical Alert"
   },
   high: {
-    bg: "bg-orange-500/10",
-    border: "border-orange-500/30",
+    bg: "bg-slate-900/40",
+    border: "border-orange-500/50",
     text: "text-orange-400",
     label: "High Risk"
   },
   medium: {
-    bg: "bg-amber-500/10",
-    border: "border-amber-500/30",
+    bg: "bg-slate-900/40",
+    border: "border-amber-500/50",
     text: "text-amber-400",
     label: "Medium Risk"
   },
   low: {
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/30",
-    text: "text-blue-400",
+    bg: "bg-slate-900/40",
+    border: "border-emerald-500/30",
+    text: "text-emerald-400",
     label: "Informational"
   }
 };
@@ -157,8 +157,12 @@ const RiskAlertCard: React.FC<RiskAlertCardProps> = ({ fieldId, onCriticalAlerts
     );
   }
 
+  const hasCritical = activeAlerts.some(a => a.severity === "critical");
+  const hasHigh = activeAlerts.some(a => a.severity === "high");
+  const outerBorder = hasCritical ? "border-red-500/50" : hasHigh ? "border-orange-500/50" : activeAlerts.length > 0 ? "border-amber-500/50" : "border-emerald-500/30";
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200`}>
       <div className="flex justify-between items-center mb-5 border-b border-white/5 pb-3 shrink-0">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-amber-500" />

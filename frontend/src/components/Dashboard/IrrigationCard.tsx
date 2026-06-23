@@ -40,18 +40,21 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
   }
 
   // Urgency logic
-  let urgencyColor = "text-green-400";
+  let urgencyColor = "text-emerald-400";
   let urgencyText = "Optimal";
-  let gaugeColor = "#4ade80"; // green-400
+  let gaugeColor = "#34d399"; // emerald-400
+  let outerBorder = "border-emerald-500/30";
 
   if (data.nextIrrigationDays <= 1) {
     urgencyColor = "text-red-400";
     urgencyText = "Critical";
-    gaugeColor = "#f87171"; // red-400
+    gaugeColor = "#ef4444"; // red-500
+    outerBorder = "border-red-500/50";
   } else if (data.nextIrrigationDays <= 5) {
     urgencyColor = "text-yellow-400";
     urgencyText = "Approaching";
-    gaugeColor = "#facc15"; // yellow-400
+    gaugeColor = "#eab308"; // yellow-500
+    outerBorder = "border-yellow-500/50";
   }
 
   // Calculations
@@ -64,7 +67,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
   const dashoffset = circumference - (moistureSafe / 100) * circumference;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">

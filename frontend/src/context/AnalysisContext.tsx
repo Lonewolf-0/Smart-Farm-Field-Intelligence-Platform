@@ -19,6 +19,7 @@ interface AnalysisContextType {
   isStale7d: boolean;
   refreshAnalysis: () => Promise<void>;
   hasCachedData: boolean;
+  updateAnalysisData?: React.Dispatch<React.SetStateAction<AnalysisData | null>>;
 }
 
 const AnalysisContext = createContext<AnalysisContextType | undefined>(undefined);
