@@ -19,7 +19,8 @@ import { useField } from "../context/FieldContext";
 import { useAuth } from "../context/AuthContext";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
+import LoadingFarmAnimation from "../components/UI/LoadingFarmAnimation";
+import { getFarmLoadingHTML } from "../utils/farmLoadingPage";
 function DashboardPage() {
   const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const { user } = useAuth();
@@ -153,17 +154,23 @@ function DashboardPage() {
   const handleAgronomyReport = async (action: "view" | "download") => {
     if (!selectedFieldId || !analysisData) return;
 
+    // Show the animation overlay first, then open the tab and generate PDF after React re-renders
+    setGeneratingReport(true);
+
+    // Give React 100ms to paint the loading overlay before the heavy synchronous PDF work begins
+    await new Promise<void>((resolve) => setTimeout(resolve, 100));
+
     // Pre-open a blank tab synchronously to bypass the popup blocker for async actions
     let newTab: Window | null = null;
     if (action === "view") {
       newTab = window.open("", "_blank");
       if (newTab) {
-        newTab.document.write("<p style='font-family: sans-serif; text-align: center; margin-top: 50px;'>Generating PDF report... Please wait.</p>");
+        newTab.document.write(getFarmLoadingHTML());
+        newTab.document.close();
       }
     }
 
     try {
-      setGeneratingReport(true);
 
       const activeField = fields.find((f) => f.id === selectedFieldId);
       const area = activeField?.area || 1;
@@ -781,7 +788,7 @@ function DashboardPage() {
 
   return (
     <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl sm:p-8 min-h-[calc(100vh-6rem)]">
-      
+        {generatingReport && <LoadingFarmAnimation />}      
       {/* Non-blocking Progress Banner */}
       {isAnalyzing && (
         <div className="mb-6 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 animate-fadeIn flex flex-col md:flex-row items-center justify-between gap-4">
