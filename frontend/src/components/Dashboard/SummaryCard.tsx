@@ -128,7 +128,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Crop Vigor</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className="text-2xl font-black text-white">
+          <p className="font-mono text-2xl font-black text-white">
             {ndvi && typeof ndvi.averageNDVI === "number" ? `${ndvi.averageNDVI.toFixed(2)} NDVI` : "No Data"}
           </p>
           <p className={`text-sm mt-1 font-medium ${healthIsGood ? 'text-emerald-400' : 'text-yellow-400'}`}>
@@ -151,7 +151,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           {irrigation ? (
             <>
-              <p className={`text-2xl font-black ${isIrrigationUrgent ? 'text-red-400' : 'text-white'}`}>
+              <p className={`font-mono text-2xl font-black ${isIrrigationUrgent ? 'text-red-400' : 'text-white'}`}>
                 {irrigation.nextIrrigationDays === 0 ? "TODAY" : `In ${irrigation.nextIrrigationDays} Days`}
               </p>
               <p className={`text-sm mt-1 font-medium ${isIrrigationUrgent ? 'text-red-300' : 'text-blue-400'}`}>
@@ -159,7 +159,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
               </p>
             </>
           ) : (
-            <p className="text-2xl font-black text-white">No Data</p>
+            <p className="font-mono text-2xl font-black text-white">No Data</p>
           )}
         </div>
       </div>
@@ -176,7 +176,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">{threatTitle}</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className={`text-2xl font-black ${isCriticalThreat ? 'text-red-400' : hasRisks ? 'text-orange-400' : 'text-emerald-400'}`}>
+          <p className={`font-mono text-2xl font-black ${isCriticalThreat ? 'text-red-400' : hasRisks ? 'text-orange-400' : 'text-emerald-400'}`}>
             {threatValue}
           </p>
           <p className={`text-sm mt-1 font-medium ${isCriticalThreat ? 'text-red-300' : hasRisks ? 'text-orange-300' : 'text-emerald-300'}`}>
@@ -197,7 +197,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Soil Profile</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className={`text-2xl font-black ${soilScore === "No Data" ? 'text-white' : soilIsGood ? 'text-emerald-400' : 'text-yellow-400'}`}>
+          <p className={`font-mono text-2xl font-black ${soilScore === "No Data" ? 'text-white' : soilIsGood ? 'text-emerald-400' : 'text-yellow-400'}`}>
             {soilScore}
           </p>
           <p className={`text-sm mt-1 font-medium ${soilScore === "No Data" ? 'text-slate-400' : soilIsGood ? 'text-emerald-300' : 'text-yellow-300'}`}>
@@ -218,7 +218,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Top Crop</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className="text-2xl font-black text-white">{suitableCropName}</p>
+          <p className="font-mono text-2xl font-black text-white">{suitableCropName}</p>
           <p className="text-sm mt-1 font-medium text-green-400">{suitableCropScore}</p>
         </div>
       </div>
@@ -235,7 +235,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Fertilizer</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className={`text-2xl font-black ${needsFertilizer ? 'text-amber-400' : 'text-white'}`}>
+          <p className={`font-mono text-2xl font-black ${needsFertilizer ? 'text-amber-400' : 'text-white'}`}>
             {fertilizerText}
           </p>
           <p className={`text-sm mt-1 font-medium ${needsFertilizer ? 'text-amber-300' : 'text-blue-400'}`}>

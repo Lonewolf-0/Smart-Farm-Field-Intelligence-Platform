@@ -215,7 +215,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
           <CurrentIcon className="w-10 h-10" />
         </div>
         <div>
-          <p className="text-3xl font-black text-white leading-tight">
+          <p className="font-mono text-3xl font-black text-white leading-tight">
             {formatTemp(data.temperature)}
           </p>
           <p className="text-sm font-semibold text-slate-300">
@@ -229,17 +229,17 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
         <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Thermometer className="w-5 h-5 text-red-400 mb-1" />
           <p className="text-xs text-slate-400">Temp</p>
-          <p className="text-sm font-bold text-white mt-0.5">{formatTemp(data.temperature)}</p>
+          <p className="font-mono text-sm font-bold text-white mt-0.5">{formatTemp(data.temperature)}</p>
         </div>
         <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Droplets className="w-5 h-5 text-blue-400 mb-1" />
           <p className="text-xs text-slate-400">Humidity</p>
-          <p className="text-sm font-bold text-white mt-0.5">{formatHumidity(data.humidity)}</p>
+          <p className="font-mono text-sm font-bold text-white mt-0.5">{formatHumidity(data.humidity)}</p>
         </div>
         <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Wind className="w-5 h-5 text-teal-400 mb-1" />
           <p className="text-xs text-slate-400">Wind</p>
-          <p className="text-sm font-bold text-white mt-0.5 truncate max-w-full">{formatWindSpeed(data.windSpeed)}</p>
+          <p className="font-mono text-sm font-bold text-white mt-0.5 truncate max-w-full">{formatWindSpeed(data.windSpeed)}</p>
         </div>
       </div>
 
