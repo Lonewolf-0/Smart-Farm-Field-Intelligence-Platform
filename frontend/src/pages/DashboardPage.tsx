@@ -12,6 +12,7 @@ import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
 import PesticideCard from "../components/Dashboard/PesticideCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
+import SummaryCard from "../components/Dashboard/SummaryCard";
 import CustomSelect from "../components/UI/CustomSelect";
 import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext";
 import { useField } from "../context/FieldContext";
@@ -19,7 +20,7 @@ import { useField } from "../context/FieldContext";
 function DashboardPage() {
   const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
-  const [activeTab, setActiveTab] = useState<"overview" | "nutrition" | "operations" | "fertilizer">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "crop_health" | "agronomy">("overview");
 
   // Analysis State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -207,16 +208,15 @@ function DashboardPage() {
           </div>
           
           {/* Segmented Control */}
-          <div className="relative grid grid-cols-4 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[580px]">
+          <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[580px]">
             <div 
               className="absolute inset-y-1 bg-emerald-500 rounded-lg transition-all duration-300 ease-out shadow-md"
               style={{
-                width: "calc((100% - 8px) / 4)",
+                width: "calc((100% - 6px) / 3)",
                 transform: 
-                  activeTab === "overview" ? "translateX(4px)" : 
-                  activeTab === "nutrition" ? "translateX(calc(100% + 4px))" : 
-                  activeTab === "operations" ? "translateX(calc(200% + 4px))" :
-                  "translateX(calc(300% + 4px))"
+                  activeTab === "overview" ? "translateX(3px)" : 
+                  activeTab === "crop_health" ? "translateX(calc(100% + 3px))" : 
+                  "translateX(calc(200% + 3px))"
               }}
             />
             <button
@@ -229,31 +229,22 @@ function DashboardPage() {
               Overview
             </button>
             <button
-              onClick={() => setActiveTab("nutrition")}
+              onClick={() => setActiveTab("crop_health")}
               className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
-                activeTab === "nutrition" ? "text-slate-950" : "text-slate-400 hover:text-white"
+                activeTab === "crop_health" ? "text-slate-950" : "text-slate-400 hover:text-white"
               }`}
             >
               <Sprout className="w-4 h-4" />
-              Soil
+              Crop Health
             </button>
             <button
-              onClick={() => setActiveTab("operations")}
+              onClick={() => setActiveTab("agronomy")}
               className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
-                activeTab === "operations" ? "text-slate-950" : "text-slate-400 hover:text-white"
+                activeTab === "agronomy" ? "text-slate-950" : "text-slate-400 hover:text-white"
               }`}
             >
               <Tractor className="w-4 h-4" />
-              Operations
-            </button>
-            <button
-              onClick={() => setActiveTab("fertilizer")}
-              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
-                activeTab === "fertilizer" ? "text-slate-950" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <FlaskConical className="w-4 h-4" />
-              Fertilizer
+              Agronomy Recs
             </button>
           </div>
         </div>
@@ -363,33 +354,29 @@ function DashboardPage() {
               {activeTab === "overview" && (
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
-                  <div className="flex flex-col gap-4">
-                    <RiskAlertCard 
-                      fieldId={selectedFieldId} 
-                      onCriticalAlerts={setCriticalAlerts} 
-                    />
-                    <NDVICard fieldId={selectedFieldId} />
-                  </div>
+                  <SummaryCard />
                 </div>
               )}
 
-              {activeTab === "nutrition" && (
+              {activeTab === "crop_health" && (
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                  <NDVICard fieldId={selectedFieldId} />
                   <SoilCard fieldId={selectedFieldId} />
-                  <CropSuitabilityCard fieldId={selectedFieldId} />
-                </div>
-              )}
-
-              {activeTab === "operations" && (
-                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
-                  <IrrigationCard fieldId={selectedFieldId} />
                   <PesticideCard fieldId={selectedFieldId} />
+                  <RiskAlertCard 
+                    fieldId={selectedFieldId} 
+                    onCriticalAlerts={setCriticalAlerts} 
+                  />
                 </div>
               )}
 
-              {activeTab === "fertilizer" && (
-                <div className="mt-8 animate-fadeIn">
-                  <FertilizerCard fieldId={selectedFieldId} />
+              {activeTab === "agronomy" && (
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                  <CropSuitabilityCard fieldId={selectedFieldId} />
+                  <IrrigationCard fieldId={selectedFieldId} />
+                  <div className="md:col-span-2">
+                    <FertilizerCard fieldId={selectedFieldId} />
+                  </div>
                 </div>
               )}
             </div>
