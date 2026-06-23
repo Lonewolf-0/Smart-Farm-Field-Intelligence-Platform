@@ -6,12 +6,12 @@ import PriceCompare from "../components/Branches/PriceCompare";
 import { useAuth } from "../context/AuthContext";
 import { useField } from "../context/FieldContext";
 import api from "../services/api";
-import type { Field, NutrienBranch } from "../types";
+import type { NutrienBranch } from "../types";
 import CustomSelect from "../components/UI/CustomSelect";
+import { Sprout } from "lucide-react";
 
 const BranchesPage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const { fields, isLoadingFields, selectedFieldId, setSelectedFieldId } = useField();
+  const { fields, selectedFieldId, setSelectedFieldId } = useField();
   const [branches, setBranches] = useState<(NutrienBranch & { distance?: number })[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,8 +78,8 @@ const BranchesPage: React.FC = () => {
 
       <div className="w-full flex-1 flex flex-col lg:flex-row rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl overflow-hidden gap-6">
         {isLoading ? (
-          <div className="flex-1 flex items-center justify-center rounded-2xl border border-white/10 bg-black/20">
-            <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex-1 flex items-center justify-center rounded-2xl border border-white/10 bg-black/20 min-h-[400px]">
+            <Sprout className="h-10 w-10 text-emerald-400 animate-spin" />
           </div>
         ) : (
           <>

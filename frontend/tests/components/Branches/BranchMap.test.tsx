@@ -32,6 +32,7 @@ describe('BranchMap', () => {
       phone: '123-456-7890',
       manager: 'John Doe',
       services: ['Service A', 'Service B'],
+      products: [],
       distance: 10,
     },
     {
@@ -43,12 +44,14 @@ describe('BranchMap', () => {
       phone: '098-765-4321',
       manager: 'Jane Smith',
       services: ['Service C'],
+      products: [],
     },
   ];
 
   const mockSavedFields = [
     {
       id: 'field1',
+      userId: 'user1',
       name: 'Test Field 1',
       polygon: { type: 'Polygon', coordinates: [] } as any,
       centroid: { lat: 45.5, lng: -90.5 },

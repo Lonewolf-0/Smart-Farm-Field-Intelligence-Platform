@@ -59,7 +59,7 @@ describe("PesticideCard Component Tests", () => {
       isLoading: true,
     });
 
-    const { container } = render(<PesticideCard fieldId="field1" />);
+    const { container } = render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
 
     expect(container.firstChild).toHaveClass("animate-pulse");
   });
@@ -71,7 +71,7 @@ describe("PesticideCard Component Tests", () => {
     });
     vi.mocked(api.post).mockRejectedValueOnce(new Error("API Error"));
 
-    render(<PesticideCard fieldId="field1" />);
+    render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
 
     await waitFor(() => {
       expect(screen.getByText("API Error")).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe("PesticideCard Component Tests", () => {
       isLoading: false,
     });
 
-    render(<PesticideCard fieldId="field1" />);
+    render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
 
     expect(screen.getByText("Pest Risk Assessment")).toBeInTheDocument();
     expect(screen.getByText("Aphids")).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("PesticideCard Component Tests", () => {
       data: { success: true, data: { ...mockPestData, crop: "Rice" } }
     });
 
-    render(<PesticideCard fieldId="field1" />);
+    render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
 
     const cropSelect = screen.getByRole("combobox");
     await userEvent.selectOptions(cropSelect, "Rice");
@@ -123,7 +123,7 @@ describe("PesticideCard Component Tests", () => {
       isLoading: false,
     });
 
-    render(<PesticideCard fieldId="field1" />);
+    render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
 
     // By default details are closed (Active ingredient is not visible)
     const aphidsToggle = screen.getByText("Aphids").closest(".cursor-pointer");
@@ -141,22 +141,5 @@ describe("PesticideCard Component Tests", () => {
     }
   });
 
-  it("should initialize selected crop from localStorage if present and update it when changed", async () => {
-    mockUseAnalysisContext.mockReturnValue({
-      data: { pesticide: mockPestData },
-      isLoading: false,
-    });
-    vi.mocked(api.post).mockResolvedValueOnce({
-      data: { success: true, data: { ...mockPestData, crop: "Rice" } }
-    });
-    localStorage.setItem("selectedCrop", "Rice");
-    render(<PesticideCard fieldId="field1" />);
 
-    const cropSelect = await screen.findByRole("combobox") as HTMLSelectElement;
-    expect(cropSelect.value).toBe("Rice");
-
-    await userEvent.selectOptions(cropSelect, "Maize");
-    expect(localStorage.getItem("selectedCrop")).toBe("Maize");
-    localStorage.removeItem("selectedCrop");
-  });
 });

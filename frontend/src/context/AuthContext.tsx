@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "../types";
 import api from "../services/api";
-
+import PremiumLoader from "../components/UI/PremiumLoader";
 interface AuthContextValue {
   user: User | null;
   token: string | null;
@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       {isLoading ? (
         <div className="flex h-screen w-full items-center justify-center bg-gray-50">
           <div className="flex flex-col items-center gap-4">
-            <span className="animate-spin h-10 w-10 border-4 border-green-600 border-t-transparent rounded-full"></span>
+            <PremiumLoader className="w-16 h-16" />
             <p className="text-gray-600 font-medium animate-pulse">Loading...</p>
           </div>
         </div>
