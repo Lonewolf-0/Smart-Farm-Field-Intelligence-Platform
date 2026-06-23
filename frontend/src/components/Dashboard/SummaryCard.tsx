@@ -115,14 +115,14 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
   const fertilizerSubtext = fertilizer ? (recs.length > 0 ? `For ${selectedCrop}` : `For ${selectedCrop}`) : "Run Analysis";
   const needsFertilizer = recs.length > 0;
 
-  const baseCardClasses = "rounded-2xl border cursor-pointer transition-colors p-5 shadow-xl backdrop-blur-md flex flex-col justify-center group bg-slate-950/80 hover:bg-slate-900";
+  const baseCardClasses = "rounded-2xl border cursor-pointer transition-colors p-5 shadow-xl backdrop-blur-md flex flex-col group bg-slate-950/80 hover:bg-slate-900";
 
   return (
     <div className="grid grid-cols-2 gap-4 h-full">
       {/* 1. Field Health Summary */}
       <div 
         onClick={() => onNavigate?.("crop_health")}
-        className={`${baseCardClasses} ${healthIsGood ? 'border-white/10' : 'border-yellow-500/50'}`}
+        className={`${baseCardClasses} ${healthIsGood ? 'border-emerald-500/50' : 'border-yellow-500/50'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className={`p-2 rounded-lg ${healthIsGood ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
@@ -130,7 +130,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Crop Vigor</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           <p className="text-2xl font-black text-white">
             {ndvi && typeof ndvi.averageNDVI === "number" ? `${ndvi.averageNDVI.toFixed(2)} NDVI` : "No Data"}
           </p>
@@ -143,7 +143,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
       {/* 2. Irrigation Needs */}
       <div 
         onClick={() => onNavigate?.("agronomy")}
-        className={`${baseCardClasses} ${isIrrigationUrgent ? 'border-red-500/50' : 'border-white/10'}`}
+        className={`${baseCardClasses} ${isIrrigationUrgent ? 'border-red-500/50' : 'border-blue-500/50'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className={`p-2 rounded-lg ${isIrrigationUrgent ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
@@ -151,7 +151,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Water Need</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           {irrigation ? (
             <>
               <p className={`text-2xl font-black ${isIrrigationUrgent ? 'text-red-400' : 'text-white'}`}>
@@ -170,7 +170,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
       {/* 3. Active Threats */}
       <div 
         onClick={() => onNavigate?.("crop_health")}
-        className={`${baseCardClasses} ${isCriticalThreat ? 'border-red-500/50' : hasRisks ? 'border-orange-500/50' : 'border-emerald-500/30'}`}
+        className={`${baseCardClasses} ${isCriticalThreat ? 'border-red-500/50' : hasRisks ? 'border-orange-500/50' : 'border-emerald-500/50'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className={`p-2 rounded-lg ${isCriticalThreat ? 'bg-red-500/20 text-red-400' : hasRisks ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
@@ -178,7 +178,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">{threatTitle}</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           <p className={`text-2xl font-black ${isCriticalThreat ? 'text-red-400' : hasRisks ? 'text-orange-400' : 'text-emerald-400'}`}>
             {threatValue}
           </p>
@@ -191,7 +191,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
       {/* 4. Soil Quality */}
       <div 
         onClick={() => onNavigate?.("crop_health")}
-        className={`${baseCardClasses} ${soilIsGood ? 'border-emerald-500/30' : soilScore === "No Data" ? 'border-white/10' : 'border-yellow-500/50'}`}
+        className={`${baseCardClasses} ${soilIsGood ? 'border-emerald-500/50' : soilScore === "No Data" ? 'border-white/10' : 'border-yellow-500/50'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className={`p-2 rounded-lg ${soilIsGood ? 'bg-emerald-500/20 text-emerald-400' : soilScore === "No Data" ? 'bg-slate-500/20 text-slate-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
@@ -199,7 +199,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Soil Profile</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           <p className={`text-2xl font-black ${soilScore === "No Data" ? 'text-white' : soilIsGood ? 'text-emerald-400' : 'text-yellow-400'}`}>
             {soilScore}
           </p>
@@ -212,7 +212,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
       {/* 5. Top Crop */}
       <div 
         onClick={() => onNavigate?.("agronomy")}
-        className={`${baseCardClasses} border-white/10`}
+        className={`${baseCardClasses} border-green-500/50`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className="p-2 rounded-lg bg-green-500/20 text-green-400">
@@ -220,7 +220,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Top Crop</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           <p className="text-2xl font-black text-white">{suitableCropName}</p>
           <p className="text-sm mt-1 font-medium text-green-400">{suitableCropScore}</p>
         </div>
@@ -229,7 +229,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
       {/* 6. Fertilizer */}
       <div 
         onClick={() => onNavigate?.("agronomy")}
-        className={`${baseCardClasses} ${needsFertilizer ? 'border-amber-500/50' : 'border-white/10'}`}
+        className={`${baseCardClasses} ${needsFertilizer ? 'border-amber-500/50' : 'border-blue-500/50'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
           <div className={`p-2 rounded-lg ${needsFertilizer ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}`}>
@@ -237,7 +237,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
           </div>
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Fertilizer</h3>
         </div>
-        <div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
           <p className={`text-2xl font-black ${needsFertilizer ? 'text-amber-400' : 'text-white'}`}>
             {fertilizerText}
           </p>
