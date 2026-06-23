@@ -6,9 +6,10 @@ import type { RiskAlert } from "../../types";
 interface SummaryCardProps {
   onNavigate?: (tab: "overview" | "crop_health" | "agronomy") => void;
   fieldId: string;
+  selectedCrop: string;
 }
 
-const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
+const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selectedCrop }) => {
   const { data: contextData, isLoading } = useAnalysisContext();
   const [dismissedKeys] = useState<string[]>(() => {
     try {
@@ -17,10 +18,6 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId }) => {
     } catch {
       return [];
     }
-  });
-
-  const [selectedCrop] = useState<string>(() => {
-    return localStorage.getItem("selectedCrop") || "Wheat";
   });
 
   if (isLoading) {

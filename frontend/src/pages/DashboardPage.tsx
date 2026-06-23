@@ -14,6 +14,7 @@ import PesticideCard from "../components/Dashboard/PesticideCard";
 import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 import SummaryCard from "../components/Dashboard/SummaryCard";
 import CustomSelect from "../components/UI/CustomSelect";
+import PremiumLoader from "../components/UI/PremiumLoader";
 import { AnalysisProvider, type AnalysisData } from "../context/AnalysisContext";
 import { useField } from "../context/FieldContext";
 import { useAuth } from "../context/AuthContext";
@@ -26,6 +27,21 @@ function DashboardPage() {
   const { user } = useAuth();
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
   const [activeTab, setActiveTab] = useState<"overview" | "crop_health" | "agronomy">("overview");
+
+  const [selectedCrop, setSelectedCrop] = useState<string>(() => {
+    return localStorage.getItem("selectedCrop") || "Wheat";
+  });
+
+  const handleCropChange = (crop: string) => {
+    setSelectedCrop(crop);
+    localStorage.setItem("selectedCrop", crop);
+  };
+
+  const cropOptions = [
+    "Wheat", "Rice", "Maize", "Soybean", "Cotton", 
+    "Sugarcane", "Mustard", "Chickpea", "Groundnut", "Potato", 
+    "Tomato", "Onion", "Sunflower", "Barley", "Millet"
+  ].map(c => ({ id: c, name: c }));
 
   // Report and Analysis State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -793,7 +809,7 @@ function DashboardPage() {
       {isAnalyzing && (
         <div className="mb-6 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 animate-fadeIn flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-emerald-200">
-            <RefreshCw className="w-5 h-5 animate-spin" />
+            <PremiumLoader className="w-10 h-10" />
             <span className="font-semibold text-sm">Analyzing Field Data...</span>
           </div>
           <div className="flex-1 w-full max-w-md">
@@ -811,8 +827,9 @@ function DashboardPage() {
         </div>
       )}
 
-      <div className="relative z-50 flex flex-col md:flex-row md:items-start justify-between gap-6">
-        <div className="flex flex-col gap-5">
+      <div className="relative z-50 flex flex-col gap-6">
+        {/* Row 1: Title and Selectors */}
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-300/15 text-emerald-200">
               <BarChart3 className="h-6 w-6" />
@@ -826,7 +843,43 @@ function DashboardPage() {
               </h2>
             </div>
           </div>
-          
+
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Field Selector */}
+            <div className="flex items-center gap-3 w-full sm:w-auto min-w-[260px]">
+              {loadingFields ? (
+                <span className="text-slate-300 animate-pulse bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">Loading fields...</span>
+              ) : fields.length > 0 ? (
+                <div className="w-full">
+                  <CustomSelect
+                    className="w-full"
+                    value={fields.find((f) => f.id === selectedFieldId) || null}
+                    onChange={(val) => setSelectedFieldId(val.id as string)}
+                    options={fields.map((f) => ({
+                      id: f.id,
+                      name: `${f.name} (${f.area.toFixed(1)} ha)`,
+                    }))}
+                  />
+                </div>
+              ) : (
+                <span className="text-slate-400 bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">No fields saved</span>
+              )}
+            </div>
+
+            {/* Crop Selector */}
+            <div className="flex items-center gap-3 w-full sm:w-auto min-w-[200px] relative z-[60]">
+              <CustomSelect
+                className="w-full"
+                value={{ id: selectedCrop, name: selectedCrop }}
+                onChange={(val) => handleCropChange(val.id as string)}
+                options={cropOptions}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: Tabs and Refresh/Analyze */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           {/* Segmented Control */}
           <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[580px]">
             <div 
@@ -867,36 +920,14 @@ function DashboardPage() {
               Agronomy Recs
             </button>
           </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* Field Selector */}
-          <div className="flex items-center gap-3 w-full sm:w-auto min-w-[200px]">
-            {loadingFields ? (
-              <span className="text-slate-300 animate-pulse bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">Loading fields...</span>
-            ) : fields.length > 0 ? (
-              <div className="w-full">
-                <CustomSelect
-                  value={fields.find((f) => f.id === selectedFieldId) || null}
-                  onChange={(val) => setSelectedFieldId(val.id as string)}
-                  options={fields.map((f) => ({
-                    id: f.id,
-                    name: `${f.name} (${f.area.toFixed(1)} ha)`,
-                  }))}
-                />
-              </div>
-            ) : (
-              <span className="text-slate-400 bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">No fields saved</span>
-            )}
-          </div>
 
           {/* Time & Analyze Button */}
           {fields.length > 0 && selectedFieldId && (
             <div className="flex items-center gap-4 w-full sm:w-auto">
               {lastAnalyzedTimestamp && (
-                <div className="hidden sm:block text-xs text-slate-400 text-right">
+                <div className="hidden sm:block text-xs text-slate-400 text-right min-w-[140px]">
                   <p>Last analyzed</p>
-                  <p className="font-medium text-slate-300">{formatDate(lastAnalyzedTimestamp)}</p>
+                  <p className="font-medium text-slate-300 whitespace-nowrap">{formatDate(lastAnalyzedTimestamp)}</p>
                 </div>
               )}
               <button
@@ -975,7 +1006,7 @@ function DashboardPage() {
               {activeTab === "overview" && (
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
-                  <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} />
+                  <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} selectedCrop={selectedCrop} />
                 </div>
               )}
 
@@ -983,7 +1014,7 @@ function DashboardPage() {
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <NDVICard fieldId={selectedFieldId} />
                   <SoilCard fieldId={selectedFieldId} />
-                  <PesticideCard fieldId={selectedFieldId} />
+                  <PesticideCard fieldId={selectedFieldId} selectedCrop={selectedCrop} />
                   <RiskAlertCard 
                     fieldId={selectedFieldId} 
                     onCriticalAlerts={setCriticalAlerts} 
@@ -1006,11 +1037,11 @@ function DashboardPage() {
                       <button
                         onClick={() => handleAgronomyReport("view")}
                         disabled={generatingReport}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-white rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto h-[36px]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-white rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
                       >
                         {generatingReport ? (
                           <>
-                            <RefreshCw className="w-4 h-4 text-emerald-400 animate-spin shrink-0" />
+                            <PremiumLoader className="w-5 h-5 shrink-0" />
                             <span>Loading...</span>
                           </>
                         ) : (
@@ -1023,11 +1054,11 @@ function DashboardPage() {
                       <button
                         onClick={() => handleAgronomyReport("download")}
                         disabled={generatingReport}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto h-[36px]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
                       >
                         {generatingReport ? (
                           <>
-                            <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
+                            <PremiumLoader className="w-5 h-5 shrink-0" />
                             <span>Generating...</span>
                           </>
                         ) : (
@@ -1044,7 +1075,7 @@ function DashboardPage() {
                     <CropSuitabilityCard fieldId={selectedFieldId} />
                     <IrrigationCard fieldId={selectedFieldId} />
                     <div className="md:col-span-2">
-                      <FertilizerCard fieldId={selectedFieldId} />
+                      <FertilizerCard fieldId={selectedFieldId} selectedCrop={selectedCrop} onCropChange={handleCropChange} />
                     </div>
                   </div>
                 </div>

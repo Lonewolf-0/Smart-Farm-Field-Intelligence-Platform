@@ -17,6 +17,8 @@ import { useAnalysisContext } from "../../context/AnalysisContext";
 
 interface FertilizerCardProps {
   fieldId: string;
+  selectedCrop: string;
+  onCropChange: (c: string) => void;
 }
 
 // Static crop nutrient requirements mapping matching the backend's crop requirements
@@ -45,14 +47,10 @@ const FERTILIZER_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number;
   "MOP": { pricePerKg: 0.70, bagSizeKg: 50, pricePerBag: 35.00 }
 };
 
-const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
+const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, onCropChange }) => {
   const { data: contextData, isLoading: contextLoading, updateAnalysisData } = useAnalysisContext();
   
   const [field, setField] = useState<Field | null>(null);
-  const [cropsList] = useState<string[]>(Object.keys(cropNutrients));
-  const [selectedCrop, setSelectedCrop] = useState<string>(() => {
-    return localStorage.getItem("selectedCrop") || "Wheat";
-  });
   
   // Soil NPK input states (kg/ha)
   const [soilN, setSoilN] = useState<number>(() => {
@@ -102,8 +100,9 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
       setPlan(contextData.fertilizer);
       if (selectedCrop === "Wheat") {
         const calculatedCrop = contextData.fertilizer.crop || "Wheat";
-        setSelectedCrop(calculatedCrop);
-        localStorage.setItem("selectedCrop", calculatedCrop);
+        if (calculatedCrop !== "Wheat") {
+          onCropChange(calculatedCrop);
+        }
       }
       if (contextData.fertilizer.soilBaselines) {
         setSoilN(contextData.fertilizer.soilBaselines.nitrogen);
@@ -316,25 +315,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId }) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          {/* Crop Select */}
-          <div className="flex items-center gap-2 bg-white/5 px-3 rounded-lg border border-white/10 shrink-0 w-[145px] h-[34px] justify-between">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Crop</span>
-            <select
-              value={selectedCrop}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedCrop(val);
-                localStorage.setItem("selectedCrop", val);
-              }}
-              className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1 flex-1 text-right h-full py-0"
-            >
-              {cropsList.map((c) => (
-                <option key={c} value={c} className="bg-slate-900 text-white">
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
+
 
           {/* Use Soil Test Data Toggle */}
           <button

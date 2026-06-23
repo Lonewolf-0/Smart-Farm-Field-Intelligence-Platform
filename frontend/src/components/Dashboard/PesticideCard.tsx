@@ -30,30 +30,17 @@ interface PesticideData {
 
 interface PesticideCardProps {
   fieldId: string;
+  selectedCrop: string;
 }
 
-const CROPS = [
-  "Wheat", "Rice", "Maize", "Soybean", "Cotton", 
-  "Sugarcane", "Mustard", "Chickpea", "Groundnut", "Potato", 
-  "Tomato", "Onion", "Sunflower", "Barley", "Millet"
-];
 
-const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
+
+const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) => {
   const { data: contextData, isLoading: contextLoading, updateAnalysisData } = useAnalysisContext();
   const [localData, setLocalData] = useState<PesticideData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCrop, setSelectedCrop] = useState<string>(() => {
-    return localStorage.getItem("selectedCrop") || "Wheat";
-  });
   const [expandedPest, setExpandedPest] = useState<string | null>(null);
-
-  // Sync selectedCrop with context if context data is available and we haven't selected anything yet
-  useEffect(() => {
-    if (contextData?.pesticide?.crop && !localStorage.getItem("selectedCrop")) {
-      setSelectedCrop(contextData.pesticide.crop);
-    }
-  }, [contextData]);
 
   // Use local data if it matches selected crop, otherwise fallback to context data
   const data = (localData?.crop === selectedCrop) ? localData 
@@ -151,24 +138,6 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId }) => {
             Pest Risk Assessment
           </h3>
           <p className="text-sm text-emerald-200 mt-0.5">Season: {data.season}</p>
-        </div>
-        <div className="flex items-center gap-2 bg-white/5 px-3 rounded-lg border border-white/10 shrink-0 w-[145px] h-[34px] justify-between">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Crop</span>
-          <select
-            value={selectedCrop}
-            onChange={(e) => {
-              const val = e.target.value;
-              setSelectedCrop(val);
-              localStorage.setItem("selectedCrop", val);
-            }}
-            className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1 flex-1 text-right h-full py-0"
-          >
-            {CROPS.map((c) => (
-              <option key={c} value={c} className="bg-slate-900 text-white">
-                {c}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
