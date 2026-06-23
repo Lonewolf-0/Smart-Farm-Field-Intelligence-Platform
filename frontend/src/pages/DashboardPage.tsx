@@ -306,7 +306,8 @@ function DashboardPage() {
           isStale24h,
           isStale7d,
           refreshAnalysis: handleAnalyzeField,
-          hasCachedData: !!analysisData
+          hasCachedData: !!analysisData,
+          updateAnalysisData: setAnalysisData
         }}>
           {/* Stale Warnings Banner */}
           {analysisData && isStale7d && (
@@ -354,7 +355,7 @@ function DashboardPage() {
               {activeTab === "overview" && (
                 <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
-                  <SummaryCard />
+                  <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} />
                 </div>
               )}
 
