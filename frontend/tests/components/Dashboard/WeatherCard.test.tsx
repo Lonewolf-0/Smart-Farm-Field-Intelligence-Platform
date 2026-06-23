@@ -115,7 +115,7 @@ describe("WeatherCard Component Tests", () => {
     const alertMessage = screen.getByText("Moderate rainfall expected: 35.0mm");
     expect(alertMessage).toBeInTheDocument();
 
-    const dismissBtn = screen.getByRole("button", { name: /dismiss/i || /close/i || /x/i || "" });
+    const dismissBtn = screen.getByRole("button", { name: /dismiss/i });
     fireEvent.click(dismissBtn);
 
     expect(alertMessage).not.toBeInTheDocument();

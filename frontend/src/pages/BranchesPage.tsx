@@ -122,7 +122,7 @@ const BranchesPage: React.FC = () => {
                 branches={branches}
                 savedFields={fields}
                 selectedBranchId={selectedBranchId}
-                selectedFieldId={selectedFieldId}
+                selectedFieldId={selectedFieldId || undefined}
                 onSelectBranch={setSelectedBranchId}
               />
             </div>

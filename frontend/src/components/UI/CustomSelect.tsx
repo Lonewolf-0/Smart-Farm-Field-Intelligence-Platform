@@ -19,7 +19,7 @@ interface CustomSelectProps {
 export default function CustomSelect({ value, onChange, options, placeholder = "Select an option", className = "" }: CustomSelectProps) {
   return (
     <div className={`relative ${className}`}>
-      <Listbox value={value} onChange={onChange}>
+      <Listbox value={value || undefined} onChange={onChange}>
         <div className="relative mt-1">
           <Listbox.Button className="relative w-full cursor-default rounded-xl bg-white/5 border border-white/10 py-2.5 pl-4 pr-10 text-left text-white shadow-md focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 sm:text-sm transition-colors">
             <span className="block truncate">{value ? value.name : <span className="text-slate-400">{placeholder}</span>}</span>
@@ -34,7 +34,7 @@ export default function CustomSelect({ value, onChange, options, placeholder = "
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-slate-800 border border-white/10 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-              {options.map((option, personIdx) => (
+              {options.map((option) => (
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
