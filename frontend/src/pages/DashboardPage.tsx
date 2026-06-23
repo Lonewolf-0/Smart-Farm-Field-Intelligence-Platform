@@ -259,7 +259,7 @@ function DashboardPage() {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8); // was 8.5
       doc.setTextColor(100, 116, 139); // slate-500 label
-      doc.text("User Name:", margin + 5, yPos + 5); // was yPos + 6
+      doc.text("Name:", margin + 5, yPos + 5); // was yPos + 6
       doc.setTextColor(15, 23, 42); // slate-900 value
       doc.text(`${user?.name || "N/A"}`, margin + 28, yPos + 5);
 
@@ -284,11 +284,6 @@ function DashboardPage() {
       doc.setTextColor(15, 23, 42);
       const coordsText = `${activeField?.centroid?.lat?.toFixed(4) || "N/A"}, ${activeField?.centroid?.lng?.toFixed(4) || "N/A"}`;
       doc.text(coordsText, margin + 125, yPos + 10);
-
-      doc.setTextColor(100, 116, 139);
-      doc.text("Report Class:", margin + 95, yPos + 15); // was yPos + 18
-      doc.setTextColor(15, 23, 42);
-      doc.text("Standard Agronomy Recs", margin + 125, yPos + 15);
 
       yPos += 20; // was 24
       drawDivider(yPos);
@@ -326,6 +321,17 @@ function DashboardPage() {
         cropRows.push(["No suitability data", "-", "-", "-", "-", "-"]);
       }
 
+      // Find crop with highest suitability score
+      const topCrops = cropSuitabilityList.slice(0, 5);
+      let bestCropName = "";
+      let highestScore = -1;
+      topCrops.forEach(c => {
+        if (c.score !== undefined && c.score > highestScore) {
+          highestScore = c.score;
+          bestCropName = c.name;
+        }
+      });
+
       (doc as any).autoTable({
         startY: yPos,
         head: cropHeaders,
@@ -341,6 +347,16 @@ function DashboardPage() {
           5: { cellWidth: 28, halign: "left" },
         },
         styles: { cellPadding: 2.5, fontSize: 8 },
+        didParseCell: function(cellData: any) {
+          if (cellData.section === 'body') {
+            const cropNameInRow = cellData.row.raw && cellData.row.raw[0];
+            if (bestCropName && cropNameInRow === bestCropName) {
+              cellData.cell.styles.fillColor = [209, 250, 229]; // light emerald/green background (emerald-100)
+              cellData.cell.styles.textColor = [6, 95, 70]; // dark emerald/green text (emerald-800)
+              cellData.cell.styles.fontStyle = 'bold';
+            }
+          }
+        }
       });
 
       yPos = (doc as any).lastAutoTable.finalY + 6; // was + 8
@@ -581,60 +597,124 @@ function DashboardPage() {
       yPos += 7;
 
       if (fertilizerPlan && fertilizerPlan.scheduleSteps && fertilizerPlan.scheduleSteps.length > 0) {
-        fertilizerPlan.scheduleSteps.forEach((step: any) => {
-          const splitDesc = doc.splitTextToSize(step.description || "", contentWidth - 10);
-          const descLines = splitDesc.length;
-          const boxHeight = 16 + (descLines * 4.5) + (step.recommendations?.length ? 10 : 6);
+        const timelineX = margin + 8;
+        const contentX = margin + 18;
+        const timelineContentWidth = pageWidth - margin - contentX;
 
-          if (yPos + boxHeight > pageHeight - margin) {
+        let lastNodeY: number | null = null;
+        let lastNodePage: number | null = null;
+
+        fertilizerPlan.scheduleSteps.forEach((step: any, idx: number) => {
+          const splitDesc = doc.splitTextToSize(step.description || "", timelineContentWidth - 5);
+          const descLines = splitDesc.length;
+          
+          const tableLines = step.recommendations?.length || 0;
+          const tableHeight = tableLines > 0 ? 6 + (tableLines * 4.5) : 6;
+          const estimatedHeight = 12 + (descLines * 4) + tableHeight;
+
+          // Check if we need to start a new page
+          if (yPos + estimatedHeight > pageHeight - margin) {
+            // Draw line to the bottom of the page before adding the page
+            if (lastNodeY !== null && lastNodePage === doc.internal.getNumberOfPages()) {
+              doc.setLineWidth(0.4);
+              doc.setDrawColor(203, 213, 225); // slate-200
+              doc.line(timelineX, lastNodeY + 4, timelineX, pageHeight - margin);
+            }
             doc.addPage();
             yPos = 20;
+            
+            // Draw line from top of new page to the new node
+            if (lastNodeY !== null) {
+              doc.setLineWidth(0.4);
+              doc.setDrawColor(203, 213, 225);
+              doc.line(timelineX, 20, timelineX, yPos + 6);
+            }
+          } else {
+            // Draw line from last node to current node on same page
+            if (lastNodeY !== null && lastNodePage === doc.internal.getNumberOfPages()) {
+              doc.setLineWidth(0.4);
+              doc.setDrawColor(203, 213, 225);
+              doc.line(timelineX, lastNodeY + 4, timelineX, yPos + 6);
+            }
           }
 
-          // Stage title box (Premium slate styled box)
-          doc.setFillColor(248, 250, 252); // slate-50
-          doc.setDrawColor(226, 232, 240); // slate-200
-          doc.setLineWidth(0.3);
-          doc.rect(margin, yPos, contentWidth, boxHeight, "DF");
+          const currentNodeY = yPos + 6;
+          const currentPage = doc.internal.getNumberOfPages();
 
-          // Dynamic Tag
-          const tagText = step.days === 0 ? "BASAL" : `DAY +${step.days}`;
-          const tagWidth = Math.max(16, doc.getTextWidth(tagText) + 4);
+          // Draw the Node Circle
           doc.setFillColor(245, 158, 11); // Amber-500
-          doc.rect(margin + 5, yPos + 5, tagWidth, 6, "F");
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(8);
-          doc.setTextColor(255, 255, 255);
-          doc.text(tagText, margin + 7, yPos + 9.5);
+          doc.setDrawColor(217, 119, 6); // Amber-600
+          doc.setLineWidth(0.3);
+          doc.circle(timelineX, currentNodeY, 4, "FD");
 
-          // Name
+          // Text inside Node Circle (e.g. B or +21)
+          const label = step.days === 0 ? "B" : `+${step.days}`;
           doc.setFont("helvetica", "bold");
-          doc.setFontSize(9.5);
+          doc.setFontSize(7);
+          doc.setTextColor(255, 255, 255);
+          const labelWidth = doc.getTextWidth(label);
+          doc.text(label, timelineX - (labelWidth / 2), currentNodeY + 2.5);
+
+          // Content Tag
+          const tagName = step.days === 0 ? "BASAL DOSE" : `TOP-DRESS DOSE (+${step.days}D)`;
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(6.5);
+          const tagW = doc.getTextWidth(tagName) + 3;
+          doc.setFillColor(254, 243, 199); // Amber-100
+          doc.rect(contentX, yPos + 2.5, tagW, 5, "F");
+          doc.setTextColor(217, 119, 6); // Amber-700
+          doc.text(tagName, contentX + 1.5, yPos + 6);
+
+          // Stage Name
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
           doc.setTextColor(15, 23, 42); // slate-900
-          doc.text(step.stage || "N/A", margin + 5 + tagWidth + 4, yPos + 9.5);
+          doc.text(step.stage, contentX + tagW + 4, yPos + 6);
 
           // Description
           doc.setFont("helvetica", "normal");
-          doc.setFontSize(8.5);
+          doc.setFontSize(8);
           doc.setTextColor(71, 85, 105); // slate-600
-          doc.text(splitDesc, margin + 5, yPos + 16);
+          doc.text(splitDesc, contentX, yPos + 12);
 
-          // Recommendations
+          let nextYPos = yPos + 12 + (descLines * 4);
+
+          // Recommendations Table or Text
           if (step.recommendations && step.recommendations.length > 0) {
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(8.5);
-            doc.setTextColor(15, 23, 42);
-            
-            const recTexts = step.recommendations.map((r: any) => `${r.name || "N/A"}: ${((r.quantity || 0) * area).toFixed(1)} kg (${(r.quantity || 0).toFixed(1)} kg/ha)`).join("   |   ");
-            doc.text(`Dose Split:  ${recTexts}`, margin + 5, yPos + boxHeight - 6);
+            (doc as any).autoTable({
+              startY: nextYPos,
+              margin: { left: contentX },
+              tableWidth: timelineContentWidth,
+              head: [["Fertilizer Product", "Dose / ha", `Total Qty (${area.toFixed(2)} ha)`]],
+              body: step.recommendations.map((r: any) => [
+                r.name || "N/A",
+                `${(r.quantity || 0).toFixed(1)} ${r.unit || "kg"}/ha`,
+                `${((r.quantity || 0) * area).toFixed(1)} ${r.unit || "kg"}`
+              ]),
+              theme: "striped",
+              headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Emerald header consistent with other tables
+              columnStyles: {
+                0: { cellWidth: 60, halign: "left", fontStyle: "bold" },
+                1: { cellWidth: 50, halign: "left" },
+                2: { cellWidth: 52, halign: "left" },
+              },
+              styles: { cellPadding: 2, fontSize: 7.5 },
+            });
+            nextYPos = (doc as any).lastAutoTable.finalY;
           } else {
             doc.setFont("helvetica", "italic");
-            doc.setFontSize(8.5);
-            doc.setTextColor(148, 163, 184);
-            doc.text("No fertilizer application needed at this stage.", margin + 5, yPos + boxHeight - 6);
+            doc.setFontSize(8);
+            doc.setTextColor(148, 163, 184); // slate-400
+            doc.text("No fertilizer application needed at this stage.", contentX, nextYPos + 3);
+            nextYPos += 6;
           }
 
-          yPos += boxHeight + 6;
+          // Save last node coordinates for next iteration's line drawing
+          lastNodeY = currentNodeY;
+          lastNodePage = currentPage;
+
+          // Set starting position for the next stage block
+          yPos = nextYPos + 6;
         });
       } else {
         doc.setFont("helvetica", "italic");
