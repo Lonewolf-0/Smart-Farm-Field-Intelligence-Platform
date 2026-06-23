@@ -80,12 +80,12 @@ describe("CropSuitabilityCard Component Tests", () => {
     expect(screen.getByText("Rice")).toBeInTheDocument();  // Kharif
     expect(screen.getByText("Tomato")).toBeInTheDocument(); // Zaid
 
-    // Open the filter dropdown first
+    // Click Filter Button to open dropdown
     const filterBtn = screen.getByText("Filter");
     fireEvent.click(filterBtn);
 
-    // Click Rabi filter tab
-    const rabiTab = screen.getByRole("button", { name: /Rabi/i });
+    // Click Rabi filter option
+    const rabiTab = screen.getByRole("button", { name: "Rabi" });
     fireEvent.click(rabiTab);
 
     // Wheat should be visible, others should be filtered out
@@ -93,12 +93,13 @@ describe("CropSuitabilityCard Component Tests", () => {
     expect(screen.queryByText("Rice")).not.toBeInTheDocument();
     expect(screen.queryByText("Tomato")).not.toBeInTheDocument();
 
-    // Open the filter dropdown again. It is currently showing "Rabi"
-    const filterBtnRabi = screen.getAllByText("Rabi")[0];
-    fireEvent.click(filterBtnRabi);
+    // Click Filter button again
+    // We can use getByRole for button that contains 'Rabi' to avoid conflicting with the span
+    const activeFilterBtn = screen.getByRole("button", { name: /Rabi/i });
+    fireEvent.click(activeFilterBtn);
 
-    // Click Zaid filter tab
-    const zaidTab = screen.getByRole("button", { name: /Zaid/i });
+    // Click Zaid filter option
+    const zaidTab = screen.getByRole("button", { name: "Zaid" });
     fireEvent.click(zaidTab);
 
     expect(screen.getByText("Tomato")).toBeInTheDocument();
@@ -131,5 +132,4 @@ describe("CropSuitabilityCard Component Tests", () => {
     fireEvent.click(wheatLabel);
     expect(screen.queryByText("Suitability Factor Breakdown")).not.toBeInTheDocument();
   });
-
 });

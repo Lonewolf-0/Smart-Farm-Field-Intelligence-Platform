@@ -62,7 +62,10 @@ describe("WeatherCard Component Tests", () => {
     render(<WeatherCard fieldId="field1" />);
 
     expect(screen.getByText("Weather Forecast")).toBeInTheDocument();
-    expect(screen.getAllByText("83°F")).toHaveLength(2); // Current header + Stats grid. (28.4 * 9/5) + 32 = 83.12 => 83°F
+
+    // Check formatted values
+    const expectedTempF = Math.round((mockWeather.temperature * 9/5) + 32); // 83
+    expect(screen.getAllByText(`${expectedTempF}°F`)).toHaveLength(2); // Current header + Stats grid
     expect(screen.getAllByText("Clear sky")[0]).toBeInTheDocument();
     expect(screen.getByText("62%")).toBeInTheDocument();
     expect(screen.getByText("10.1 mph")).toBeInTheDocument();

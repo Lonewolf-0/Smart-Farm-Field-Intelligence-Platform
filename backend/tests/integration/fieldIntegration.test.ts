@@ -8,7 +8,10 @@ import { updateField, deleteUserField } from "../../src/controllers/fieldControl
 let mockUser: any = { id: "user1" };
 
 jest.mock("../../src/middlewares/authMiddleware", () => ({
-  authenticate: (req: any, _res: any, next: any) => {
+  authenticate: (req: any, res: any, next: any) => {
+    if (!mockUser) {
+      return res.status(401).json({ success: false, error: "Unauthorized" });
+    }
     req.user = mockUser;
     next();
   },
