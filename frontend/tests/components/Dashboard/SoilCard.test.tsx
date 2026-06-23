@@ -134,22 +134,22 @@ describe("SoilCard Component Tests", () => {
     const phStatusElement = screen.getByText("Neutral");
     expect(phStatusElement).toBeInTheDocument();
     const phValueElement = screen.getByText("6.8");
-    expect(phValueElement).toHaveClass("text-green-400");
+    expect(phValueElement).toHaveClass("text-emerald-400");
 
     // Check Organic Carbon rating and values
     const ocStatusElement = screen.getByText("High");
     expect(ocStatusElement).toBeInTheDocument();
     const ocValueElement = screen.getByText("1.80%");
-    expect(ocValueElement).toHaveClass("text-green-400");
+    expect(ocValueElement).toHaveClass("text-emerald-400");
 
     // Health Score calculation test:
     // Base: 100
     // ph 6.8 (neutral) => -0
     // oc 1.8 (>1.5) => -0
     // texture Loam => -0
-    // Expected = 100 (Optimal, text-green-400)
+    // Expected = 100 (Optimal, text-emerald-400)
     const scoreElement = screen.getByText("100");
     expect(scoreElement).toBeInTheDocument();
-    expect(scoreElement).toHaveClass("text-green-400");
+    expect(scoreElement).toHaveClass("text-emerald-400");
   });
 });

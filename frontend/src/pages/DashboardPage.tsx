@@ -331,16 +331,16 @@ function DashboardPage() {
         head: cropHeaders,
         body: cropRows,
         theme: "striped",
-        headStyles: { fillColor: [30, 41, 59], halign: "left" }, // Slate-800 header
+        headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Consistent Emerald header
         columnStyles: {
           0: { cellWidth: 40, halign: "left" },
-          1: { cellWidth: 28, halign: "center", fontStyle: "bold" },
-          2: { cellWidth: 28, halign: "center" },
-          3: { cellWidth: 28, halign: "center" },
-          4: { cellWidth: 28, halign: "center" },
-          5: { cellWidth: 28, halign: "center" },
+          1: { cellWidth: 28, halign: "left", fontStyle: "bold" },
+          2: { cellWidth: 28, halign: "left" },
+          3: { cellWidth: 28, halign: "left" },
+          4: { cellWidth: 28, halign: "left" },
+          5: { cellWidth: 28, halign: "left" },
         },
-        styles: { cellPadding: 2.5, fontSize: 8 }, // cellPadding was 3
+        styles: { cellPadding: 2.5, fontSize: 8 },
       });
 
       yPos = (doc as any).lastAutoTable.finalY + 6; // was + 8
@@ -375,13 +375,13 @@ function DashboardPage() {
         head: irrigationHeaders,
         body: irrigationRows,
         theme: "striped",
-        headStyles: { fillColor: [30, 41, 59], halign: "left" }, // Slate-800 header
+        headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Consistent Emerald header
         columnStyles: {
           0: { cellWidth: 50, halign: "left", fontStyle: "bold" },
-          1: { cellWidth: 40, halign: "center" },
+          1: { cellWidth: 40, halign: "left" },
           2: { cellWidth: 90, halign: "left" },
         },
-        styles: { cellPadding: 2.5, fontSize: 8 }, // cellPadding was 3
+        styles: { cellPadding: 2.5, fontSize: 8 },
       });
 
       yPos = (doc as any).lastAutoTable.finalY + 6; // was + 8
@@ -457,12 +457,12 @@ function DashboardPage() {
         head: nutrientHeaders,
         body: nutrientRows,
         theme: "striped",
-        headStyles: { fillColor: [30, 41, 59], halign: "left" }, // Slate-800 header
+        headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Consistent Emerald header
         columnStyles: {
           0: { cellWidth: 45, halign: "left", fontStyle: "bold" },
-          1: { cellWidth: 45, halign: "center" },
-          2: { cellWidth: 45, halign: "center" },
-          3: { cellWidth: 45, halign: "center" },
+          1: { cellWidth: 45, halign: "left" },
+          2: { cellWidth: 45, halign: "left" },
+          3: { cellWidth: 45, halign: "left" },
         },
         styles: { cellPadding: 2.5, fontSize: 8 },
         didParseCell: function(cellData: any) {
@@ -541,14 +541,14 @@ function DashboardPage() {
         head: recHeaders,
         body: recRows,
         theme: "striped",
-        headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Emerald header for the recommendations table to pop!
+        headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Consistent Emerald header
         columnStyles: {
           0: { cellWidth: 40, halign: "left", fontStyle: "bold" },
-          1: { cellWidth: 30, halign: "right" },
-          2: { cellWidth: 30, halign: "right" },
-          3: { cellWidth: 25, halign: "center" },
-          4: { cellWidth: 25, halign: "right" },
-          5: { cellWidth: 30, halign: "right" },
+          1: { cellWidth: 30, halign: "left" },
+          2: { cellWidth: 30, halign: "left" },
+          3: { cellWidth: 25, halign: "left" },
+          4: { cellWidth: 25, halign: "left" },
+          5: { cellWidth: 30, halign: "left" },
         },
         styles: { cellPadding: 3, fontSize: 8 },
         didParseCell: function(cellData: any) {

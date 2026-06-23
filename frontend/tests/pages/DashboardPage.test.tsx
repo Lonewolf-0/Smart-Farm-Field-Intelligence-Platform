@@ -99,7 +99,7 @@ const mockGetTextWidth = vi.fn().mockReturnValue(10);
 vi.mock("jspdf", () => {
   return {
     default: vi.fn().mockImplementation(() => {
-      return {
+      const doc = {
         internal: {
           pageSize: {
             getWidth: () => 210,
@@ -123,7 +123,11 @@ vi.mock("jspdf", () => {
         splitTextToSize: mockSplitTextToSize,
         getTextWidth: mockGetTextWidth,
         lastAutoTable: { finalY: 100 },
+        autoTable: vi.fn().mockImplementation(function (this: any) {
+          this.lastAutoTable = { finalY: 150 };
+        }),
       };
+      return doc;
     }),
   };
 });
