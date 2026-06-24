@@ -20,10 +20,10 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
 
   if (loading && !data) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-32 bg-slate-800 rounded mb-6"></div>
         <div className="h-32 w-32 bg-slate-800 rounded-full mx-auto mb-6"></div>
-        <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="h-16 bg-slate-800 rounded-xl"></div>
           <div className="h-16 bg-slate-800 rounded-xl"></div>
         </div>
@@ -33,7 +33,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
 
   if (!data) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md text-center h-auto sm:h-full flex flex-col items-center justify-center">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
         <p className="text-red-400 mb-4">Failed to load irrigation data.</p>
       </div>
     );
@@ -67,7 +67,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
   const dashoffset = circumference - (moistureSafe / 100) * circumference;
 
   return (
-    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col`}>
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
@@ -138,7 +138,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
       </div>
 
       {/* Supporting Data Grid */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 mt-auto">
+      <div className="grid grid-cols-2 gap-3 mt-auto">
         <div className="bg-white/5 rounded-xl p-3 border border-white/5 flex items-center gap-3">
           <div className="bg-orange-500/20 p-2 rounded-lg text-orange-400">
             <Sun className="w-4 h-4" />

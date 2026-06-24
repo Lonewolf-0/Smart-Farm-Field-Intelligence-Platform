@@ -24,7 +24,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
   
   if (loading && !data) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full">
         <div className="h-6 w-48 bg-slate-800 rounded mb-6"></div>
         <div className="h-32 w-32 bg-slate-800 rounded-full mx-auto mb-6"></div>
         <div className="h-10 bg-slate-800 rounded-xl mb-4"></div>
@@ -35,7 +35,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
 
   if (!data) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md text-center h-auto sm:h-full flex flex-col items-center justify-center">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center">
         <p className="text-red-400 mb-4">Satellite data unavailable. Try running analysis again.</p>
       </div>
     );
@@ -69,7 +69,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
   });
 
   return (
-    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col ${bgGlow}`}>
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col ${bgGlow}`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">

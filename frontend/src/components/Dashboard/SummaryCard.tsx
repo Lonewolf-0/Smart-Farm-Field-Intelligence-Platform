@@ -22,7 +22,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 xs:grid-cols-2 gap-4 h-auto sm:h-full">
+      <div className="grid grid-cols-2 gap-4 h-full">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="rounded-2xl border border-white/10 bg-slate-950/80 p-5 shadow-xl backdrop-blur-md animate-pulse"></div>
         ))}
@@ -112,10 +112,10 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
   const fertilizerSubtext = fertilizer ? (recs.length > 0 ? `For ${selectedCrop}` : `For ${selectedCrop}`) : "Run Analysis";
   const needsFertilizer = recs.length > 0;
 
-  const baseCardClasses = "rounded-2xl border cursor-pointer transition-colors p-4 sm:p-5 shadow-xl backdrop-blur-md flex flex-col group bg-slate-950/80 hover:bg-slate-900";
+  const baseCardClasses = "rounded-2xl border cursor-pointer transition-colors p-5 shadow-xl backdrop-blur-md flex flex-col group bg-slate-950/80 hover:bg-slate-900";
 
   return (
-    <div className="grid grid-cols-1 xs:grid-cols-2 gap-4 h-auto sm:h-full">
+    <div className="grid grid-cols-2 gap-4 h-full">
       {/* 1. Field Health Summary */}
       <div 
         onClick={() => onNavigate?.("crop_health")}

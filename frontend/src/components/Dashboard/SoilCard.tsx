@@ -128,7 +128,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
   };
 
   return (
-    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col`}>
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col`}>
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-emerald-400" />Soil Profile</h3>

@@ -50,7 +50,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
 
       {isTimelineExpanded && (
         isLoading || scheduleSteps.length === 0 ? (
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-12 items-stretch animate-pulse">
+          <div className="grid gap-6 md:grid-cols-12 items-stretch animate-pulse">
             {/* Left Column: Skeleton Timeline */}
             <div className="md:col-span-4 bg-slate-900/20 border border-white/5 rounded-xl p-5 flex flex-col justify-start min-h-[220px]">
               <div className="relative pl-6 py-2 flex flex-col gap-6">
@@ -79,7 +79,7 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
             </div>
           </div>
         ) : (
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-12 items-stretch">
+          <div className="grid gap-6 md:grid-cols-12 items-stretch">
             {/* Left Column: Vertical Timeline */}
             <div className="md:col-span-4 bg-slate-900/20 border border-white/5 rounded-xl p-5 flex flex-col justify-start">
               <div className="relative pl-6 py-2 flex flex-col gap-6">
@@ -155,8 +155,8 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
               </div>
 
               {/* Products Split Table */}
-              <div className="border border-white/5 rounded-lg overflow-x-auto bg-slate-950/20 mt-4">
-                <table className="w-full border-collapse text-left text-xs min-w-[300px]">
+              <div className="border border-white/5 rounded-lg overflow-hidden bg-slate-950/20 mt-4">
+                <table className="w-full border-collapse text-left text-xs">
                   <thead>
                     <tr className="border-b border-white/5 bg-white/5 text-slate-400 font-semibold">
                       <th className="p-2.5">Product</th>
