@@ -81,7 +81,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
 
   if (isLoading && !data) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full min-h-[350px]">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full min-h-[350px]">
         <div className="h-6 w-48 bg-slate-800 rounded mb-6"></div>
         <div className="h-10 w-full bg-slate-800 rounded mb-6"></div>
         <div className="space-y-4">
@@ -94,7 +94,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col items-center justify-center min-h-[350px]">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col items-center justify-center min-h-[350px]">
         <AlertTriangle className="w-10 h-10 text-red-500 mb-2" />
         <p className="text-red-400 font-semibold">Error Loading Data</p>
         <p className="text-slate-400 text-sm">{error}</p>
@@ -129,7 +129,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
   }
 
   return (
-    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200`}>
+    <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col text-slate-200`}>
       {/* Header */}
       <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
         <div>
@@ -228,7 +228,7 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
                     <ShieldCheck className="w-4 h-4" /> Treatment Protocol
                   </h5>
                   
-                  <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 gap-4 text-sm mb-4">
                     <div>
                       <p className="text-slate-500 text-xs mb-0.5">Product</p>
                       <p className="font-semibold text-slate-200">{pest.treatment.productName}</p>

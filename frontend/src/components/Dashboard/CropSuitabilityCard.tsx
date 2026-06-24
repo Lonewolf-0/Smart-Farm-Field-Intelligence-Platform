@@ -81,7 +81,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
 
   if (loading && crops.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <div className="h-6 w-48 bg-slate-800 rounded"></div>
           <div className="flex gap-2">
@@ -106,7 +106,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
 
   if (!contextData?.crop) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center min-h-[300px]">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md text-center h-auto sm:h-full flex flex-col items-center justify-center min-h-[300px]">
         <AlertCircle className="w-12 h-12 text-red-500 mb-3" />
         <p className="text-red-400 font-semibold mb-1">Failed to Load Suitability</p>
       </div>
@@ -121,7 +121,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
   });
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col text-slate-200">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 shrink-0">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
@@ -227,7 +227,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                       Suitability Factor Breakdown
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-x-4 gap-y-3">
                       <div>
                         <div className="flex justify-between text-[11px] text-slate-400 mb-1">
                           <span>pH match</span>
