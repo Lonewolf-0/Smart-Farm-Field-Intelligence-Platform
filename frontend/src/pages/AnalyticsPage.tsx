@@ -1004,7 +1004,7 @@ function AnalyticsPage() {
           {analysisData ? (
             <div>
               {activeTab === "overview" && (
-                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                <div className="mt-8 grid gap-6 grid-cols-1 lg:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
                   <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} selectedCrop={selectedCrop} />
                 </div>
