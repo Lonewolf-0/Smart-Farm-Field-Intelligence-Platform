@@ -50,7 +50,7 @@ const Login = () => {
       try {
         await refreshUser();
       } catch {}
-      navigate("/map");
+      navigate("/");
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { error?: string } } })?.response?.data
@@ -77,7 +77,7 @@ const Login = () => {
 
   // Redirect authenticated users via effect to avoid conditional hook returns
   useEffect(() => {
-    if (isAuthenticated) navigate("/map");
+    if (isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
 
   return (

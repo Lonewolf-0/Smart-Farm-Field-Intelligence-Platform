@@ -57,7 +57,7 @@ const Register = () => {
 
   // Redirect authenticated users via effect to avoid conditional hook returns
   useEffect(() => {
-    if (isAuthenticated) navigate("/map");
+    if (isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
 
   // Inline validation
@@ -173,7 +173,7 @@ const Register = () => {
       try {
         await refreshUser();
       } catch {}
-      navigate("/map");
+      navigate("/");
     } catch (err: any) {
       const message =
         err.response?.data?.error ||
