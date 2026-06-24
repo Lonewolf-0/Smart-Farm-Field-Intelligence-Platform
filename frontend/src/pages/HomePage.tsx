@@ -1,5 +1,13 @@
 import { ArrowRight, CheckCircle2, Map, Satellite, Sprout } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useField } from "../context/FieldContext";
+import { useState } from "react";
+import UserProfileWidget from "../components/Dashboard/UserProfileWidget";
+import WeatherWidget from "../components/Dashboard/WeatherWidget";
+import FieldSummaryCard from "../components/Dashboard/FieldSummaryCard";
+import TaskWidget from "../components/Dashboard/TaskWidget";
+import type { Task } from "../types";
 
 const highlights = [
   {
@@ -22,6 +30,54 @@ const highlights = [
 ];
 
 function HomePage() {
+  const { user, isAuthenticated } = useAuth();
+  const { fields: savedFields } = useField();
+  
+  // Mock data for tasks
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: "1", userId: "u1", title: "Review soil test results for North Field", completed: false, dueDate: new Date().toISOString().split('T')[0] },
+    { id: "2", userId: "u1", title: "Order fertilizer for spring season", completed: true, dueDate: "2026-06-15" }
+  ]);
+
+  const toggleTask = (id: string) => {
+    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  const addTask = (title: string, dueDate: string) => {
+    const newTask: Task = {
+      id: Math.random().toString(36).substr(2, 9),
+      userId: user?.id || "u1",
+      title,
+      completed: false,
+      dueDate
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  const totalFields = savedFields.length;
+  const totalAcres = savedFields.reduce((acc, field) => acc + field.area, 0);
+
+  if (isAuthenticated && user) {
+    return (
+      <div className="space-y-6">
+        <UserProfileWidget user={user} totalFields={totalFields} totalAcres={totalAcres} />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1 h-80">
+            <WeatherWidget />
+          </div>
+          <div className="lg:col-span-2 h-80">
+            <FieldSummaryCard fields={savedFields} />
+          </div>
+        </div>
+
+        <div className="h-96">
+          <TaskWidget tasks={tasks} onToggle={toggleTask} onAdd={addTask} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl sm:p-8">
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
