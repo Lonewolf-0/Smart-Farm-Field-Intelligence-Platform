@@ -186,8 +186,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-start sm:items-center justify-center min-h-[calc(100vh-6rem)] py-6 sm:py-0">
-      <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-md border border-white/10 p-6 sm:p-8 rounded-2xl shadow-xl mx-0 sm:mx-4">
+    <div className="flex items-center justify-center min-h-[calc(100vh-6rem)]">
+      <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl">
         {/* Header */}
         <h2 className="text-2xl font-bold text-white text-center mb-6">Create Account</h2>
 

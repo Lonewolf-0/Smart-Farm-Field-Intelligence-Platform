@@ -803,7 +803,7 @@ function DashboardPage() {
   };
 
   return (
-    <section className="rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 lg:p-8 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl min-h-[calc(100vh-6rem)]">
+    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl sm:p-8 min-h-[calc(100vh-6rem)]">
         {generatingReport && <LoadingFarmAnimation />}      
       {/* Non-blocking Progress Banner */}
       {isAnalyzing && (
@@ -829,7 +829,7 @@ function DashboardPage() {
 
       <div className="relative z-50 flex flex-col gap-6">
         {/* Row 1: Title and Selectors */}
-        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-300/15 text-emerald-200">
               <BarChart3 className="h-6 w-6" />
@@ -844,11 +844,11 @@ function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 w-full lg:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             {/* Field Selector */}
-            <div className="w-full sm:w-auto sm:min-w-[260px]">
+            <div className="flex items-center gap-3 w-full sm:w-auto min-w-[260px]">
               {loadingFields ? (
-                <span className="block text-slate-300 animate-pulse bg-slate-950/50 px-4 py-2.5 rounded-xl border border-white/10">Loading fields...</span>
+                <span className="text-slate-300 animate-pulse bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">Loading fields...</span>
               ) : fields.length > 0 ? (
                 <div className="w-full">
                   <CustomSelect
@@ -862,12 +862,12 @@ function DashboardPage() {
                   />
                 </div>
               ) : (
-                <span className="block text-slate-400 bg-slate-950/50 px-4 py-2.5 rounded-xl border border-white/10">No fields saved</span>
+                <span className="text-slate-400 bg-slate-950/50 px-4 py-2 rounded-xl border border-white/10 flex-1">No fields saved</span>
               )}
             </div>
 
             {/* Crop Selector */}
-            <div className="w-full sm:w-auto sm:min-w-[200px] relative z-[60]">
+            <div className="flex items-center gap-3 w-full sm:w-auto min-w-[200px] relative z-[60]">
               <CustomSelect
                 className="w-full"
                 value={{ id: selectedCrop, name: selectedCrop }}
@@ -879,9 +879,9 @@ function DashboardPage() {
         </div>
 
         {/* Row 2: Tabs and Refresh/Analyze */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           {/* Segmented Control */}
-          <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full lg:w-[580px]">
+          <div className="relative grid grid-cols-3 p-1 bg-slate-950/40 rounded-xl border border-white/10 w-full sm:w-[580px]">
             <div 
               className="absolute inset-y-1 bg-emerald-500 rounded-lg transition-all duration-300 ease-out shadow-md"
               style={{
@@ -894,48 +894,48 @@ function DashboardPage() {
             />
             <button
               onClick={() => setActiveTab("overview")}
-              className={`relative z-10 flex flex-col xs:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold transition-colors min-h-[44px] ${
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 activeTab === "overview" ? "text-slate-950" : "text-slate-400 hover:text-white"
               }`}
             >
-              <CloudSun className="w-4 h-4 shrink-0" />
-              <span>Overview</span>
+              <CloudSun className="w-4 h-4" />
+              Overview
             </button>
             <button
               onClick={() => setActiveTab("crop_health")}
-              className={`relative z-10 flex flex-col xs:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold transition-colors min-h-[44px] ${
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 activeTab === "crop_health" ? "text-slate-950" : "text-slate-400 hover:text-white"
               }`}
             >
-              <Sprout className="w-4 h-4 shrink-0" />
-              <span>Crop Health</span>
+              <Sprout className="w-4 h-4" />
+              Crop Health
             </button>
             <button
               onClick={() => setActiveTab("agronomy")}
-              className={`relative z-10 flex flex-col xs:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold transition-colors min-h-[44px] ${
+              className={`relative z-10 flex items-center justify-center gap-2 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 activeTab === "agronomy" ? "text-slate-950" : "text-slate-400 hover:text-white"
               }`}
             >
-              <Tractor className="w-4 h-4 shrink-0" />
-              <span>Agronomy</span>
+              <Tractor className="w-4 h-4" />
+              Agronomy Recs
             </button>
           </div>
 
           {/* Time & Analyze Button */}
           {fields.length > 0 && selectedFieldId && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 sm:gap-3 w-full lg:w-auto mt-2 lg:mt-0">
+            <div className="flex items-center gap-4 w-full sm:w-auto">
               {lastAnalyzedTimestamp && (
-                <div className="text-xs text-slate-400 text-center sm:text-right w-full sm:w-auto min-w-[140px] order-2 sm:order-1 mt-1 sm:mt-0">
-                  <span className="sm:block text-[11px] sm:text-xs">Last analyzed: </span>
-                  <span className="font-semibold text-slate-300 text-[11px] sm:text-xs whitespace-nowrap">{formatDate(lastAnalyzedTimestamp)}</span>
+                <div className="hidden sm:block text-xs text-slate-400 text-right min-w-[140px]">
+                  <p>Last analyzed</p>
+                  <p className="font-medium text-slate-300 whitespace-nowrap">{formatDate(lastAnalyzedTimestamp)}</p>
                 </div>
               )}
               <button
                 onClick={handleAnalyzeField}
                 disabled={isAnalyzing}
-                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed w-full sm:w-auto min-h-[44px] order-1 sm:order-2 shrink-0"
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
-                <RefreshCw className={`w-4 h-4 shrink-0 ${isAnalyzing ? "animate-spin" : ""}`} />
+                <RefreshCw className={`w-4 h-4 ${isAnalyzing ? "animate-spin" : ""}`} />
                 {analysisData ? (isAnalyzing ? "Refreshing..." : "Refresh") : (isAnalyzing ? "Analyzing..." : "Analyze Field")}
               </button>
             </div>
@@ -1004,14 +1004,14 @@ function DashboardPage() {
           {analysisData ? (
             <div>
               {activeTab === "overview" && (
-                <div className="mt-6 sm:mt-8 grid gap-4 sm:grid-cols-2 items-stretch animate-fadeIn">
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
                   <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} selectedCrop={selectedCrop} />
                 </div>
               )}
 
               {activeTab === "crop_health" && (
-                <div className="mt-6 sm:mt-8 grid gap-4 sm:grid-cols-2 items-stretch animate-fadeIn">
+                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
                   <NDVICard fieldId={selectedFieldId} />
                   <SoilCard fieldId={selectedFieldId} />
                   <PesticideCard fieldId={selectedFieldId} selectedCrop={selectedCrop} />
@@ -1023,21 +1023,21 @@ function DashboardPage() {
               )}
 
               {activeTab === "agronomy" && (
-                <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6 animate-fadeIn">
+                <div className="mt-8 space-y-6 animate-fadeIn">
                   {/* Agronomy Report Banner */}
-                  <div className="flex flex-col xs:flex-row justify-between items-stretch xs:items-center p-4 rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md gap-3">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4.5 rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md gap-4">
                     <div>
                       <h3 className="text-base font-bold text-white flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-emerald-400 shrink-0" />
+                        <FileText className="w-5 h-5 text-emerald-400" />
                         Agronomy Recommendations Report
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5">Generate a unified PDF report comprising crop suitability scores, moisture schedules, and fertilizer guidelines.</p>
                     </div>
-                    <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full xs:w-auto">
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
                       <button
                         onClick={() => handleAgronomyReport("view")}
                         disabled={generatingReport}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/5 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex-1 xs:flex-none min-h-[44px]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed border border-white/5 text-white rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
                       >
                         {generatingReport ? (
                           <>
@@ -1054,7 +1054,7 @@ function DashboardPage() {
                       <button
                         onClick={() => handleAgronomyReport("download")}
                         disabled={generatingReport}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 rounded-xl text-xs font-bold transition-all cursor-pointer flex-1 xs:flex-none min-h-[44px]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 rounded-xl text-xs font-bold transition-all cursor-pointer w-full sm:w-auto min-h-[36px]"
                       >
                         {generatingReport ? (
                           <>
@@ -1071,10 +1071,10 @@ function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2 items-stretch">
+                  <div className="grid gap-4 md:grid-cols-2 items-stretch">
                     <CropSuitabilityCard fieldId={selectedFieldId} />
                     <IrrigationCard fieldId={selectedFieldId} />
-                    <div className="sm:col-span-2">
+                    <div className="md:col-span-2">
                       <FertilizerCard fieldId={selectedFieldId} selectedCrop={selectedCrop} onCropChange={handleCropChange} />
                     </div>
                   </div>
