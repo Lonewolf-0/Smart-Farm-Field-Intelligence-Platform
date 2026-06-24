@@ -17,6 +17,19 @@ export interface User {
   email: string;
   name: string;
   createdAt: string;
+  profileStats?: {
+    totalAcres: number;
+    totalFields: number;
+    subscriptionTier: string;
+  };
+}
+
+export interface Task {
+  id: string;
+  userId: string;
+  title: string;
+  completed: boolean;
+  dueDate?: string; // ISO string format
 }
 
 export interface Field {
