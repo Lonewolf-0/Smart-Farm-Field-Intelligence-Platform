@@ -22,7 +22,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import LoadingFarmAnimation from "../components/UI/LoadingFarmAnimation";
 import { getFarmLoadingHTML } from "../utils/farmLoadingPage";
-function DashboardPage() {
+function AnalyticsPage() {
   const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const { user } = useAuth();
   const [criticalAlerts, setCriticalAlerts] = useState<RiskAlert[]>([]);
@@ -1103,4 +1103,4 @@ function DashboardPage() {
   );
 }
 
-export default DashboardPage;
+export default AnalyticsPage;

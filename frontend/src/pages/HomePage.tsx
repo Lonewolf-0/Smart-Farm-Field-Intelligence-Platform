@@ -50,7 +50,7 @@ function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              to="/dashboard"
+              to="/analytics"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/5 hover:border-white/20"
             >
               View dashboard

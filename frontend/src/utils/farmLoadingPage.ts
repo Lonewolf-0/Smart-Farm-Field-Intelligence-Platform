@@ -2,7 +2,7 @@
  * farmLoadingPage.ts
  *
  * Exports a self-contained HTML string that renders an animated farm scene.
- * Used in DashboardPage to populate a new browser tab while the PDF report
+ * Used in AnalyticsPage to populate a new browser tab while the PDF report
  * is being generated, keeping the user entertained with agriculture facts
  * and animations instead of a blank/plain-text page.
  *

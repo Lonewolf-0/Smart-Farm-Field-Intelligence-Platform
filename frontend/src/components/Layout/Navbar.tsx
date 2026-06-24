@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-slate-950/70 backdrop-blur-md border-b border-white/10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-3">
@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
 
           <nav className="hidden md:flex items-center gap-2">
             <NavItem to="/map" icon={Map}>Map</NavItem>
-            <NavItem to="/dashboard" icon={BarChart3}>Dashboard</NavItem>
+            <NavItem to="/analytics" icon={BarChart3}>Analytics</NavItem>
             <NavItem to="/branches" icon={Store}>Branches</NavItem>
           </nav>
 
@@ -100,7 +100,7 @@ const Navbar: React.FC = () => {
         <div className="md:hidden bg-slate-900/80 border-t border-white/5">
           <div className="px-4 pt-2 pb-4 space-y-2">
             <NavItem to="/map" icon={Map}>Map</NavItem>
-            <NavItem to="/dashboard" icon={BarChart3}>Dashboard</NavItem>
+            <NavItem to="/analytics" icon={BarChart3}>Analytics</NavItem>
             <NavItem to="/branches" icon={Store}>Branches</NavItem>
 
             <div className="pt-2 border-t border-white/5">
