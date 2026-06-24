@@ -29,8 +29,7 @@ const Login = () => {
     return true;
   };
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const executeLogin = async () => {
     setError("");
 
     if (!validateForm()) return;
@@ -62,6 +61,20 @@ const Login = () => {
     }
   };
 
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await executeLogin();
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!loading) {
+        await executeLogin();
+      }
+    }
+  };
+
   // Redirect authenticated users via effect to avoid conditional hook returns
   useEffect(() => {
     if (isAuthenticated) navigate("/map");
@@ -90,6 +103,7 @@ const Login = () => {
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="you@example.com"
               />
             </div>
@@ -106,6 +120,7 @@ const Login = () => {
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="••••••••"
               />
             </div>
