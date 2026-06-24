@@ -208,14 +208,14 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
 
   if (isInitializing) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col md:col-span-2 min-h-[350px]">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full flex flex-col md:col-span-2 min-h-[350px]">
         <div className="flex justify-between items-center mb-6">
           <div className="h-6 w-56 bg-slate-800 rounded"></div>
           <div className="h-6 w-24 bg-slate-800 rounded"></div>
         </div>
         <div className="space-y-4 flex-1">
           <div className="h-10 bg-slate-800 rounded-lg"></div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="h-12 bg-slate-800 rounded-lg"></div>
             <div className="h-12 bg-slate-800 rounded-lg"></div>
             <div className="h-12 bg-slate-800 rounded-lg"></div>
@@ -286,7 +286,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   const grandTotalCost = totalCostPerHa * area;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200 md:col-span-2">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col text-slate-200 md:col-span-2">
       {/* Header */}
       <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0 ${isRecsExpanded ? "mb-6 border-b border-white/5 pb-4" : ""}`}>
         <div>
@@ -343,7 +343,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
 
       {/* Main Settings Panel - Visible only under Manual NPK Override */}
       {isRecsExpanded && !useSoilTestData && (
-        <div className="grid gap-6 md:grid-cols-3 mb-6 bg-white/5 p-4 rounded-xl border border-white/5 shrink-0 animate-fadeIn">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3 mb-6 bg-white/5 p-4 rounded-xl border border-white/5 shrink-0 animate-fadeIn">
           {/* N input */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="soil-n-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -420,7 +420,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
       ) : (
         <>
           {isRecsExpanded && (
-            <div className="grid gap-6 md:grid-cols-2 items-stretch mb-6">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 items-stretch mb-6">
               {/* Left side: Nutrient Deficiency Profile */}
               <div className="bg-slate-900/40 border border-white/5 rounded-xl p-4.5 space-y-4 flex flex-col justify-between h-full">
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">

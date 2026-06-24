@@ -144,7 +144,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
 
   if (loading && !data) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md animate-pulse h-full flex flex-col">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md animate-pulse h-auto sm:h-full flex flex-col">
         <div className="h-6 w-32 bg-slate-800 rounded mb-6"></div>
         <div className="flex items-center gap-4 mb-6">
           <div className="h-16 w-16 bg-slate-800 rounded-full"></div>
@@ -153,7 +153,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
             <div className="h-4 w-32 bg-slate-800 rounded"></div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
           <div className="h-16 bg-slate-800/60 rounded-xl"></div>
           <div className="h-16 bg-slate-800/60 rounded-xl"></div>
           <div className="h-16 bg-slate-800/60 rounded-xl"></div>
@@ -170,7 +170,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
 
   if (!data) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md text-center h-full flex flex-col items-center justify-center min-h-[300px]">
+      <div className="rounded-2xl border border-red-500/30 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md text-center h-auto sm:h-full flex flex-col items-center justify-center min-h-[300px]">
         <AlertTriangle className="w-12 h-12 text-red-500 mb-3" />
         <p className="text-red-400 font-semibold mb-1">Weather Data Unavailable</p>
       </div>
@@ -190,7 +190,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
     : `Moderate rainfall expected: ${totalRainfall.toFixed(1)}mm`;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col text-slate-200">
       <div className="flex justify-between items-start mb-5">
         <div>
           <h3 className="text-xl font-bold text-white">Weather Forecast</h3>
@@ -225,21 +225,21 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-3 gap-3 mb-6 shrink-0">
-        <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 shrink-0">
+        <div className="bg-white/5 p-2 sm:p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Thermometer className="w-5 h-5 text-red-400 mb-1" />
-          <p className="text-xs text-slate-400">Temp</p>
-          <p className="font-mono text-sm font-bold text-white mt-0.5">{formatTemp(data.temperature)}</p>
+          <p className="text-[10px] sm:text-xs text-slate-400">Temp</p>
+          <p className="font-mono text-xs sm:text-sm font-bold text-white mt-0.5">{formatTemp(data.temperature)}</p>
         </div>
-        <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
+        <div className="bg-white/5 p-2 sm:p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Droplets className="w-5 h-5 text-blue-400 mb-1" />
-          <p className="text-xs text-slate-400">Humidity</p>
-          <p className="font-mono text-sm font-bold text-white mt-0.5">{formatHumidity(data.humidity)}</p>
+          <p className="text-[10px] sm:text-xs text-slate-400">Humidity</p>
+          <p className="font-mono text-xs sm:text-sm font-bold text-white mt-0.5">{formatHumidity(data.humidity)}</p>
         </div>
-        <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
+        <div className="bg-white/5 p-2 sm:p-3 rounded-xl border border-white/5 flex flex-col items-center justify-center text-center">
           <Wind className="w-5 h-5 text-teal-400 mb-1" />
-          <p className="text-xs text-slate-400">Wind</p>
-          <p className="font-mono text-sm font-bold text-white mt-0.5 truncate max-w-full">{formatWindSpeed(data.windSpeed)}</p>
+          <p className="text-[10px] sm:text-xs text-slate-400">Wind</p>
+          <p className="font-mono text-xs sm:text-sm font-bold text-white mt-0.5 truncate max-w-full">{formatWindSpeed(data.windSpeed)}</p>
         </div>
       </div>
 
@@ -284,7 +284,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
                   key={index} 
                   className="flex items-center justify-between p-2 rounded-lg bg-white/0 hover:bg-white/5 border border-transparent hover:border-white/5 transition-colors"
                 >
-                  <div className="w-[100px] shrink-0">
+                  <div className="w-[80px] xs:w-[100px] shrink-0">
                     <p className="text-xs font-semibold text-slate-300">{formatDate(day.date)}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-1 justify-start px-2">
@@ -299,7 +299,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
                         "0 mm"
                       )}
                     </p>
-                    <p className="text-xs font-bold text-slate-200 w-[70px]">
+                    <p className="text-xs font-bold text-slate-200 w-[60px] xs:w-[70px]">
                       {formatTemp(day.tempMin)} / {formatTemp(day.tempMax)}
                     </p>
                   </div>

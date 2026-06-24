@@ -49,7 +49,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full min-h-[250px] animate-pulse">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-auto sm:h-full min-h-[250px] animate-pulse">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-10 w-10 bg-slate-800 rounded-xl"></div>
           <div className="h-6 w-32 bg-slate-800 rounded"></div>
@@ -64,7 +64,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
 
   if (error || !nearestBranch) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col justify-center items-center text-center">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-auto sm:h-full flex flex-col justify-center items-center text-center">
         <Store className="w-8 h-8 text-slate-500 mb-3" />
         <p className="text-slate-400">{error || "Branch data unavailable"}</p>
       </div>
@@ -76,7 +76,7 @@ const BranchLocatorCard: React.FC<BranchLocatorCardProps> = ({ fieldId }) => {
   const dap = nearestBranch.products.find(p => p.name.toLowerCase().includes("dap") || p.name.toLowerCase().includes("ammonium sulfate")); // fallback to something seeded
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full text-slate-200 flex flex-col">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-auto sm:h-full text-slate-200 flex flex-col">
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
