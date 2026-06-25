@@ -18,156 +18,535 @@ export function getFarmLoadingHTML(): string {
   <meta charset="UTF-8"/>
   <title>Generating Smart Farm Report\u2026</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#0f172a 0%,#052e16 60%,#14532d 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;color:#fff;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, rgba(110,231,183,0.15), transparent 45%), linear-gradient(180deg, #08111f 0%, #0f172a 45%, #111827 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+      overflow: hidden;
+    }
 
-    /* Sky stars */
-    .stars{position:fixed;top:0;left:0;width:100%;height:50%;pointer-events:none;}
-    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2s ease-in-out infinite;}
-    @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+    /* Mock App Shell Layout */
+    .app-layout {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .sidebar {
+      width: 288px;
+      background: #022c22; /* bg-emerald-950 */
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none; /* Hide on mobile to match responsive sidebar */
+      }
+    }
+    
+    .sidebar-header {
+      height: 64px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+    
+    .sidebar-toggle {
+      height: 32px;
+      width: 32px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+      margin-right: 12px;
+    }
+    
+    .sidebar-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    .sidebar-menu {
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .sidebar-item.active {
+      background: rgba(16, 185, 129, 0.2); /* bg-emerald-500/20 */
+      color: #6ee7b7; /* text-emerald-300 */
+    }
+    
+    .sidebar-icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    
+    .navbar {
+      height: 64px;
+      background: rgba(15, 23, 42, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+    
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+    }
+    
+    .navbar-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(30, 41, 59, 0.5);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+    
+    .navbar-user {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #047857; /* emerald-700 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #fff;
+    }
 
-    /* Sun */
-    .sun{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#fde68a,#f59e0b);box-shadow:0 0 40px 20px rgba(251,191,36,.4);animation:rise 3s ease-out forwards, pulse-sun 4s 3s ease-in-out infinite;}
-    @keyframes rise{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-    @keyframes pulse-sun{0%,100%{box-shadow:0 0 40px 20px rgba(251,191,36,.4);}50%{box-shadow:0 0 60px 30px rgba(251,191,36,.6);}}
+    .content-viewport {
+      flex: 1;
+      padding: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* Clouds */
-    .cloud{position:absolute;background:#e2e8f0;border-radius:50px;opacity:.85;animation:drift linear infinite;}
-    .cloud::before,.cloud::after{content:'';position:absolute;background:#e2e8f0;border-radius:50%;}
-    .cloud-1{width:120px;height:38px;top:18%;left:-140px;animation-duration:18s;}
-    .cloud-1::before{width:60px;height:50px;top:-20px;left:15px;}
-    .cloud-1::after{width:40px;height:35px;top:-10px;left:55px;}
-    .cloud-2{width:90px;height:28px;top:28%;left:-120px;animation-duration:24s;animation-delay:6s;opacity:.6;}
-    .cloud-2::before{width:45px;height:38px;top:-16px;left:10px;}
-    .cloud-2::after{width:30px;height:26px;top:-8px;left:42px;}
-    @keyframes drift{from{transform:translateX(-160px);}to{transform:translateX(110vw);}}
+    /* Blurred Background Dashboard Content */
+    .mock-dashboard {
+      flex: 1;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-    /* Ground / field */
-    .ground{position:fixed;bottom:0;left:0;width:100%;height:140px;background:linear-gradient(180deg,#15803d,#14532d);border-radius:60% 60% 0 0 / 30px 30px 0 0;}
-    .ground-line{position:fixed;bottom:0;left:0;width:100%;height:40px;background:#052e16;}
+    .mock-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    /* Wheat rows */
-    .wheat-row{display:flex;gap:18px;position:fixed;bottom:100px;}
-    .stalk{display:flex;flex-direction:column;align-items:center;gap:2px;animation:sway 2.5s ease-in-out infinite;}
-    .stalk:nth-child(odd){animation-delay:.4s;}
-    .stalk:nth-child(even){animation-delay:.8s;}
-    @keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
-    .stalk-stem{width:3px;height:36px;background:#86efac;border-radius:2px;}
-    .stalk-head{width:10px;height:22px;background:#fbbf24;border-radius:5px 5px 2px 2px;}
+    .mock-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
 
-    /* Tractor */
-    .tractor-wrap{position:fixed;bottom:108px;animation:drive 6s ease-in-out infinite alternate;}
-    @keyframes drive{from{left:5%;}to{left:75%;}}
-    .tractor-svg{width:90px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));}
+    .mock-tab {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+    }
 
-    /* Card */
-    .card{background:rgba(15,23,42,.7);border:1px solid rgba(16,185,129,.25);border-radius:24px;padding:40px 48px;max-width:480px;width:90%;text-align:center;backdrop-filter:blur(16px);box-shadow:0 8px 48px rgba(0,0,0,.4);}
-    .logo{font-size:13px;font-weight:700;letter-spacing:.12em;color:#34d399;text-transform:uppercase;margin-bottom:16px;}
-    h1{font-size:22px;font-weight:700;color:#f0fdf4;margin-bottom:8px;}
-    .sub{font-size:13px;color:#86efac;margin-bottom:28px;}
+    .mock-tab.active {
+      background: #10b981;
+      color: #000;
+    }
 
-    /* Dots loader */
-    .dots{display:flex;gap:10px;justify-content:center;margin-bottom:28px;}
-    .dot{width:12px;height:12px;border-radius:50%;background:#10b981;animation:bounce-dot 1.2s ease-in-out infinite;}
-    .dot:nth-child(2){animation-delay:.2s;}
-    .dot:nth-child(3){animation-delay:.4s;}
-    @keyframes bounce-dot{0%,80%,100%{transform:scale(0.7);opacity:.5;}40%{transform:scale(1.3);opacity:1;}}
+    .mock-card {
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    /* Fact box */
-    .fact-box{border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);padding:14px 18px;font-size:12px;color:#fde68a;line-height:1.6;}
-    .fact-label{font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#f59e0b;margin-bottom:6px;}
+    /* Overlay container */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 17, 0.7); /* slate-950/70 */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Loading Card (Square box in center) */
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      max-width: 448px;
+      width: 90%;
+      text-align: center;
+    }
+    
+    .logo-text {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: #34d399;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .icon-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    
+    .icon-sun {
+      width: 40px;
+      height: 40px;
+      color: #fbbf24;
+      animation: spin 8s linear infinite;
+    }
+    .icon-cloud-sun {
+      width: 32px;
+      height: 32px;
+      color: #38bdf8;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .icon-leaf {
+      width: 32px;
+      height: 32px;
+      color: #34d399;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .icon-sprout {
+      width: 40px;
+      height: 40px;
+      color: #10b981;
+      animation: bounce 1.6s ease-in-out infinite 0.3s;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Tractor Track */
+    .track {
+      position: relative;
+      width: 100%;
+      height: 56px;
+      border-radius: 12px;
+      background: rgba(6, 78, 59, 0.4); /* bg-emerald-950/40 */
+      border: 1px solid rgba(6, 95, 70, 0.3); /* border-emerald-800/30 */
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .ground-line {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(6, 95, 70, 0.4);
+    }
+    .tractor-container {
+      position: absolute;
+      bottom: 12px;
+      width: 36px;
+      height: 36px;
+      transition: transform 50ms linear;
+    }
+    .tractor-icon {
+      width: 36px;
+      height: 36px;
+      color: #34d399;
+    }
+
+    /* Message */
+    .message {
+      text-align: center;
+      color: #6ee7b7;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.025em;
+      min-height: 20px;
+    }
+
+    /* Dots */
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: bounce-dot 1.2s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce-dot {
+      0%, 80%, 100% { transform: translateY(0) scale(0.7); opacity: 0.5; }
+      40% { transform: translateY(-6px) scale(1.3); opacity: 1; }
+    }
+
+    /* Fact Box */
+    .fact-box {
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.08); /* bg-amber-900/20 */
+      border: 1px solid rgba(245, 158, 11, 0.2); /* border-amber-500/20 */
+      padding: 12px 16px;
+      text-align: center;
+      width: 100%;
+    }
+    .fact-text {
+      font-size: 12px;
+      color: #fde68a;
+      font-weight: 500;
+      line-height: 1.625;
+    }
   </style>
 </head>
 <body>
-  <!-- Stars -->
-  <div class="stars" id="stars"></div>
+  <!-- Background Layout Structure mimicking the Smart Farm app -->
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-toggle">
+          <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </div>
+        <span class="sidebar-logo">Smart Farm</span>
+      </div>
+      <div class="sidebar-menu">
+        <div class="sidebar-item">
+          <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          <span>Home</span>
+        </div>
+        <div class="sidebar-item">
+          <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M1 6v14l6-4 6 4 8-4V2l-8 4-6-4z"></path></svg>
+          <span>Map</span>
+        </div>
+        <div class="sidebar-item active">
+          <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+          <span>Analytics</span>
+        </div>
+        <div class="sidebar-item">
+          <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3z"></path></svg>
+          <span>Branches</span>
+        </div>
+      </div>
+    </aside>
 
-  <!-- Sun -->
-  <div style="position:fixed;top:60px;" class="sun"></div>
+    <!-- Main Viewport -->
+    <div class="main-area">
+      <!-- Navbar -->
+      <header class="navbar">
+        <div class="navbar-right">
+          <div class="navbar-info">
+            <span style="color:#34d399">📍 Field Location</span>
+            <span style="color:#94a3b8">|</span>
+            <span>72°F ☀️</span>
+          </div>
+          <div class="navbar-user">SF</div>
+        </div>
+      </header>
 
-  <!-- Clouds -->
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-
-  <!-- Ground -->
-  <div class="ground"></div>
-  <div class="ground-line"></div>
-
-  <!-- Wheat field -->
-  <div class="wheat-row" id="wheat"></div>
-
-  <!-- Tractor -->
-  <div class="tractor-wrap" id="tractor">
-    <svg class="tractor-svg" viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
-      <!-- Body -->
-      <rect x="30" y="25" width="60" height="28" rx="5" fill="#16a34a"/>
-      <!-- Cab -->
-      <rect x="70" y="12" width="28" height="24" rx="4" fill="#15803d"/>
-      <rect x="73" y="15" width="22" height="14" rx="2" fill="#7dd3fc" opacity=".8"/>
-      <!-- Exhaust -->
-      <rect x="62" y="8" width="5" height="18" rx="2" fill="#374151"/>
-      <!-- Front wheel -->
-      <circle cx="40" cy="54" r="14" fill="#1c1917" stroke="#4ade80" stroke-width="3"/>
-      <circle cx="40" cy="54" r="6" fill="#374151"/>
-      <!-- Rear wheel -->
-      <circle cx="88" cy="54" r="10" fill="#1c1917" stroke="#4ade80" stroke-width="3"/>
-      <circle cx="88" cy="54" r="4" fill="#374151"/>
-      <!-- Hitch -->
-      <rect x="20" y="40" width="14" height="5" rx="2" fill="#374151"/>
-    </svg>
+      <!-- Dashboard Mock Content -->
+      <main class="content-viewport">
+        <div class="mock-dashboard">
+          <div class="mock-title-row">
+            <h2 style="font-size:24px;font-weight:600;">Field Analytics</h2>
+          </div>
+          <div class="mock-tabs">
+            <div class="mock-tab">Overview</div>
+            <div class="mock-tab">Crop Health</div>
+            <div class="mock-tab mock-tab active">Agronomy Recs</div>
+          </div>
+          <div class="mock-card">
+            <div>
+              <h3 style="font-size:16px;font-weight:600;margin-bottom:4px;">Agronomy Recommendations Report</h3>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);">Generating unified PDF report containing crop recommendations and weather alerts...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   </div>
 
-  <!-- Main card -->
-  <div class="card">
-    <div class="logo">🌾 Smart Farm Intelligence Platform</div>
-    <h1>Generating Your Report</h1>
-    <div class="sub">Harvesting insights from your field data\u2026</div>
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-    <div class="fact-box">
-      <div class="fact-label">💡 Did You Know?</div>
-      <div id="fact">Healthy soil contains over 1 billion microorganisms per gram — each playing a role in crop nutrition.</div>
+  <!-- Loading Animation Overlay (Matches parent page LoadingFarmAnimation exactly) -->
+  <div class="overlay">
+    <div class="card">
+      <div class="logo-text">🌾 Smart Farm Platform</div>
+      <!-- Top icon row -->
+      <div class="icon-row">
+        <!-- Sun SVG -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <!-- CloudSun SVG -->
+        <svg class="icon-cloud-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41"></path>
+          <path d="M15.9 16A5.5 5.5 0 0 0 17 11.5 5.5 5.5 0 0 0 11.5 6 5.5 5.5 0 0 0 6 11.5 5.5 5.5 0 0 0 7.1 16"></path>
+          <path d="M8.3 16a3.5 3.5 0 0 1-1.3-6.8 3.5 3.5 0 0 1 6.8 1.3 3.5 3.5 0 0 1-1.3 6.8"></path>
+        </svg>
+        <!-- Leaf SVG -->
+        <svg class="icon-leaf" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z"></path>
+          <path d="M9 22v-4H5"></path>
+        </svg>
+        <!-- Sprout SVG -->
+        <svg class="icon-sprout" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10M10 20c0-3.5 1-6 2-10s2-1.5 4-3c-1.5 1.5-1.5 3.5-3 5.5s-2 4-3 7.5"></path>
+          <path d="M14 20c0-3-1.5-4.5-3.5-6.5S7 11 7 8c3 0 4.5 1.5 6.5 3.5s2 3 2.5 6"></path>
+        </svg>
+      </div>
+
+      <!-- Tractor Track -->
+      <div class="track">
+        <div class="ground-line"></div>
+        <div class="tractor-container" id="tractor">
+          <!-- Tractor SVG -->
+          <svg class="tractor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 17h5a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-1.124A2.5 2.5 0 0 0 16 7h-3v4H7.5A2.5 2.5 0 0 0 5 8.5V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h1.124A2.5 2.5 0 0 0 6 15h3M14 17h-4"></path>
+            <circle cx="6" cy="15" r="2.5"></circle>
+            <circle cx="16" cy="15" r="2.5"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Status message -->
+      <div class="message" id="message">Analyzing field soil data...</div>
+
+      <!-- Pulsing dots -->
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <!-- Did you know fact -->
+      <div class="fact-box">
+        <div class="fact-text" id="fact">🌾 Healthy soil contains billions of microbes per gram.</div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Generate stars
-    const starsEl = document.getElementById('stars');
-    for (let i = 0; i < 60; i++) {
-      const s = document.createElement('div');
-      s.className = 'star';
-      const size = Math.random() * 2.5 + 1;
-      s.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(2+Math.random()*2)+'s';
-      starsEl.appendChild(s);
-    }
-
-    // Wheat stalks
-    const wheatEl = document.getElementById('wheat');
-    for (let i = 0; i < Math.floor(window.innerWidth / 30); i++) {
-      wheatEl.innerHTML += '<div class="stalk"><div class="stalk-head"></div><div class="stalk-stem"></div></div>';
-    }
-    wheatEl.style.left = '0';
-    wheatEl.style.width = '100%';
-    wheatEl.style.justifyContent = 'center';
-
-    // Rotating agronomy facts
-    const facts = [
-      'Healthy soil contains over 1 billion microorganisms per gram.',
-      'Drip irrigation can save up to 50% more water than traditional methods.',
-      'Crop rotation can increase yield by up to 25% over monoculture.',
-      'Smart sensors can predict crop yield up to 3 weeks in advance.',
-      '60% of crop losses can be prevented with early pest & disease alerts.',
-      'Nitrogen fixation by legumes can replace up to 300 kg/ha of fertilizer.',
+    const MESSAGES = [
+      "Analyzing field soil data...",
+      "Computing crop suitability scores...",
+      "Calculating fertilizer recommendations...",
+      "Building irrigation plan...",
+      "Finalizing your agronomy report...",
+      "Almost done — harvesting insights...",
     ];
-    let fi = 0;
+
+    const AGRONOMY_FACTS = [
+      "🌾 Healthy soil contains billions of microbes per gram.",
+      "💧 Drip irrigation can save up to 50% more water.",
+      "🌱 Crop rotation replenishes essential soil nutrients.",
+      "☀️ Smart sensors can predict yield 3 weeks in advance.",
+      "🐛 60% of crop losses can be prevented with early pest alerts.",
+    ];
+
+    let msgIndex = 0;
+    let factIndex = 0;
+    let tractorPos = 0;
+    let tractorDir = 1;
+
+    // Cycle messages
     setInterval(() => {
-      fi = (fi + 1) % facts.length;
-      document.getElementById('fact').textContent = facts[fi];
-    }, 4000);
+      msgIndex = (msgIndex + 1) % MESSAGES.length;
+      document.getElementById('message').textContent = MESSAGES[msgIndex];
+    }, 3500);
+
+    // Cycle facts
+    setInterval(() => {
+      factIndex = (factIndex + 1) % AGRONOMY_FACTS.length;
+      document.getElementById('fact').textContent = AGRONOMY_FACTS[factIndex];
+    }, 4500);
+
+    // Animate tractor
+    const tractorEl = document.getElementById('tractor');
+    setInterval(() => {
+      tractorPos += tractorDir * 1.5;
+      if (tractorPos >= 90) {
+        tractorDir = -1;
+      } else if (tractorPos <= 10) {
+        tractorDir = 1;
+      }
+      tractorEl.style.left = tractorPos + '%';
+      tractorEl.style.transform = 'translateX(-50%) scaleX(' + (tractorDir === -1 ? -1 : 1) + ')';
+    }, 50);
   </script>
 </body>
 </html>`;

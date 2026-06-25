@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import api from "../../services/api";
 import { 
   FlaskConical, 
@@ -69,6 +69,12 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
     const val = localStorage.getItem("useSoilTestData");
     return val !== null ? val === "true" : true;
   });
+
+  const hasSyncedInitialCrop = useRef(false);
+
+  useEffect(() => {
+    hasSyncedInitialCrop.current = false;
+  }, [fieldId]);
   
   useEffect(() => {
     localStorage.setItem("useSoilTestData", useSoilTestData.toString());
@@ -98,9 +104,10 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   useEffect(() => {
     if (contextData?.fertilizer && useSoilTestData) {
       setPlan(contextData.fertilizer);
-      if (selectedCrop === "Wheat") {
+      if (!hasSyncedInitialCrop.current && selectedCrop === "Wheat") {
         const calculatedCrop = contextData.fertilizer.crop || "Wheat";
         if (calculatedCrop !== "Wheat") {
+          hasSyncedInitialCrop.current = true;
           onCropChange(calculatedCrop);
         }
       }
@@ -279,6 +286,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
     }
     return {
       ...prod,
+      quantityPerAcre: 0,
       pricePerKg: 0,
       costPerHa: 0,
       totalCost: 0,
