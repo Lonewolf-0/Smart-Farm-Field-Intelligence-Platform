@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { LogOut, Bell, Menu } from "lucide-react";
+import { LogOut, Bell, Menu, MapPin, Cloud, Sun } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useWeather } from "../../hooks/useWeather";
 
 interface NavbarProps {
   onToggleSidebar?: () => void;
@@ -10,6 +11,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const [timeStr, setTimeStr] = useState("");
+  const weather = useWeather();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,9 +43,35 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
       </div>
 
       <div className="flex items-center gap-6">
-        {/* Clock */}
-        <div className="hidden md:flex flex-col items-end">
-          <span className="text-sm font-medium text-emerald-400">{timeStr || "--:--:--"}</span>
+        {/* Info Group: Location, Weather, Time */}
+        <div className="hidden md:flex items-center gap-3 bg-slate-800/50 px-4 py-1.5 rounded-full border border-white/5">
+          <div className="flex items-center gap-1.5 text-emerald-400">
+            <MapPin className="h-4 w-4" />
+            <span className="text-sm font-semibold whitespace-nowrap">{weather.loading ? "Locating..." : weather.locationName}</span>
+          </div>
+          
+          <div className="h-4 w-px bg-white/10 mx-1"></div>
+          
+          <div className="flex items-center gap-2 text-slate-200">
+            {weather.loading || weather.error ? (
+               <span className="text-sm font-medium">--°F</span>
+            ) : (
+              <>
+                <span className="text-sm font-medium">{weather.temp}°F</span>
+                {weather.condition?.toLowerCase().includes("cloud") ? (
+                  <Cloud className="h-4 w-4 text-slate-400" />
+                ) : (
+                  <Sun className="h-4 w-4 text-yellow-400" />
+                )}
+              </>
+            )}
+          </div>
+
+          <div className="h-4 w-px bg-white/10 mx-1"></div>
+
+          <div className="flex items-center text-slate-300">
+            <span className="text-sm font-medium">{timeStr.split(' ')[0]}</span>
+          </div>
         </div>
 
         {/* Notifications */}

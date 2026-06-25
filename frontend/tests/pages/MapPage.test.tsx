@@ -50,9 +50,9 @@ vi.mock("../../src/components/Map/FieldSidebar", () => ({
 }));
 
 vi.mock("../../src/components/Map/SaveFieldModal", () => ({
-  default: ({ isOpen, isLoading, onSave, onCancel, areaHectares }: any) => isOpen ? (
+  default: ({ isOpen, isLoading, onSave, onCancel, areaAcres }: any) => isOpen ? (
     <div data-testid="save-field-modal">
-      <span data-testid="modal-area">{areaHectares}</span>
+      <span data-testid="modal-area">{areaAcres}</span>
       <button data-testid="modal-save" onClick={() => onSave("Test Field Name")}>Save</button>
       <button data-testid="modal-cancel" onClick={onCancel}>Cancel</button>
     </div>

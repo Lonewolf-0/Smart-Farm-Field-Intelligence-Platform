@@ -6,7 +6,7 @@ interface SaveFieldModalProps {
   onCancel: () => void;
   isOpen: boolean;
   isLoading: boolean;
-  areaHectares?: number | null;
+  areaAcres?: number | null;
 }
 
 const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
@@ -14,7 +14,7 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
   onCancel,
   isOpen,
   isLoading,
-  areaHectares,
+  areaAcres,
 }) => {
   const [fieldName, setFieldName] = useState("");
 
@@ -35,12 +35,11 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
           Enter a name for your drawn field boundary to save it.
         </p>
         
-        {areaHectares !== undefined && areaHectares !== null && (
-          <div className="mb-4 bg-emerald-500/10 text-emerald-200 border border-emerald-500/20 p-3 rounded-xl text-sm flex items-center gap-2">
-            <Maximize2 className="h-5 w-5" />
-            <span>
-              <strong>Area:</strong> {areaHectares.toFixed(2)} ha / {(areaHectares * 2.47105).toFixed(2)} acres
-            </span>
+        {areaAcres !== undefined && areaAcres !== null && (
+          <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 mb-6">
+            <p className="text-sm text-slate-300 flex items-center justify-between">
+              <strong>Area:</strong> {areaAcres.toFixed(2)} acres
+            </p>
           </div>
         )}
         

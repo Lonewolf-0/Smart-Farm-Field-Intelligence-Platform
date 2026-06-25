@@ -52,7 +52,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   
   const [field, setField] = useState<Field | null>(null);
   
-  // Soil NPK input states (kg/ha)
+  // Soil NPK input states (lbs/acre)
   const [soilN, setSoilN] = useState<number>(() => {
     const val = localStorage.getItem("soilN");
     return val !== null ? Number(val) : 60;
@@ -255,7 +255,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   const pctDeficitK = Math.min(100 - pctAvailableK, (defK / reqK) * 100);
 
   // Field area
-  const area = field?.area || 1;
+  const area = (field?.area || 1) * 2.47105; // Convert Hectares to Acres
 
   // Cost estimates based on recommendations
   let totalCostPerHa = 0;
@@ -347,7 +347,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
           {/* N input */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="soil-n-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Soil N (kg/ha)
+              Soil N (lbs/acre)
             </label>
             <input
               id="soil-n-input"
@@ -361,7 +361,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
           {/* P input */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="soil-p-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Soil P (kg/ha)
+              Soil P (lbs/acre)
             </label>
             <input
               id="soil-p-input"
@@ -375,7 +375,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
           {/* K input & Recalculate Button */}
           <div className="flex flex-col gap-1.5 relative">
             <label htmlFor="soil-k-input" className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Soil K (kg/ha)
+              Soil K (lbs/acre)
             </label>
             <div className="flex gap-2">
               <input
@@ -433,7 +433,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                   <div className="flex justify-between text-xs">
                     <span className="font-semibold text-slate-300">Nitrogen (N)</span>
                     <span className="text-slate-400">
-                      Avail: <strong className="text-green-400">{availableN}</strong> / Req: <strong className="text-slate-200">{reqN}</strong> kg/ha
+                      Avail: <strong className="text-green-400">{availableN}</strong> / Req: <strong className="text-slate-200">{reqN}</strong> lbs/acre
                     </span>
                   </div>
                   <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden flex border border-white/5">
@@ -441,19 +441,19 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                       <div 
                         className="h-full bg-green-500/90 transition-all duration-500" 
                         style={{ width: `${pctAvailableN}%` }}
-                        title={`Available N: ${availableN} kg/ha`}
+                        title={`Available N: ${availableN} lbs/acre`}
                       ></div>
                     )}
                     {pctDeficitN > 0 && (
                       <div 
                         className="h-full bg-red-500/90 transition-all duration-500" 
                         style={{ width: `${pctDeficitN}%` }}
-                        title={`Deficit N: ${defN} kg/ha`}
+                        title={`Deficit N: ${defN} lbs/acre`}
                       ></div>
                     )}
                   </div>
                   {defN > 0 ? (
-                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defN.toFixed(1)} kg/ha detected</p>
+                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defN.toFixed(1)} lbs/acre detected</p>
                   ) : (
                     <p className="text-[10px] text-green-400 font-medium">Nitrogen is optimal</p>
                   )}
@@ -464,7 +464,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                   <div className="flex justify-between text-xs">
                     <span className="font-semibold text-slate-300">Phosphorus (P)</span>
                     <span className="text-slate-400">
-                      Avail: <strong className="text-green-400">{availableP}</strong> / Req: <strong className="text-slate-200">{reqP}</strong> kg/ha
+                      Avail: <strong className="text-green-400">{availableP}</strong> / Req: <strong className="text-slate-200">{reqP}</strong> lbs/acre
                     </span>
                   </div>
                   <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden flex border border-white/5">
@@ -472,19 +472,19 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                       <div 
                         className="h-full bg-green-500/90 transition-all duration-500" 
                         style={{ width: `${pctAvailableP}%` }}
-                        title={`Available P: ${availableP} kg/ha`}
+                        title={`Available P: ${availableP} lbs/acre`}
                       ></div>
                     )}
                     {pctDeficitP > 0 && (
                       <div 
                         className="h-full bg-red-500/90 transition-all duration-500" 
                         style={{ width: `${pctDeficitP}%` }}
-                        title={`Deficit P: ${defP} kg/ha`}
+                        title={`Deficit P: ${defP} lbs/acre`}
                       ></div>
                     )}
                   </div>
                   {defP > 0 ? (
-                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defP.toFixed(1)} kg/ha detected</p>
+                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defP.toFixed(1)} lbs/acre detected</p>
                   ) : (
                     <p className="text-[10px] text-green-400 font-medium">Phosphorus is optimal</p>
                   )}
@@ -495,7 +495,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                   <div className="flex justify-between text-xs">
                     <span className="font-semibold text-slate-300">Potassium (K)</span>
                     <span className="text-slate-400">
-                      Avail: <strong className="text-green-400">{availableK}</strong> / Req: <strong className="text-slate-200">{reqK}</strong> kg/ha
+                      Avail: <strong className="text-green-400">{availableK}</strong> / Req: <strong className="text-slate-200">{reqK}</strong> lbs/acre
                     </span>
                   </div>
                   <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden flex border border-white/5">
@@ -503,19 +503,19 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                       <div 
                         className="h-full bg-green-500/90 transition-all duration-500" 
                         style={{ width: `${pctAvailableK}%` }}
-                        title={`Available K: ${availableK} kg/ha`}
+                        title={`Available K: ${availableK} lbs/acre`}
                       ></div>
                     )}
                     {pctDeficitK > 0 && (
                       <div 
                         className="h-full bg-red-500/90 transition-all duration-500" 
                         style={{ width: `${pctDeficitK}%` }}
-                        title={`Deficit K: ${defK} kg/ha`}
+                        title={`Deficit K: ${defK} lbs/acre`}
                       ></div>
                     )}
                   </div>
                   {defK > 0 ? (
-                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defK.toFixed(1)} kg/ha detected</p>
+                    <p className="text-[10px] text-red-400 font-medium">Deficit of {defK.toFixed(1)} lbs/acre detected</p>
                   ) : (
                     <p className="text-[10px] text-green-400 font-medium">Potassium is optimal</p>
                   )}
@@ -530,8 +530,8 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                     <thead>
                       <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">
                         <th className="p-2.5">Fertilizer Product</th>
-                        <th className="p-2.5 text-right">Per Hectare</th>
-                        <th className="p-2.5 text-right">Total ({area.toFixed(1)} ha)</th>
+                        <th className="p-2.5 text-right">Per Acre</th>
+                        <th className="p-2.5 text-right">Total ({area.toFixed(1)} acres)</th>
                         <th className="p-2.5 text-right">Bags (50kg)</th>
                       </tr>
                     </thead>
@@ -546,8 +546,8 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                         pricedRecommendations.map((prod) => (
                           <tr key={prod.name} className="hover:bg-white/5">
                             <td className="p-2.5 font-semibold text-white">{prod.name}</td>
-                            <td className="p-2.5 text-right text-slate-200">{prod.quantity.toFixed(1)} kg/ha</td>
-                            <td className="p-2.5 text-right text-slate-200">{(prod.quantity * area).toFixed(1)} kg</td>
+                            <td className="p-2.5 text-right text-slate-200">{prod.quantity.toFixed(1)} lbs/acre</td>
+                            <td className="p-2.5 text-right text-slate-200">{(prod.quantity * area).toFixed(1)} lbs</td>
                             <td className="p-2.5 text-right text-slate-200">{prod.bagsNeeded}</td>
                           </tr>
                         ))
@@ -591,11 +591,11 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                     <div className="space-y-2 pt-2.5 border-t border-white/5 animate-fadeIn">
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-400">Total Field Area</span>
-                        <span className="font-semibold text-white">{area.toFixed(2)} ha</span>
+                        <span className="font-semibold text-white">{area.toFixed(2)} acres</span>
                       </div>
                       
                       <div className="flex justify-between text-xs">
-                        <span className="text-slate-400">Estimate Per Hectare</span>
+                        <span className="text-slate-400">Estimate Per Acre</span>
                         <span className="font-semibold text-white">${totalCostPerHa.toFixed(2)}</span>
                       </div>
 
