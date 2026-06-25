@@ -5,9 +5,11 @@ import { Link } from "react-router-dom";
 
 interface Props {
   fields: Field[];
+  onSelectField?: (id: string) => void;
+  selectedFieldId?: string | null;
 }
 
-const FieldSummaryCard: React.FC<Props> = ({ fields }) => {
+const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFieldId }) => {
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
@@ -29,9 +31,19 @@ const FieldSummaryCard: React.FC<Props> = ({ fields }) => {
             </Link>
           </div>
         ) : (
-          fields.map((field) => (
-            <div key={field.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <div>
+          fields.map((field) => {
+            const isSelected = field.id === selectedFieldId;
+            return (
+              <div 
+                key={field.id} 
+                onClick={() => onSelectField?.(field.id)}
+                className={`flex items-center justify-between p-3 rounded-xl border transition-colors cursor-pointer ${
+                  isSelected 
+                    ? "bg-emerald-500/20 border-emerald-500/50" 
+                    : "bg-white/5 border-white/5 hover:bg-white/10"
+                }`}
+              >
+                <div>
                 <p className="text-sm font-semibold text-white">{field.name}</p>
                 <p className="text-xs text-slate-400 mt-0.5">{field.area.toFixed(2)} Acres</p>
               </div>
@@ -39,7 +51,8 @@ const FieldSummaryCard: React.FC<Props> = ({ fields }) => {
                 <Map className="h-4 w-4" />
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

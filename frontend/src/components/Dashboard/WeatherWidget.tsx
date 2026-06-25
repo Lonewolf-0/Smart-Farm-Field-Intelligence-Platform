@@ -15,9 +15,11 @@ const WeatherWidget: React.FC = () => {
 
   if (weather.loading) {
     return (
-      <div className="flex flex-col bg-slate-800/30 rounded-3xl border border-white/5 overflow-hidden h-[800px] animate-pulse">
+      <div className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/50 shadow-xl backdrop-blur-md overflow-hidden h-full animate-pulse">
         {/* Skeleton Top Section: Heatmap */}
-        <div className="relative h-48 w-full shrink-0 bg-slate-700/50"></div>
+        <div className="relative h-48 w-full shrink-0 bg-slate-700/50">
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
+        </div>
 
         {/* Skeleton Middle Section: Weather's today */}
         <div className="p-6 border-b border-white/5">
@@ -69,7 +71,7 @@ const WeatherWidget: React.FC = () => {
 
   if (weather.error) {
     return (
-      <div className="rounded-3xl border border-white/5 bg-slate-800/30 p-6 flex flex-col items-center justify-center text-center min-h-[600px] h-full">
+      <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-6 shadow-xl backdrop-blur-md flex flex-col items-center justify-center text-center h-full">
         <MapPin className="h-8 w-8 text-slate-500 mb-2" />
         <p className="text-sm text-slate-400">{weather.error}</p>
       </div>
@@ -77,7 +79,7 @@ const WeatherWidget: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col bg-slate-800/30 rounded-3xl border border-white/5 overflow-hidden h-[800px]">
+    <div className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/50 shadow-xl backdrop-blur-md overflow-hidden h-full">
       {/* Top Section: Heatmap */}
       <div className="relative h-48 w-full shrink-0">
         <img 
@@ -85,6 +87,7 @@ const WeatherWidget: React.FC = () => {
           alt="Weather Radar" 
           className="w-full h-full object-cover"
         />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
         <button className="absolute top-4 right-4 h-8 w-8 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors">
           <Maximize2 className="h-4 w-4" />
         </button>

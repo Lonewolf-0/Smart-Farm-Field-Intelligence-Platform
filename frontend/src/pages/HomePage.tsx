@@ -2,46 +2,97 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useField } from "../context/FieldContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CurrentTasksWidget from "../components/Dashboard/CurrentTasksWidget";
 import UpcomingWeekWidget from "../components/Dashboard/UpcomingWeekWidget";
 import FieldSummaryCard from "../components/Dashboard/FieldSummaryCard";
 import WeatherWidget from "../components/Dashboard/WeatherWidget";
+import AddTaskModal from "../components/Dashboard/AddTaskModal";
+import type { TaskInput } from "../components/Dashboard/AddTaskModal";
 import type { Task } from "../types";
-
-
+import FarmMap from "../components/Map/FarmMap";
+import api from "../services/api";
 
 function HomePage() {
   const { user, isAuthenticated } = useAuth();
   const { fields: savedFields } = useField();
   
-  // Mock data for tasks
-  const [tasks] = useState<Task[]>([
-    { 
-      id: "1", 
-      userId: "u1", 
-      title: "Scheduled spraying was not performed.", 
-      completed: false, 
-      dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      category: 'Plowing'
-    },
-    { 
-      id: "2", 
-      userId: "u1", 
-      title: "Field fertilization required in the 3 days. Wheat #2", 
-      completed: false, 
-      dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      category: 'Fertilization'
-    },
-    {
-      id: "3",
-      userId: "u1",
-      title: "Delivery pickup scheduled.",
-      completed: false,
-      dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      category: 'Shipment'
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [branches, setBranches] = useState<any[]>([]);
+  
+  // Fetch branches for the map
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const res = await api.get("/branches");
+        if (res.data && res.data.data) {
+          setBranches(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch branches", err);
+      }
+    };
+    fetchBranches();
+  }, []);
+
+  // Load tasks from localStorage or use mock data
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem("dashboard_tasks");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
     }
-  ]);
+    return [
+      { 
+        id: "1", 
+        userId: "u1", 
+        title: "Scheduled spraying was not performed.", 
+        completed: false, 
+        dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        category: 'Plowing'
+      },
+      { 
+        id: "2", 
+        userId: "u1", 
+        title: "Field fertilization required in the 3 days. Wheat #2", 
+        completed: false, 
+        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        category: 'Fertilization'
+      },
+      {
+        id: "3",
+        userId: "u1",
+        title: "Delivery pickup scheduled.",
+        completed: false,
+        dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        category: 'Shipment'
+      }
+    ];
+  });
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("dashboard_tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  const handleAddTask = (input: TaskInput) => {
+    const newTask: Task = {
+      id: Math.random().toString(36).substr(2, 9),
+      userId: user?.id || "u1",
+      title: input.title,
+      dueDate: input.dueDate,
+      category: input.category,
+      completed: false,
+    };
+    setTasks([...tasks, newTask]);
+    setIsModalOpen(false);
+  };
+
+  const handleCompleteTask = (id: string) => {
+    setTasks(tasks.filter(t => t.id !== id));
+  };
 
   if (isAuthenticated && user) {
     return (
@@ -53,42 +104,53 @@ function HomePage() {
               <WeatherWidget />
             </div>
 
-            {/* Right Column: Dashboard */}
-            <div className="flex-1 space-y-8 overflow-y-auto custom-scrollbar pr-4 pb-12">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-white tracking-tight">Dashboard</h2>
-          
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-400">Field</span>
-            <div className="bg-slate-800 border border-white/10 rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-700 transition-colors">
-              <span className="text-sm font-semibold text-white">All fields</span>
-              <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+            {/* Middle Column: Dashboard Widgets */}
+            <div className="flex-1 flex flex-col h-full gap-6">
+              {/* Header */}
+              <div className="flex items-center justify-between shrink-0 h-8">
+                <h2 className="text-3xl font-bold text-white tracking-tight leading-none">Dashboard</h2>
+              </div>
+
+              {/* Top Row: Tasks & Your Fields */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1 min-h-0">
+                <div className="h-full min-h-0">
+                  <CurrentTasksWidget 
+                    tasks={tasks} 
+                    onAddTaskClick={() => setIsModalOpen(true)}
+                    onCompleteTask={handleCompleteTask}
+                  />
+                </div>
+                <div className="h-full min-h-0">
+                  <FieldSummaryCard 
+                    fields={savedFields} 
+                    onSelectField={setSelectedFieldId}
+                    selectedFieldId={selectedFieldId}
+                  />
+                </div>
+              </div>
+
+              {/* Bottom Row: Upcoming Week */}
+              <div className="h-80 shrink-0">
+                <UpcomingWeekWidget tasks={tasks} />
+              </div>
+            </div>
+
+            {/* Right Column: Dashboard Map */}
+            <div className="hidden lg:flex flex-col w-[525px] shrink-0 h-full rounded-2xl overflow-hidden border border-white/10 bg-slate-900/50">
+              <FarmMap 
+                savedFields={savedFields} 
+                selectedFieldId={selectedFieldId} 
+                readOnly={true} 
+                branches={branches} 
+              />
             </div>
           </div>
         </div>
-
-        {/* Top Row: Tasks & Week Calendar */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6">
-          <div className="bg-slate-800/30 rounded-3xl p-6 border border-white/5">
-            <CurrentTasksWidget tasks={tasks} />
-          </div>
-          <div className="h-[340px]">
-            <UpcomingWeekWidget tasks={tasks} />
-          </div>
-        </div>
-
-        {/* Bottom Row: Field Summaries (Fallback for skipped Crop/Harvest charts) */}
-        <div className="grid grid-cols-1 gap-6">
-          <div className="h-80">
-            <FieldSummaryCard fields={savedFields} />
-          </div>
-          </div>
-        </div>
-        </div>
-      </div>
+        <AddTaskModal 
+          isOpen={isModalOpen}
+          onSave={handleAddTask}
+          onCancel={() => setIsModalOpen(false)}
+        />
       </div>
     );
   }

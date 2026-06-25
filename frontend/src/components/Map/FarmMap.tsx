@@ -51,6 +51,15 @@ const customMarkerIcon = L.divIcon({
   iconAnchor: [18, 36],
 });
 
+const branchIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 export interface DrawnPolygon {
   geoJSON: GeoJSON.Polygon;
 }
@@ -60,13 +69,17 @@ interface FarmMapProps {
   savedFields?: any[]; // using any to avoid import cycles if not needed, or better use Field type
   selectedFieldId?: string | null;
   onSelectField?: (id: string) => void;
+  readOnly?: boolean;
+  branches?: any[];
 }
 
 const FarmMap: React.FC<FarmMapProps> = ({
   onPolygonChange,
   savedFields = [],
   selectedFieldId = null,
-  onSelectField
+  onSelectField,
+  readOnly = false,
+  branches = []
 }) => {
   const hasGeolocation =
     typeof navigator !== "undefined" && !!navigator.geolocation;
@@ -300,7 +313,7 @@ const FarmMap: React.FC<FarmMapProps> = ({
   return (
     <div className="relative w-full h-[calc(100vh-64px)]">
       {/* Location Status Banner */}
-      {locationStatus === "loading" && (
+      {!readOnly && locationStatus === "loading" && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl shadow-md flex items-center gap-2">
           <span className="animate-spin h-4 w-4 border-2 border-emerald-400 border-t-transparent rounded-full"></span>
           <span className="text-sm text-slate-300">
@@ -309,7 +322,7 @@ const FarmMap: React.FC<FarmMapProps> = ({
         </div>
       )}
 
-      {locationStatus === "denied" && (
+      {!readOnly && locationStatus === "denied" && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl shadow-md">
           <span className="text-sm text-amber-200">
             📍 Location access denied. Showing default view.
@@ -318,6 +331,7 @@ const FarmMap: React.FC<FarmMapProps> = ({
       )}
 
       {/* Search Location Bar */}
+      {!readOnly && (
       <div className="absolute top-4 right-4 z-[1000] w-72 sm:w-80">
         <form onSubmit={handleSearch} className="flex items-center bg-slate-950/80 border border-white/10 rounded-xl shadow-2xl backdrop-blur-md transition-all focus-within:border-emerald-500/50 overflow-hidden">
           <div className="pl-3.5 text-slate-400 shrink-0">
@@ -388,9 +402,10 @@ const FarmMap: React.FC<FarmMapProps> = ({
           </div>
         )}
       </div>
+      )}
 
       {/* Recenter Button */}
-      {userLocation && locationStatus === "granted" && (
+      {!readOnly && userLocation && locationStatus === "granted" && (
         <button
           onClick={handleRecenter}
           className="absolute bottom-6 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md border border-white/10 p-3 rounded-full shadow-lg hover:bg-slate-800 transition-colors"
@@ -466,11 +481,24 @@ const FarmMap: React.FC<FarmMapProps> = ({
             </GeoJSON>
           );
         })}
+        {branches.map((branch) => (
+          <Marker
+            key={branch.id}
+            position={[branch.latitude, branch.longitude]}
+            icon={branchIcon}
+          >
+            <Tooltip direction="top" sticky>
+              <span className="font-semibold">{branch.name}</span>
+            </Tooltip>
+          </Marker>
+        ))}
 
-        <GeomanControl
-          onPolygonCreated={handlePolygonCreated}
-          onPolygonDeleted={handlePolygonDeleted}
-        />
+        {!readOnly && (
+          <GeomanControl
+            onPolygonCreated={handlePolygonCreated}
+            onPolygonDeleted={handlePolygonDeleted}
+          />
+        )}
       </MapContainer>
     </div>
   );
