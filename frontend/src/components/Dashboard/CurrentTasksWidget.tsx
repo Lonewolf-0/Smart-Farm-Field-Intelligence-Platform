@@ -1,12 +1,14 @@
 import React from "react";
 import type { Task } from "../../types";
-import { ArrowUpRight } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 
 interface Props {
   tasks: Task[];
+  onAddTaskClick?: () => void;
+  onCompleteTask?: (id: string) => void;
 }
 
-const CurrentTasksWidget: React.FC<Props> = ({ tasks }) => {
+const CurrentTasksWidget: React.FC<Props> = ({ tasks, onAddTaskClick, onCompleteTask }) => {
   // Sort tasks to show overdue/soonest first
   const sortedTasks = [...tasks].sort((a, b) => {
     if (!a.dueDate) return 1;
@@ -14,7 +16,7 @@ const CurrentTasksWidget: React.FC<Props> = ({ tasks }) => {
     return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
   });
 
-  const displayTasks = sortedTasks.slice(0, 2);
+
 
   const getDaysDiff = (dateStr: string) => {
     const today = new Date();
@@ -25,52 +27,70 @@ const CurrentTasksWidget: React.FC<Props> = ({ tasks }) => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  const getCategoryColor = (category?: string) => {
+    switch (category) {
+      case 'Plowing': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'Fertilization': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      case 'Shipment': return 'bg-yellow-400/20 text-yellow-400 border-yellow-400/30';
+      default: return 'bg-slate-800/80 text-slate-400 border-white/5';
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-white">Current tasks</h3>
-        <button className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors border border-white/10">
-          <ArrowUpRight className="h-4 w-4 text-slate-300" />
+        <button 
+          onClick={onAddTaskClick}
+          className="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/30 transition-colors border border-emerald-500/30"
+          title="Add New Task"
+        >
+          <Plus className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="flex flex-col gap-4 flex-1">
-        {displayTasks.map((task) => {
+      <div className="flex flex-col gap-4 flex-1 overflow-y-auto custom-scrollbar pr-2 pb-2">
+        {sortedTasks.map((task) => {
           const daysDiff = task.dueDate ? getDaysDiff(task.dueDate) : 0;
           const isOverdue = daysDiff < 0;
-          const colorClass = isOverdue 
-            ? "bg-red-500/90 text-white" 
-            : "bg-emerald-500/90 text-white";
           
           return (
-            <div key={task.id} className="flex bg-slate-800/80 rounded-2xl border border-white/10 overflow-hidden shadow-lg h-[110px] items-center p-2 gap-4">
-              {/* Day Badge */}
-              <div className={`h-full aspect-square rounded-xl ${colorClass} flex flex-col items-center justify-center font-bold shadow-inner shrink-0`}>
-                <span className="text-xl leading-none">{Math.abs(daysDiff)}d</span>
-                <span className="text-xs font-medium opacity-90">{isOverdue ? "due" : "left"}</span>
-              </div>
-              
+            <div key={task.id} className="flex bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 shadow-sm items-center p-3 gap-4 shrink-0 transition-all group">
               {/* Content */}
-              <div className="flex flex-col justify-center py-2 pr-4 flex-1">
-                <p className="text-sm font-semibold text-slate-200 leading-snug">
+              <div className="flex flex-col flex-1">
+                <p className="text-sm font-semibold text-white leading-snug group-hover:text-emerald-300 transition-colors">
                   {task.title}
                 </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className={`text-xs font-medium ${isOverdue ? "text-red-400" : "text-emerald-400"}`}>
-                    {isOverdue ? `You have ${Math.abs(daysDiff)} days of delay.` : `Required in ${daysDiff} days.`}
-                  </span>
-                </div>
-                {task.category && (
-                  <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-white/5 text-slate-400 w-fit">
-                    {task.category}
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  {/* Urgency Pill */}
+                  <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase ${isOverdue ? "bg-red-500/20 text-red-400 border border-red-500/30" : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"}`}>
+                    {isOverdue ? `${Math.abs(daysDiff)}d overdue` : `${daysDiff}d left`}
                   </div>
-                )}
+                  
+                  {/* Category Pill */}
+                  {task.category && (
+                    <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase border ${getCategoryColor(task.category)}`}>
+                      {task.category}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Actions */}
+              <div className="shrink-0 flex items-center pr-1">
+                <button 
+                  onClick={() => onCompleteTask && onCompleteTask(task.id)}
+                  className="h-8 w-8 rounded-full border border-white/20 bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:border-emerald-400 hover:text-slate-950 transition-all shadow-sm group-hover:border-emerald-500/50"
+                  title="Mark as completed"
+                >
+                  <Check className="h-4 w-4" />
+                </button>
               </div>
             </div>
           );
         })}
 
-        {displayTasks.length === 0 && (
+        {sortedTasks.length === 0 && (
           <div className="flex-1 flex flex-col items-center justify-center text-slate-500 bg-white/5 rounded-2xl border border-white/5 border-dashed">
             <p className="text-sm">No current tasks</p>
           </div>
