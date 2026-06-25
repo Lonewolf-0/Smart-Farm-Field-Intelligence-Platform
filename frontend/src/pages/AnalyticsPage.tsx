@@ -11,7 +11,6 @@ import CropSuitabilityCard from "../components/Dashboard/CropSuitabilityCard";
 import FertilizerCard from "../components/Dashboard/FertilizerCard";
 import NDVICard from "../components/Dashboard/NDVICard";
 import PesticideCard from "../components/Dashboard/PesticideCard";
-import RiskAlertCard from "../components/Dashboard/RiskAlertCard";
 import SummaryCard from "../components/Dashboard/SummaryCard";
 import CustomSelect from "../components/UI/CustomSelect";
 import PremiumLoader from "../components/UI/PremiumLoader";
@@ -420,7 +419,6 @@ function AnalyticsPage() {
 
       const irrigation = analysisData.irrigation || {};
       const waterReq = irrigation.waterRequired || 0;
-      const liters = (waterReq * 10000).toLocaleString();
 
       const irrigationHeaders = [["Parameter", "Metric Value", "Actionable Guidance / Status"]];
       const irrigationRows = [
@@ -650,7 +648,7 @@ function AnalyticsPage() {
         let lastNodeY: number | null = null;
         let lastNodePage: number | null = null;
 
-        fertilizerPlan.scheduleSteps.forEach((step: any, idx: number) => {
+        fertilizerPlan.scheduleSteps.forEach((step: any) => {
           const splitDesc = doc.splitTextToSize(step.description || "", timelineContentWidth - 5);
           const descLines = splitDesc.length;
           
@@ -661,7 +659,7 @@ function AnalyticsPage() {
           // Check if we need to start a new page
           if (yPos + estimatedHeight > pageHeight - margin) {
             // Draw line to the bottom of the page before adding the page
-            if (lastNodeY !== null && lastNodePage === doc.internal.getNumberOfPages()) {
+            if (lastNodeY !== null && lastNodePage === doc.getNumberOfPages()) {
               doc.setLineWidth(0.4);
               doc.setDrawColor(203, 213, 225); // slate-200
               doc.line(timelineX, lastNodeY + 4, timelineX, pageHeight - margin);
@@ -677,7 +675,7 @@ function AnalyticsPage() {
             }
           } else {
             // Draw line from last node to current node on same page
-            if (lastNodeY !== null && lastNodePage === doc.internal.getNumberOfPages()) {
+            if (lastNodeY !== null && lastNodePage === doc.getNumberOfPages()) {
               doc.setLineWidth(0.4);
               doc.setDrawColor(203, 213, 225);
               doc.line(timelineX, lastNodeY + 4, timelineX, yPos + 6);
@@ -685,7 +683,7 @@ function AnalyticsPage() {
           }
 
           const currentNodeY = yPos + 6;
-          const currentPage = doc.internal.getNumberOfPages();
+          const currentPage = doc.getNumberOfPages();
 
           // Draw the Node Circle
           doc.setFillColor(245, 158, 11); // Amber-500
@@ -770,7 +768,7 @@ function AnalyticsPage() {
       }
 
       // Add footers on all pages
-      const pageCount = (doc as any).internal.getNumberOfPages();
+      const pageCount = doc.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFont("helvetica", "normal");

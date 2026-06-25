@@ -279,6 +279,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
     }
     return {
       ...prod,
+      quantityPerAcre: 0,
       pricePerKg: 0,
       costPerHa: 0,
       totalCost: 0,
