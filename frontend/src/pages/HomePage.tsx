@@ -45,7 +45,16 @@ function HomePage() {
 
   if (isAuthenticated && user) {
     return (
-      <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      <div className="w-full h-[calc(100vh-8rem)] flex overflow-hidden">
+        <div className="w-full h-full flex rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl overflow-hidden gap-6">
+          <div className="flex w-full gap-6">
+            {/* Left Column: Weather */}
+            <div className="hidden lg:flex flex-col w-[300px] shrink-0 h-full">
+              <WeatherWidget />
+            </div>
+
+            {/* Right Column: Dashboard */}
+            <div className="flex-1 space-y-8 overflow-y-auto custom-scrollbar pr-4 pb-12">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold text-white tracking-tight">Dashboard</h2>
@@ -72,14 +81,14 @@ function HomePage() {
         </div>
 
         {/* Bottom Row: Field Summaries (Fallback for skipped Crop/Harvest charts) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <div className="h-80">
             <FieldSummaryCard fields={savedFields} />
           </div>
-          <div className="h-80">
-            <WeatherWidget />
           </div>
         </div>
+        </div>
+      </div>
       </div>
     );
   }

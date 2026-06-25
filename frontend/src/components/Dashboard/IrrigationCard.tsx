@@ -58,7 +58,8 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
   }
 
   // Calculations
-  const litersPerHectare = (data.waterRequired * 10000).toLocaleString();
+  const waterRequiredInches = data.waterRequired / 25.4;
+  const gallonsPerAcre = Math.round(waterRequiredInches * 27154).toLocaleString();
   
   // SVG Gauge Calculations
   const radius = 40;
@@ -128,7 +129,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
         </p>
         {data.waterRequired > 0 ? (
           <p className="text-sm text-emerald-200 mt-2 font-medium bg-emerald-950/30 inline-block px-4 py-1.5 rounded-full border border-emerald-900/50">
-            Needs {data.waterRequired} mm ({litersPerHectare} L/ha)
+            Needs {waterRequiredInches.toFixed(2)} in ({gallonsPerAcre} Gal/acre)
           </p>
         ) : (
           <p className="text-sm text-green-200 mt-2 font-medium bg-green-950/30 inline-block px-4 py-1.5 rounded-full border border-green-900/50">

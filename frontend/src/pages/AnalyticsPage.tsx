@@ -211,7 +211,7 @@ function AnalyticsPage() {
     try {
 
       const activeField = fields.find((f) => f.id === selectedFieldId);
-      const area = activeField?.area || 1;
+      const area = (activeField?.area || 1) * 2.47105;
       const selectedCrop = localStorage.getItem("selectedCrop") || "Wheat";
 
       // 1. Fetch latest fertilizer plan for the selected crop
@@ -316,7 +316,7 @@ function AnalyticsPage() {
       doc.setTextColor(100, 116, 139);
       doc.text("Field Area:", margin + 5, yPos + 15); // was yPos + 18
       doc.setTextColor(15, 23, 42);
-      doc.text(`${area.toFixed(2)} ha`, margin + 28, yPos + 15);
+      doc.text(`${area.toFixed(2)} acres`, margin + 28, yPos + 15);
 
       // Column 2 values
       doc.setTextColor(100, 116, 139);
@@ -426,7 +426,7 @@ function AnalyticsPage() {
       const irrigationRows = [
         ["Current Soil Moisture", `${irrigation.currentSoilMoisture || 0}%`, "Current percentage of moisture content in top layer."],
         ["Next Irrigation Target", irrigation.nextIrrigationDays === 0 ? "TODAY" : `${irrigation.nextIrrigationDays || 0} Days`, irrigation.nextIrrigationDays <= 1 ? "Critical watering required." : "Soil moisture level is acceptable."],
-        ["Water Quantity Required", `${waterReq} mm (${liters} L/ha)`, waterReq > 0 ? `Target volume to restore field root zone.` : "No supplemental watering needed currently."],
+        ["Water Quantity Required", `${(waterReq / 25.4).toFixed(2)} in (${Math.round((waterReq / 25.4) * 27154).toLocaleString()} gal/acre)`, waterReq > 0 ? `Target volume to restore field root zone.` : "No supplemental watering needed currently."],
         ["Daily Evapotranspiration", `${irrigation.dailyET || 0} mm/day`, "Daily crop moisture consumption rate."],
         ["7-Day Rainfall Forecast", `${irrigation.rainfallNext7Days || 0} mm`, "Expected local rainfall quantity."],
       ];
@@ -506,7 +506,7 @@ function AnalyticsPage() {
       const defP = Math.max(0, reqP - availableP);
       const defK = Math.max(0, reqK - availableK);
 
-      const nutrientHeaders = [["Nutrient Element", "Soil Baseline (kg/ha)", "Crop Requirement (kg/ha)", "Net Deficit (kg/ha)"]];
+      const nutrientHeaders = [["Nutrient Element", "Soil Baseline (lbs/acre)", "Crop Requirement (lbs/acre)", "Net Deficit (lbs/acre)"]];
       const nutrientRows = [
         ["Nitrogen (N)", (baseline.nitrogen || 0).toFixed(1), reqN.toFixed(1), defN > 0 ? `${defN.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
         ["Phosphorus (P)", (baseline.phosphorus || 0).toFixed(1), reqP.toFixed(1), defP > 0 ? `${defP.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
@@ -557,7 +557,7 @@ function AnalyticsPage() {
       doc.text("Recommends active commercial fertilizer types, application quantities, bag requirements, and cost projections.", margin, yPos);
       yPos += 5;
 
-      const recHeaders = [["Fertilizer Product", "Dose / Hectare", `Total Qty (${area.toFixed(2)} ha)`, "50kg Bags", "Cost / ha", "Total Cost"]];
+      const recHeaders = [["Fertilizer Product", "Dose / Acre", `Total Qty (${area.toFixed(2)} acres)`, "50kg Bags", "Cost / acre", "Total Cost"]];
       
       let totalCostPerHa = 0;
       const recRows = recommendations.map((prod: any) => {
@@ -574,8 +574,8 @@ function AnalyticsPage() {
         
         return [
           prod.name || "N/A",
-          `${(prod.quantity || 0).toFixed(1)} ${prod.unit || "kg"}/ha`,
-          `${((prod.quantity || 0) * area).toFixed(1)} ${prod.unit || "kg"}`,
+          `${(prod.quantity || 0).toFixed(1)} ${prod.unit || "lbs"}/acre`,
+          `${((prod.quantity || 0) * area).toFixed(1)} ${prod.unit || "lbs"}`,
           totalBags.toString(),
           `$${prodCostPerHa.toFixed(2)}`,
           `$${totalProdCost.toFixed(2)}`
@@ -585,7 +585,7 @@ function AnalyticsPage() {
       const grandTotalCost = totalCostPerHa * area;
       
       if (recRows.length === 0) {
-        recRows.push(["No products needed", "0.0 kg/ha", "0.0 kg", "0", "$0.00", "$0.00"]);
+        recRows.push(["No products needed", "0.0 lbs/acre", "0.0 lbs", "0", "$0.00", "$0.00"]);
       } else {
         recRows.push([
           "Total",
@@ -730,11 +730,11 @@ function AnalyticsPage() {
               startY: nextYPos,
               margin: { left: contentX },
               tableWidth: timelineContentWidth,
-              head: [["Fertilizer Product", "Dose / ha", `Total Qty (${area.toFixed(2)} ha)`]],
+              head: [["Fertilizer Product", "Dose / acre", `Total Qty (${area.toFixed(2)} acres)`]],
               body: step.recommendations.map((r: any) => [
                 r.name || "N/A",
-                `${(r.quantity || 0).toFixed(1)} ${r.unit || "kg"}/ha`,
-                `${((r.quantity || 0) * area).toFixed(1)} ${r.unit || "kg"}`
+                `${(r.quantity || 0).toFixed(1)} ${r.unit || "lbs"}/acre`,
+                `${((r.quantity || 0) * area).toFixed(1)} ${r.unit || "lbs"}`
               ]),
               theme: "striped",
               headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Emerald header consistent with other tables
@@ -879,7 +879,7 @@ function AnalyticsPage() {
                     onChange={(val) => setSelectedFieldId(val.id as string)}
                     options={fields.map((f) => ({
                       id: f.id,
-                      name: `${f.name} (${f.area.toFixed(1)} ha)`,
+                      name: `${f.name} (${(f.area * 2.47105).toFixed(1)} acres)`,
                     }))}
                   />
                 </div>

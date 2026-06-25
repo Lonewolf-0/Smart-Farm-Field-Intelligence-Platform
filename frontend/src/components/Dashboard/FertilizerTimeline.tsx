@@ -160,8 +160,8 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
                   <thead>
                     <tr className="border-b border-white/5 bg-white/5 text-slate-400 font-semibold">
                       <th className="p-2.5">Product</th>
-                      <th className="p-2.5 text-right">Per Hectare</th>
-                      <th className="p-2.5 text-right font-medium">Total ({fieldArea.toFixed(1)} ha)</th>
+                      <th className="p-2.5 text-right">Per Acre</th>
+                      <th className="p-2.5 text-right font-medium">Total ({fieldArea.toFixed(1)} acres)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5 font-medium text-slate-300">
@@ -178,8 +178,8 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                             {rec.name}
                           </td>
-                          <td className="p-2.5 text-right text-slate-200">{rec.quantity.toFixed(1)} kg/ha</td>
-                          <td className="p-2.5 text-right text-slate-200">{(rec.quantity * fieldArea).toFixed(1)} kg</td>
+                          <td className="p-2.5 text-right text-slate-200">{rec.quantity.toFixed(1)} lbs/acre</td>
+                          <td className="p-2.5 text-right text-slate-200">{(rec.quantity * fieldArea).toFixed(1)} lbs</td>
                         </tr>
                       ))
                     )}

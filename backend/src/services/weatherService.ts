@@ -42,10 +42,10 @@ export const getWeatherData = async (
 ): Promise<WeatherData> => {
   try {
     //current weather
-    const currentUrl = `${BASE_URL}/weather?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`;
+    const currentUrl = `${BASE_URL}/weather?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=imperial`;
 
     //7-days forecast
-    const forecastUrl = `${BASE_URL}/forecast?lat=${lat}&lon=${lng}&exclude=minutely,hourly,alerts&appid=${API_KEY}&units=metric`;
+    const forecastUrl = `${BASE_URL}/forecast?lat=${lat}&lon=${lng}&exclude=minutely,hourly,alerts&appid=${API_KEY}&units=imperial`;
     const [currentRes, forecastRes] = await Promise.all([
       fetchWithRetry(currentUrl),
       fetchWithRetry(forecastUrl),
@@ -72,7 +72,8 @@ export const getWeatherData = async (
       temperature: current.main.temp,
       humidity: current.main.humidity,
       windSpeed: current.wind.speed,
-      rainfall: current.rain?.["1h"] || 0,
+      rainfall: current.rain?.["1h"] || 0, // OpenWeather may return mm or inches, typically mm, but let's just pass it
+      pressure: current.main.pressure ? current.main.pressure * 0.02953 : undefined, // hPa to inHg
       forecast: forecastData,
     };
     return weatherData;

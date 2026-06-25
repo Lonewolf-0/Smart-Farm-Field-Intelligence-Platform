@@ -19,16 +19,16 @@ const MapPage: React.FC = () => {
 
   const { fields: savedFields, isLoadingFields, selectedFieldId, setSelectedFieldId, refreshFields } = useField();
   
-  const [currentAreaHa, setCurrentAreaHa] = useState<number | null>(null);
+  const [currentAreaAcres, setCurrentAreaAcres] = useState<number | null>(null);
 
   const handlePolygonChange = (polygon: DrawnPolygon | null) => {
     setCurrentPolygon(polygon);
     setSaveSuccess(null);
     if (polygon) {
       const areaSqMeters = turf.area(turf.polygon(polygon.geoJSON.coordinates));
-      setCurrentAreaHa(areaSqMeters / 10000);
+      setCurrentAreaAcres(areaSqMeters * 0.000247105);
     } else {
-      setCurrentAreaHa(null);
+      setCurrentAreaAcres(null);
     }
   };
 
@@ -123,8 +123,8 @@ const MapPage: React.FC = () => {
             <h3 className="font-bold text-sm mb-1 text-white">Drawn Field Data</h3>
             <div className="flex items-center gap-4 text-xs text-slate-300">
               <p>Vertices: <span className="text-white font-medium">{currentPolygon.geoJSON.coordinates[0].length - 1}</span></p>
-              {currentAreaHa !== null && (
-                <p>Area: <span className="text-white font-medium">{currentAreaHa.toFixed(2)} ha / {(currentAreaHa * 2.47105).toFixed(2)} acres</span></p>
+              {currentAreaAcres !== null && (
+                <p>Area: <span className="text-white font-medium">{currentAreaAcres.toFixed(2)} acres</span></p>
               )}
             </div>
           </div>
@@ -143,7 +143,7 @@ const MapPage: React.FC = () => {
           isLoading={isSaving}
           onSave={handleSaveSubmit}
           onCancel={() => setIsModalOpen(false)}
-          areaHectares={currentAreaHa}
+          areaAcres={currentAreaAcres}
         />
       </div>
       </div>

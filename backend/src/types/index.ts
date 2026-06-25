@@ -259,6 +259,8 @@ export interface WeatherData {
   windSpeed: number;
   /** Current rainfall in the last hour/day (mm) */
   rainfall: number;
+  /** Current atmospheric pressure (hPa or inHg) */
+  pressure?: number;
   /** Forward-looking daily forecast array */
   forecast: ForecastDay[];
 }
