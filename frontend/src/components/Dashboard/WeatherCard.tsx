@@ -115,9 +115,9 @@ export const getWeatherInfo = (condition: string | number): WeatherInfo => {
 };
 
 // Unit Formatting Helpers
-const formatTemp = (temp: number): string => `${Math.round((temp * 9/5) + 32)}°F`;
+const formatTemp = (temp: number): string => `${Math.round(temp)}°F`;
 const formatHumidity = (humidity: number): string => `${humidity}%`;
-const formatWindSpeed = (speedMs: number): string => `${(speedMs * 2.23694).toFixed(1)} mph`; // API returns m/s, convert to mph
+const formatWindSpeed = (speedMs: number): string => `${speedMs.toFixed(1)} mph`; // API already returns mph in imperial mode
 const formatPrecipitation = (precip: number): string => `${precip.toFixed(1)} mm`;
 
 const formatDate = (dateStr: string): string => {

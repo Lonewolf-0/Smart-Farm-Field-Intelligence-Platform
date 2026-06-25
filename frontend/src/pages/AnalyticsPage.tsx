@@ -559,7 +559,7 @@ function AnalyticsPage() {
 
       const recHeaders = [["Fertilizer Product", "Dose / Acre", `Total Qty (${area.toFixed(2)} acres)`, "50kg Bags", "Cost / acre", "Total Cost"]];
       
-      let totalCostPerHa = 0;
+      let totalCostPerAcre = 0;
       const recRows = recommendations.map((prod: any) => {
         const FERT_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number }> = {
           "Urea": { pricePerKg: 0.60, bagSizeKg: 50 },
@@ -567,22 +567,23 @@ function AnalyticsPage() {
           "MOP": { pricePerKg: 0.70, bagSizeKg: 50 }
         };
         const pricing = FERT_PRICES[prod.name] || { pricePerKg: 0.6, bagSizeKg: 50 };
-        const totalBags = Math.ceil(((prod.quantity || 0) * area) / pricing.bagSizeKg);
-        const prodCostPerHa = (prod.quantity || 0) * pricing.pricePerKg;
-        const totalProdCost = prodCostPerHa * area;
-        totalCostPerHa += prodCostPerHa;
+        const quantityPerAcre = (prod.quantity || 0) / 2.47105;
+        const totalBags = Math.ceil((quantityPerAcre * area) / pricing.bagSizeKg);
+        const prodCostPerAcre = quantityPerAcre * pricing.pricePerKg;
+        const totalProdCost = prodCostPerAcre * area;
+        totalCostPerAcre += prodCostPerAcre;
         
         return [
           prod.name || "N/A",
-          `${(prod.quantity || 0).toFixed(1)} ${prod.unit || "lbs"}/acre`,
-          `${((prod.quantity || 0) * area).toFixed(1)} ${prod.unit || "lbs"}`,
+          `${quantityPerAcre.toFixed(1)} lbs/acre`,
+          `${(quantityPerAcre * area).toFixed(1)} lbs`,
           totalBags.toString(),
-          `$${prodCostPerHa.toFixed(2)}`,
+          `$${prodCostPerAcre.toFixed(2)}`,
           `$${totalProdCost.toFixed(2)}`
         ];
       });
 
-      const grandTotalCost = totalCostPerHa * area;
+      const grandTotalCost = totalCostPerAcre * area;
       
       if (recRows.length === 0) {
         recRows.push(["No products needed", "0.0 lbs/acre", "0.0 lbs", "0", "$0.00", "$0.00"]);
@@ -592,7 +593,7 @@ function AnalyticsPage() {
           "",
           "",
           "",
-          `$${totalCostPerHa.toFixed(2)}`,
+          `$${totalCostPerAcre.toFixed(2)}`,
           `$${grandTotalCost.toFixed(2)}`
         ]);
       }

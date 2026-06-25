@@ -45,7 +45,7 @@ const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFiel
               >
                 <div>
                 <p className="text-sm font-semibold text-white">{field.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{field.area.toFixed(2)} Acres</p>
+                <p className="text-xs text-slate-400 mt-0.5">{(field.area * 2.47105).toFixed(2)} Acres</p>
               </div>
               <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-300">
                 <Map className="h-4 w-4" />

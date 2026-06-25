@@ -258,18 +258,21 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   const area = (field?.area || 1) * 2.47105; // Convert Hectares to Acres
 
   // Cost estimates based on recommendations
-  let totalCostPerHa = 0;
+  let totalCostPerAcre = 0;
   const pricedRecommendations = plan?.recommendations.map(prod => {
     const pricing = FERTILIZER_PRICES[prod.name];
     if (pricing) {
-      const prodCostPerHa = prod.quantity * pricing.pricePerKg; // since quantity from backend is per-ha
-      const totalProdCost = prodCostPerHa * area;
-      const totalBags = Math.ceil((prod.quantity * area) / pricing.bagSizeKg);
-      totalCostPerHa += prodCostPerHa;
+      // Backend quantity is per Hectare. Convert to per Acre.
+      const quantityPerAcre = prod.quantity / 2.47105;
+      const prodCostPerAcre = quantityPerAcre * pricing.pricePerKg; 
+      const totalProdCost = prodCostPerAcre * area;
+      const totalBags = Math.ceil((quantityPerAcre * area) / pricing.bagSizeKg);
+      totalCostPerAcre += prodCostPerAcre;
       return {
         ...prod,
+        quantityPerAcre: quantityPerAcre,
         pricePerKg: pricing.pricePerKg,
-        costPerHa: prodCostPerHa,
+        costPerAcre: prodCostPerAcre,
         totalCost: totalProdCost,
         bagsNeeded: totalBags
       };
@@ -283,7 +286,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
     };
   }) || [];
 
-  const grandTotalCost = totalCostPerHa * area;
+  const grandTotalCost = totalCostPerAcre * area;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200 md:col-span-2">
@@ -546,8 +549,8 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                         pricedRecommendations.map((prod) => (
                           <tr key={prod.name} className="hover:bg-white/5">
                             <td className="p-2.5 font-semibold text-white">{prod.name}</td>
-                            <td className="p-2.5 text-right text-slate-200">{prod.quantity.toFixed(1)} lbs/acre</td>
-                            <td className="p-2.5 text-right text-slate-200">{(prod.quantity * area).toFixed(1)} lbs</td>
+                            <td className="p-2.5 text-right text-slate-200">{prod.quantityPerAcre?.toFixed(1)} lbs/acre</td>
+                            <td className="p-2.5 text-right text-slate-200">{((prod.quantityPerAcre || 0) * area).toFixed(1)} lbs</td>
                             <td className="p-2.5 text-right text-slate-200">{prod.bagsNeeded}</td>
                           </tr>
                         ))
@@ -576,7 +579,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                     <div className="flex items-center gap-2">
                       {!isCostExpanded && (
                         <span className="text-green-400 font-bold text-xs normal-case">
-                          ${grandTotalCost.toFixed(2)}
+                          ${(totalCostPerAcre * area).toFixed(2)}
                         </span>
                       )}
                       {isCostExpanded ? (
@@ -596,7 +599,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                       
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-400">Estimate Per Acre</span>
-                        <span className="font-semibold text-white">${totalCostPerHa.toFixed(2)}</span>
+                        <span className="font-semibold text-white">${totalCostPerAcre.toFixed(2)}/ac</span>
                       </div>
 
                       <div className="border-t border-white/5 pt-2 flex justify-between items-baseline">

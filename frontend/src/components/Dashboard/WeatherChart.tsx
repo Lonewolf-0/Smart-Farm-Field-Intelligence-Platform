@@ -76,8 +76,8 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
   const chartData = forecast.map((day) => ({
     name: formatDayName(day.date),
     fullDate: formatFullDate(day.date),
-    "Max Temp": Math.round((day.tempMax * 9/5) + 32),
-    "Min Temp": Math.round((day.tempMin * 9/5) + 32),
+    "Max Temp": Math.round(day.tempMax),
+    "Min Temp": Math.round(day.tempMin),
     Precipitation: parseFloat(day.precipitation.toFixed(1)),
   }));
 
