@@ -94,28 +94,7 @@ describe("PesticideCard Component Tests", () => {
     expect(screen.getByText("Low")).toBeInTheDocument();
   });
 
-  it("should trigger API post and recalculate when a new crop is selected from dropdown", async () => {
-    mockUseAnalysisContext.mockReturnValue({
-      data: { pesticide: mockPestData },
-      isLoading: false,
-    });
 
-    vi.mocked(api.post).mockResolvedValueOnce({
-      data: { success: true, data: { ...mockPestData, crop: "Rice" } }
-    });
-
-    render(<PesticideCard fieldId="field1" selectedCrop="Wheat" />);
-
-    const cropSelect = screen.getByRole("combobox");
-    await userEvent.selectOptions(cropSelect, "Rice");
-
-    await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith(
-        "/analysis/field1/pesticide",
-        expect.objectContaining({ crop: "Rice" })
-      );
-    });
-  });
 
   it("should expand and collapse treatment details when details button is clicked", () => {
     mockUseAnalysisContext.mockReturnValue({

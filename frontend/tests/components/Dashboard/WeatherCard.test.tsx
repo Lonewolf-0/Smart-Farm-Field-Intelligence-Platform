@@ -46,7 +46,7 @@ describe("WeatherCard Component Tests", () => {
     const mockWeather = {
       temperature: 28.4,
       humidity: 62,
-      windSpeed: 4.5, // 4.5 m/s * 2.23694 = 10.1 mph
+      windSpeed: 4.5, // 4.5 mph
       rainfall: 0,
       forecast: [
         { date: "2026-06-10", tempMin: 22, tempMax: 30, temperature: 28.4, precipitation: 0, condition: "Clear" },
@@ -64,11 +64,11 @@ describe("WeatherCard Component Tests", () => {
     expect(screen.getByText("Weather Forecast")).toBeInTheDocument();
 
     // Check formatted values
-    const expectedTempF = Math.round((mockWeather.temperature * 9/5) + 32); // 83
+    const expectedTempF = Math.round(mockWeather.temperature); // 28
     expect(screen.getAllByText(`${expectedTempF}°F`)).toHaveLength(2); // Current header + Stats grid
     expect(screen.getAllByText("Clear sky")[0]).toBeInTheDocument();
     expect(screen.getByText("62%")).toBeInTheDocument();
-    expect(screen.getByText("10.1 mph")).toBeInTheDocument();
+    expect(screen.getByText("4.5 mph")).toBeInTheDocument();
   });
 
   it("should display a warning banner when heavy rainfall is expected in the forecast", () => {

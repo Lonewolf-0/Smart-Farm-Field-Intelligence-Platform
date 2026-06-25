@@ -45,7 +45,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     }
   };
 
-  const CATEGORIES = ["Plowing", "Fertilization", "Shipment", "Harvesting", "Maintenance", "Inspection"];
+  const CATEGORIES = ["Plowing", "Fertilization", "Shipment", "Harvesting", "Maintenance", "Inspection", "Others"];
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/50 backdrop-blur-sm">

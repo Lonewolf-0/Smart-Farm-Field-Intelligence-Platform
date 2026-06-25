@@ -111,7 +111,7 @@ describe("Login Component Tests", () => {
       });
       expect(localStorage.getItem("token")).toBe("fake-jwt-token");
       expect(mockRefreshUser).toHaveBeenCalled();
-      expect(mockNavigate).toHaveBeenCalledWith("/map");
+      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
 
@@ -151,6 +151,6 @@ describe("Login Component Tests", () => {
       </MemoryRouter>
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith("/map");
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });

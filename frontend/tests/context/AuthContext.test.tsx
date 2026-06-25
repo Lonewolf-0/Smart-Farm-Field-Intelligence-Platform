@@ -139,7 +139,7 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('token')).toHaveTextContent('new-token');
     expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('yes');
     expect(localStorage.getItem('token')).toBe('new-token');
-    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   it('logout function clears token, user and navigates', async () => {

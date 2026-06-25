@@ -53,9 +53,10 @@ describe("IrrigationCard Component Tests", () => {
     expect(screen.getByText("Irrigation Plan")).toBeInTheDocument();
     expect(screen.getByText("Critical")).toBeInTheDocument();
     expect(screen.getByText("TODAY")).toBeInTheDocument();
-    // 15.5 * 10000 = 155,000
-    expect(screen.getByText(/Needs 15.5 mm/)).toBeInTheDocument();
-    expect(screen.getByText(/155,000 L\/ha/)).toBeInTheDocument();
+    // 15.5 / 25.4 = 0.61 inches
+    // 0.610236... * 27154 = 16570 gallons
+    expect(screen.getByText(/Needs 0.61 in/)).toBeInTheDocument();
+    expect(screen.getByText(/16,570 Gal\/acre/)).toBeInTheDocument();
     expect(screen.getByText("4.2")).toBeInTheDocument();
     expect(screen.getByText("2.5")).toBeInTheDocument();
     expect(screen.getByText("42%")).toBeInTheDocument();
@@ -79,8 +80,10 @@ describe("IrrigationCard Component Tests", () => {
 
     expect(screen.getByText("Approaching")).toBeInTheDocument();
     expect(screen.getByText("3 Days")).toBeInTheDocument();
-    expect(screen.getByText(/Needs 8 mm/)).toBeInTheDocument();
-    expect(screen.getByText(/80,000 L\/ha/)).toBeInTheDocument();
+    // 8 / 25.4 = 0.31 inches
+    // 0.31496... * 27154 = 8552 gallons
+    expect(screen.getByText(/Needs 0.31 in/)).toBeInTheDocument();
+    expect(screen.getByText(/8,552 Gal\/acre/)).toBeInTheDocument();
   });
 
   it("should render Optimal urgency and show 'No watering required' when waterRequired is 0", () => {
