@@ -1,10 +1,22 @@
 import axios, { AxiosResponse } from "axios";
+import https from "https";
 import { ENV } from "../config/env";
 import { WeatherData } from "../types";
 import logger from "../utils/logger";
 
 const API_KEY = ENV.OPENWEATHER_API_KEY;
 const BASE_URL = ENV.OPENWEATHER_BASE_URL;
+
+const defaultAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
+
+const ipv4Agent = new https.Agent({
+  family: 4,
+  rejectUnauthorized: false,
+});
+
+let preferIPv4 = false;
 
 /**
  * Helper function to fetch data from a URL with retry logic.
@@ -18,9 +30,18 @@ const fetchWithRetry = async (
   url: string,
   retries = 1,
 ): Promise<AxiosResponse<any>> => {
+  const agentToUse = preferIPv4 ? ipv4Agent : defaultAgent;
+  const timeoutToUse = preferIPv4 ? 10000 : 4000;
+
   try {
-    return await axios.get(url);
-  } catch (error) {
+    return await axios.get(url, { httpsAgent: agentToUse, timeout: timeoutToUse });
+  } catch (error: any) {
+    if (!preferIPv4) {
+      logger.warn(`OpenWeather connection failed/timed out. Falling back to IPv4 for URL: ${url}`);
+      preferIPv4 = true;
+      return fetchWithRetry(url, retries);
+    }
+
     if (retries > 0) {
       return fetchWithRetry(url, retries - 1);
     }
