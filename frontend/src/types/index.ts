@@ -30,6 +30,7 @@ export interface Task {
   title: string;
   completed: boolean;
   dueDate?: string; // ISO string format
+  category?: 'Plowing' | 'Fertilization' | 'Shipment' | 'General' | string;
 }
 
 export interface Field {

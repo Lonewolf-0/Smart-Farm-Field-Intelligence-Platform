@@ -5,8 +5,12 @@ The central hub for managing agricultural fields, providing insights, and tracki
 ## Language
 
 **Task**:
-A manual checklist item that a user creates for themselves, which can optionally have a due date.
+A manual checklist item that a user creates for themselves, which can optionally have a due date and a category.
 _Avoid_: ActionItem, Recommendation, AutoTask.
+
+**Task Category**:
+A classification for a Task, used to color-code and organize activities (e.g. 'Plowing', 'Fertilization', 'Shipment', 'General').
+_Avoid_: Task Type, Activity Type.
 
 **Profile Statistics**:
 Aggregated data associated with a user's account, such as total acres managed, total number of fields, and subscription tier.
