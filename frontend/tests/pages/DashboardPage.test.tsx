@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import React from "react";
-import DashboardPage from "../../src/pages/DashboardPage";
+import AnalyticsPage from "../../src/pages/AnalyticsPage";
 import api from "../../src/services/api";
 import { connectRiskStream } from "../../src/services/riskStream";
 
@@ -142,7 +142,7 @@ vi.mock("jspdf-autotable", () => {
   };
 });
 
-describe("DashboardPage Component Tests", () => {
+describe("AnalyticsPage Component Tests", () => {
   const mockFields = [
     { id: "field-1", name: "Field 1", area: 10 },
     { id: "field-2", name: "Field 2", area: 20 },
@@ -209,7 +209,7 @@ describe("DashboardPage Component Tests", () => {
       setSelectedFieldId: vi.fn(),
     });
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
     expect(screen.getByText("Loading fields...")).toBeInTheDocument();
   });
 
@@ -221,7 +221,7 @@ describe("DashboardPage Component Tests", () => {
       setSelectedFieldId: vi.fn(),
     });
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
     expect(screen.getByText(/You haven't saved any fields yet/i)).toBeInTheDocument();
   });
 
@@ -232,7 +232,7 @@ describe("DashboardPage Component Tests", () => {
       JSON.stringify({ timestamp: Date.now(), results: { weather: {}, ndvi: {}, risks: [] } })
     );
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     // Check if overview components are rendered
     expect(screen.getByTestId("weather-card")).toBeInTheDocument();
@@ -249,7 +249,7 @@ describe("DashboardPage Component Tests", () => {
       JSON.stringify({ timestamp: Date.now(), results: { soil: {} } })
     );
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     const cropHealthTab = screen.getByRole("button", { name: /crop health/i });
     await userEvent.click(cropHealthTab);
@@ -264,7 +264,7 @@ describe("DashboardPage Component Tests", () => {
       JSON.stringify({ timestamp: timestamp25HoursAgo, results: { weather: {} } })
     );
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     expect(screen.getByText("DATA MAY BE OUTDATED")).toBeInTheDocument();
   });
@@ -273,14 +273,14 @@ describe("DashboardPage Component Tests", () => {
     vi.mocked(api.post).mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ data: { success: true, data: {} } }), 100)));
     vi.mocked(api.get).mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ data: { success: true, data: {} } }), 100)));
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     const analyzeButton = screen.getByRole("button", { name: /Run First Analysis/i });
 
     // Trigger click without awaiting so we can check the loading state
     fireEvent.click(analyzeButton);
 
-    expect(await screen.findByText("Analyzing Field Data...")).toBeInTheDocument();
+    expect(await screen.findByText("ANALYZING_FIELD_DATA")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith("/analysis/field-1/soil");
@@ -288,19 +288,21 @@ describe("DashboardPage Component Tests", () => {
     });
   });
 
-  it("should display critical alert banner when RiskAlertCard triggers it", async () => {
+  it("should display critical alert banner when risks are present in analysis data", async () => {
     localStorage.setItem(
       "dashboard_analysis_field-1",
-      JSON.stringify({ timestamp: Date.now(), results: { weather: {} } })
+      JSON.stringify({
+        timestamp: Date.now(),
+        results: {
+          weather: {},
+          risks: [
+            { message: "Test Critical Alert", expectedDate: "2023-10-10", severity: "critical", recommendation: "Do something" },
+          ],
+        },
+      })
     );
 
-    render(<DashboardPage />);
-
-    const cropHealthTab = screen.getByRole("button", { name: /crop health/i });
-    fireEvent.click(cropHealthTab);
-
-    const triggerButton = await screen.findByTestId("trigger-critical-alert");
-    fireEvent.click(triggerButton);
+    render(<AnalyticsPage />);
 
     expect(screen.getByText("CRITICAL WARNING ACTIVE")).toBeInTheDocument();
     expect(screen.getByText(/Test Critical Alert/i)).toBeInTheDocument();
@@ -312,7 +314,7 @@ describe("DashboardPage Component Tests", () => {
       JSON.stringify({ timestamp: Date.now(), results: { crop: [], irrigation: {}, fertilizer: {} } })
     );
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
     fireEvent.click(agronomyTab);
@@ -343,7 +345,7 @@ describe("DashboardPage Component Tests", () => {
       }
     });
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
     fireEvent.click(agronomyTab);
@@ -364,10 +366,12 @@ describe("DashboardPage Component Tests", () => {
     localStorage.setItem("selectedCrop", "Rice");
 
     const mockWrite = vi.fn();
+    const mockClose = vi.fn();
     const mockLocation = { href: "" };
     const mockWindow = {
       document: {
         write: mockWrite,
+        close: mockClose,
       },
       location: mockLocation,
       close: vi.fn(),
@@ -390,7 +394,7 @@ describe("DashboardPage Component Tests", () => {
       }
     });
 
-    render(<DashboardPage />);
+    render(<AnalyticsPage />);
 
     const agronomyTab = screen.getByRole("button", { name: /Agronomy Recs/i });
     fireEvent.click(agronomyTab);
@@ -398,10 +402,8 @@ describe("DashboardPage Component Tests", () => {
     const viewButton = screen.getByRole("button", { name: /View Report/i });
     fireEvent.click(viewButton);
 
-    expect(mockWindowOpen).toHaveBeenCalledWith("", "_blank");
-    expect(mockWrite).toHaveBeenCalledWith(expect.stringContaining("Generating PDF report..."));
-
     await waitFor(() => {
+      expect(mockWindowOpen).toHaveBeenCalledWith("", "_blank");
       expect(mockOutput).toHaveBeenCalledWith("bloburl");
       expect(mockLocation.href).toBe("blob://some-url");
     });

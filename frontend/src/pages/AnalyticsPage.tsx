@@ -72,6 +72,28 @@ function AnalyticsPage() {
     }
   }, [selectedFieldId]);
 
+  // Compute critical alerts directly from analysisData when it loads or changes
+  useEffect(() => {
+    if (!analysisData || !selectedFieldId) {
+      setCriticalAlerts([]);
+      return;
+    }
+    const alerts = Array.isArray(analysisData.risks) ? (analysisData.risks as RiskAlert[]) : [];
+    let dismissed: string[] = [];
+    try {
+      const stored = localStorage.getItem("dismissed_risks");
+      dismissed = stored ? JSON.parse(stored) : [];
+    } catch (err) {
+      console.error(err);
+    }
+    const activeCritical = alerts.filter(alert => {
+      const uniqueKey = `${selectedFieldId}_${alert.type}_${alert.expectedDate}`;
+      const isDismissed = dismissed.includes(uniqueKey);
+      return alert.severity === "critical" && !isDismissed;
+    });
+    setCriticalAlerts(activeCritical);
+  }, [analysisData, selectedFieldId]);
+
   // Request notification permission on mount
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
@@ -1004,21 +1026,17 @@ function AnalyticsPage() {
           {analysisData ? (
             <div>
               {activeTab === "overview" && (
-                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                <div className="mt-8 grid gap-6 grid-cols-1 lg:grid-cols-2 items-stretch animate-fadeIn">
                   <WeatherCard fieldId={selectedFieldId} />
                   <SummaryCard onNavigate={setActiveTab} fieldId={selectedFieldId} selectedCrop={selectedCrop} />
                 </div>
               )}
 
               {activeTab === "crop_health" && (
-                <div className="mt-8 grid gap-4 md:grid-cols-2 items-stretch animate-fadeIn">
+                <div className="mt-8 grid gap-4 grid-cols-1 lg:grid-cols-3 items-stretch animate-fadeIn">
                   <NDVICard fieldId={selectedFieldId} />
                   <SoilCard fieldId={selectedFieldId} />
                   <PesticideCard fieldId={selectedFieldId} selectedCrop={selectedCrop} />
-                  <RiskAlertCard 
-                    fieldId={selectedFieldId} 
-                    onCriticalAlerts={setCriticalAlerts} 
-                  />
                 </div>
               )}
 
