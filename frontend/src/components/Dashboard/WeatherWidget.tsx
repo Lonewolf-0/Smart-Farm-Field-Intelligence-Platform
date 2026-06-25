@@ -15,10 +15,53 @@ const WeatherWidget: React.FC = () => {
 
   if (weather.loading) {
     return (
-      <div className="rounded-3xl border border-white/5 bg-slate-800/30 p-6 flex flex-col items-center justify-center min-h-[600px] h-full">
-        <div className="animate-pulse flex flex-col items-center gap-2">
-          <Cloud className="h-8 w-8 text-slate-500" />
-          <span className="text-sm text-slate-400">Loading Weather Data...</span>
+      <div className="flex flex-col bg-slate-800/30 rounded-3xl border border-white/5 overflow-hidden h-[800px] animate-pulse">
+        {/* Skeleton Top Section: Heatmap */}
+        <div className="relative h-48 w-full shrink-0 bg-slate-700/50"></div>
+
+        {/* Skeleton Middle Section: Weather's today */}
+        <div className="p-6 border-b border-white/5">
+          <div className="h-4 w-32 bg-slate-700/50 rounded mb-2"></div>
+          <div className="h-6 w-48 bg-slate-700/50 rounded mb-5"></div>
+
+          <div className="flex items-center gap-6 mb-8">
+            <div className="h-16 w-16 bg-slate-700/50 rounded-full shrink-0"></div>
+            <div>
+              <div className="h-12 w-24 bg-slate-700/50 rounded mb-2"></div>
+              <div className="h-3 w-36 bg-slate-700/50 rounded"></div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between px-2">
+             <div className="h-4 w-16 bg-slate-700/50 rounded"></div>
+             <div className="h-4 w-16 bg-slate-700/50 rounded"></div>
+             <div className="h-4 w-20 bg-slate-700/50 rounded"></div>
+          </div>
+        </div>
+
+        {/* Skeleton Bottom Section: Weather forecast */}
+        <div className="p-6 flex-1 flex flex-col overflow-hidden">
+          <div className="h-4 w-32 bg-slate-700/50 rounded mb-4"></div>
+          
+          <div className="flex bg-slate-900/50 rounded-full p-1 mb-6 shrink-0 h-10 w-full"></div>
+
+          <div className="flex-1 space-y-5">
+            {[1, 2, 3, 4, 5].map((idx) => (
+              <div key={idx} className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 bg-slate-700/50 rounded-full shrink-0"></div>
+                  <div>
+                    <div className="h-5 w-12 bg-slate-700/50 rounded mb-1.5"></div>
+                    <div className="h-3 w-16 bg-slate-700/50 rounded"></div>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="h-4 w-10 bg-slate-700/50 rounded"></div>
+                  <div className="h-4 w-12 bg-slate-700/50 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
