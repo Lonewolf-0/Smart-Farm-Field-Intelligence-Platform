@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
-      setTimeStr(now.toLocaleTimeString('en-US', { hour12: false }) + ' (Local)');
+      setTimeStr(now.toLocaleTimeString('en-US', { hour12: true }));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -70,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
           <div className="h-4 w-px bg-white/10 mx-1"></div>
 
           <div className="flex items-center text-slate-300">
-            <span className="text-sm font-medium">{timeStr.split(' ')[0]}</span>
+            <span className="text-sm font-medium">{timeStr}</span>
           </div>
         </div>
 
