@@ -13,7 +13,8 @@ import {
   Wind,
   AlertTriangle,
   RefreshCw,
-  Umbrella
+  Umbrella,
+  Info
 } from "lucide-react";
 import type { WeatherData } from "../../types";
 import WeatherChart from "./WeatherChart";
@@ -193,7 +194,16 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
     <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col text-slate-200">
       <div className="flex justify-between items-start mb-5">
         <div>
-          <h3 className="text-xl font-bold text-white">Weather Forecast</h3>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <span>Weather Forecast</span>
+            <div className="relative group cursor-pointer inline-flex items-center">
+              <Info className="w-4 h-4 text-slate-400 hover:text-emerald-400 transition-colors" />
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-72 p-3.5 text-xs text-white bg-slate-900 border border-emerald-500/30 rounded-xl shadow-2xl shadow-black/80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999] pointer-events-none text-center font-medium normal-case leading-relaxed">
+                Provides real-time local weather observations and multi-day predictions. Helps plan field operations such as planting, spraying, and harvesting.
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-slate-900 border-l border-t border-emerald-500/30 rotate-45"></div>
+              </div>
+            </div>
+          </h3>
           <p className="text-sm text-emerald-200 mt-0.5">Real-time local telemetry</p>
         </div>
         <div className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold tracking-wide uppercase text-emerald-200">

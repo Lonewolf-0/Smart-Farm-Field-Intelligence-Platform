@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ShieldAlert, FlaskConical, ChevronDown } from "lucide-react";
+import { ShieldAlert, FlaskConical, ChevronDown, Info } from "lucide-react";
 import SoilHistoryChart from "./SoilHistoryChart";
 import type { HistoryRecord } from "./SoilHistoryChart";
 import { useAnalysisContext } from "../../context/AnalysisContext";
@@ -131,7 +131,17 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
     <div className={`rounded-2xl border ${outerBorder} bg-slate-950/80 p-6 shadow-xl backdrop-blur-md h-full flex flex-col`}>
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-xl font-bold text-white flex items-center gap-2"><FlaskConical className="h-5 w-5 text-emerald-400" />Soil Profile</h3>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <FlaskConical className="h-5 w-5 text-emerald-400" />
+            <span>Soil Profile</span>
+            <div className="relative group cursor-pointer inline-flex items-center">
+              <Info className="w-4 h-4 text-slate-400 hover:text-emerald-400 transition-colors" />
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-72 p-3.5 text-xs text-white bg-slate-900 border border-emerald-500/30 rounded-xl shadow-2xl shadow-black/80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999] pointer-events-none text-center font-medium normal-case leading-relaxed">
+                Provides a detailed analysis of soil layers, tracking pH acidity, organic carbon content, and soil texture. Assists in understanding nutrient availability and soil structure.
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-slate-900 border-l border-t border-emerald-500/30 rotate-45"></div>
+              </div>
+            </div>
+          </h3>
           <p className="text-sm font-semibold text-emerald-100 mt-0.5">Top Layer (0-5cm)</p>
           {lastFetched && (
             <p className="text-[11px] font-bold text-slate-200 uppercase tracking-wider mt-1.5">
