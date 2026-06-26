@@ -76,10 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{ user, token, isAuthenticated: !!user, isLoading, login, refreshUser, logout }}
     >
       {isLoading ? (
-        <div className="flex h-screen w-full items-center justify-center bg-gray-50">
+        <div className="flex h-screen w-full items-center justify-center bg-slate-950">
           <div className="flex flex-col items-center gap-4">
-            <PremiumLoader className="w-16 h-16" />
-            <p className="text-gray-600 font-medium animate-pulse">Loading...</p>
+            <PremiumLoader className="w-16 h-16 animate-spin text-emerald-400" />
+            <p className="text-slate-400 font-mono text-sm tracking-wider animate-pulse">LOADING_PLATFORM_DATA</p>
           </div>
         </div>
       ) : (

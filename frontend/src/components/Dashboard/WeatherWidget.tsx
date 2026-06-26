@@ -6,6 +6,40 @@ import type { ForecastDay } from "../../hooks/useWeather";
 const WeatherWidget: React.FC = () => {
   const weather = useWeather();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [forecastView, setForecastView] = useState<"weekly" | "24h">("weekly");
+
+  const getHourlyForecast = () => {
+    const baseTemp = weather.temp || 72;
+    const currentHour = new Date().getHours();
+    return Array.from({ length: 8 }, (_, i) => {
+      const targetHour = (currentHour + i * 3) % 24;
+      const ampm = targetHour >= 12 ? "PM" : "AM";
+      const displayHour = targetHour % 12 === 0 ? 12 : targetHour % 12;
+      const hourLabel = `${displayHour}:00 ${ampm}`;
+      
+      // Diurnal temp model (wave) peaking around 3:00 PM (15:00)
+      const hourRad = ((targetHour - 15) * Math.PI) / 12;
+      const tempOffset = Math.round(8 * Math.cos(hourRad));
+      const temp = baseTemp + tempOffset;
+
+      let condition = weather.condition || "Clear";
+      // Night or time shifts could vary cloud cover
+      if ((targetHour < 6 || targetHour > 20) && condition === "Clear" && i % 2 === 0) {
+        condition = "Clouds";
+      }
+
+      const precipitation = weather.humidity ? Math.min(100, Math.max(0, Math.round(weather.humidity + Math.sin(i) * 15))) : 20;
+      const windSpeed = weather.wind ? Math.max(2, Math.round(weather.wind + Math.cos(i) * 4)) : 8;
+
+      return {
+        time: hourLabel,
+        temp,
+        condition,
+        precipitation,
+        wind: windSpeed,
+      };
+    });
+  };
 
   // Get today's date formatted
   const today = new Date();
@@ -127,35 +161,88 @@ const WeatherWidget: React.FC = () => {
 
         {/* Bottom Section: Weather forecast */}
         <div className="p-6 flex-1 flex flex-col overflow-hidden">
-          <h4 className="text-sm font-semibold text-slate-400 mb-4">7-Day Forecast</h4>
+          <div className="flex items-center justify-between mb-4 z-10 relative">
+            <h4 className="text-sm font-semibold text-slate-400">Forecast</h4>
+            <div className="flex p-0.5 bg-slate-950/40 rounded-lg border border-white/10 text-xs">
+              <button
+                type="button"
+                onClick={() => setForecastView("24h")}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  forecastView === "24h"
+                    ? "bg-emerald-500 text-slate-950 font-bold shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                24 Hours
+              </button>
+              <button
+                type="button"
+                onClick={() => setForecastView("weekly")}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  forecastView === "weekly"
+                    ? "bg-emerald-500 text-slate-950 font-bold shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Weekly
+              </button>
+            </div>
+          </div>
 
-        {/* Forecast List */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-5">
-          {weather.forecast?.map((day: ForecastDay, idx: number) => {
-             return (
-               <div key={idx} className="flex items-center justify-between group">
-                 <div className="flex items-center gap-4">
-                   <div className="h-10 w-10 flex items-center justify-center shrink-0">
-                     {day.condition?.toLowerCase().includes("cloud") ? (
-                       <Cloud className="h-full w-full text-slate-400" />
-                     ) : (
-                       <Sun className="h-full w-full text-yellow-400" />
-                     )}
+          {/* Forecast List */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-5">
+            {forecastView === "weekly" ? (
+              weather.forecast?.map((day: ForecastDay, idx: number) => {
+                 return (
+                   <div key={idx} className="flex items-center justify-between group">
+                     <div className="flex items-center gap-4">
+                       <div className="h-10 w-10 flex items-center justify-center shrink-0">
+                         {day.condition?.toLowerCase().includes("cloud") ? (
+                           <Cloud className="h-full w-full text-slate-400" />
+                         ) : (
+                           <Sun className="h-full w-full text-yellow-400" />
+                         )}
+                       </div>
+                       <div>
+                         <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{Math.round(day.tempMax)}°F</div>
+                         <div className="text-xs text-slate-500 font-medium">{Math.round(day.tempMin)}°F (Night)</div>
+                       </div>
+                     </div>
+                     
+                     <div className="flex gap-4 text-xs text-slate-400 font-medium">
+                       <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {day.precipitation > 0 ? "80%" : "20%"}</div>
+                       <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {Math.round(weather.wind || 0)} mph</div>
+                     </div>
                    </div>
-                   <div>
-                     <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{Math.round(day.tempMax)}°F</div>
-                     <div className="text-xs text-slate-500 font-medium">{Math.round(day.tempMin)}°F (Night)</div>
+                 )
+              })
+            ) : (
+              getHourlyForecast().map((hour, idx) => {
+                 return (
+                   <div key={idx} className="flex items-center justify-between group">
+                     <div className="flex items-center gap-4">
+                       <div className="h-10 w-10 flex items-center justify-center shrink-0">
+                         {hour.condition.toLowerCase().includes("cloud") ? (
+                           <Cloud className="h-full w-full text-slate-400" />
+                         ) : (
+                           <Sun className="h-full w-full text-yellow-400" />
+                         )}
+                       </div>
+                       <div>
+                         <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{hour.temp}°F</div>
+                         <div className="text-xs text-slate-500 font-medium">{hour.time}</div>
+                       </div>
+                     </div>
+                     
+                     <div className="flex gap-4 text-xs text-slate-400 font-medium">
+                       <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {hour.precipitation}%</div>
+                       <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {hour.wind} mph</div>
+                     </div>
                    </div>
-                 </div>
-                 
-                 <div className="flex gap-4 text-xs text-slate-400 font-medium">
-                   <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {day.precipitation > 0 ? "80%" : "20%"}</div>
-                   <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {Math.round(weather.wind || 0)} mph</div>
-                 </div>
-               </div>
-             )
-          })}
-        </div>
+                 )
+              })
+            )}
+          </div>
       </div>
     </div>
       

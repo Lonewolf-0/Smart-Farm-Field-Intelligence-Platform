@@ -115,9 +115,9 @@ const BranchMap: React.FC<BranchMapProps> = ({
             icon={farmIcon}
           >
             <Popup className="rounded-xl">
-              <div className="p-1 text-center">
-                <h3 className="font-bold text-lg text-slate-800 mb-1">{selectedField.name}</h3>
-                <p className="text-xs text-slate-500 uppercase font-semibold">Your Farm</p>
+              <div className="p-1 text-center bg-slate-900 text-white rounded-lg">
+                <h3 className="font-bold text-lg text-white mb-1">{selectedField.name}</h3>
+                <p className="text-xs text-emerald-400 uppercase font-semibold">Your Farm</p>
               </div>
             </Popup>
           </Marker>
@@ -134,26 +134,26 @@ const BranchMap: React.FC<BranchMapProps> = ({
             }}
           >
             <Popup className="rounded-xl">
-              <div className="p-1 min-w-[200px]">
-                <h3 className="font-bold text-lg text-slate-800 mb-1">{branch.name}</h3>
-                <p className="text-sm text-slate-600 mb-3">{branch.address}</p>
+              <div className="p-1 min-w-[200px] bg-slate-900 text-slate-100 rounded-lg">
+                <h3 className="font-bold text-lg text-white mb-1">{branch.name}</h3>
+                <p className="text-sm text-slate-300 mb-3">{branch.address}</p>
                 
                 {branch.distance !== undefined && (
-                  <p className="text-sm text-slate-700 mb-2 font-medium">
-                    Distance: <span className="text-green-600">{(branch.distance * 0.621371).toFixed(1)} miles</span>
+                  <p className="text-sm text-slate-300 mb-2 font-medium">
+                    Distance: <span className="text-emerald-400 font-semibold">{(branch.distance * 0.621371).toFixed(1)} miles</span>
                   </p>
                 )}
                 
                 <div className="mb-4">
-                  <h4 className="text-xs font-semibold text-slate-500 uppercase mb-1">Services</h4>
+                  <h4 className="text-xs font-semibold text-slate-400 uppercase mb-1">Services</h4>
                   <div className="flex flex-wrap gap-1">
                     {branch.services.slice(0, 3).map((service, i) => (
-                      <span key={i} className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full border border-slate-200">
+                      <span key={i} className="text-[10px] bg-white/10 text-slate-200 px-2 py-0.5 rounded-full border border-white/5">
                         {service}
                       </span>
                     ))}
                     {branch.services.length > 3 && (
-                      <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full border border-slate-200">
+                      <span className="text-[10px] bg-white/10 text-slate-200 px-2 py-0.5 rounded-full border border-white/5">
                         +{branch.services.length - 3} more
                       </span>
                     )}
@@ -164,7 +164,7 @@ const BranchMap: React.FC<BranchMapProps> = ({
                   href={`https://www.google.com/maps/dir/?api=1${selectedField && selectedField.centroid ? `&origin=${selectedField.centroid.lat},${selectedField.centroid.lng}` : ""}&destination=${branch.latitude},${branch.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
+                  className="block w-full text-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
                 >
                   Get Directions
                 </a>

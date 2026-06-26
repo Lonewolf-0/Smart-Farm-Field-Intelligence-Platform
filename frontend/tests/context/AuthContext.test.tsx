@@ -84,8 +84,8 @@ describe('AuthContext', () => {
       </MemoryRouter>
     );
 
-    // Initial render might be loading (Loading... text inside AuthProvider)
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    // Initial render might be loading (LOADING_PLATFORM_DATA text inside AuthProvider)
+    expect(screen.getByText('LOADING_PLATFORM_DATA')).toBeInTheDocument();
 
     // After loading completes
     await waitFor(() => {

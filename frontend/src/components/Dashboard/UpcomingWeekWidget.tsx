@@ -24,7 +24,10 @@ const UpcomingWeekWidget: React.FC<Props> = ({ tasks }) => {
   };
 
   const getTasksForDate = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
     return tasks.filter(t => t.dueDate === dateStr);
   };
 
@@ -51,7 +54,7 @@ const UpcomingWeekWidget: React.FC<Props> = ({ tasks }) => {
                     {/* Background segments */}
                     <div className="absolute inset-0 flex flex-col w-full h-full">
                       {dayTasks.map((task, idx) => (
-                        <div key={idx} className={`flex-1 w-full ${getCategoryColor(task.category)}`}></div>
+                        <div key={task.id || idx} className={`flex-1 w-full ${getCategoryColor(task.category)}`}></div>
                       ))}
                     </div>
                     {/* Centered Date Text */}
@@ -70,7 +73,7 @@ const UpcomingWeekWidget: React.FC<Props> = ({ tasks }) => {
               {hasWork && (
                 <div className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-2 px-3 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 flex flex-col gap-1.5">
                   {dayTasks.map((task, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 font-bold">
+                    <div key={task.id || idx} className="flex items-center gap-1.5 font-bold">
                       <div className={`w-2 h-2 rounded-full ${getCategoryColor(task.category)}`}></div>
                       {task.title}
                     </div>
