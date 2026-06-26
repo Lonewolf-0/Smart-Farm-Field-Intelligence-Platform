@@ -15,10 +15,9 @@ import api from "../services/api";
 
 function HomePage() {
   const { user, isAuthenticated } = useAuth();
-  const { fields: savedFields } = useField();
+  const { fields: savedFields, selectedFieldId, setSelectedFieldId } = useField();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [branches, setBranches] = useState<any[]>([]);
   
   // Fetch branches for the map

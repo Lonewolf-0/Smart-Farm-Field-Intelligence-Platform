@@ -1,7 +1,7 @@
 import React from "react";
 import type { Field } from "../../types";
-import { Map, Store } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Map, Store, BarChart3 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Props {
   fields: Field[];
@@ -10,6 +10,14 @@ interface Props {
 }
 
 const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFieldId }) => {
+  const navigate = useNavigate();
+
+  const handleAnalyse = (e: React.MouseEvent, fieldId: string) => {
+    e.stopPropagation();
+    onSelectField?.(fieldId);
+    navigate("/analytics");
+  };
+
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
@@ -63,6 +71,15 @@ const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFiel
                   <p className="text-sm font-semibold text-white">{field.name}</p>
                   <p className="text-xs text-slate-400 mt-0.5">{(field.area * 2.47105).toFixed(2)} Acres</p>
                 </div>
+                <button
+                  onClick={(e) => handleAnalyse(e, field.id)}
+                  className="group relative p-2 bg-emerald-500/10 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors border border-emerald-500/20 flex items-center justify-center shrink-0"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <div className="absolute bottom-[calc(100%+0.5rem)] right-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-2.5 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 font-semibold">
+                    Analyse
+                  </div>
+                </button>
               </div>
             );
           })
