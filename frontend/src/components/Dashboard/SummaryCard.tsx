@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Activity, Droplets, AlertTriangle, ShieldCheck, FlaskConical, Leaf } from "lucide-react";
+import { Activity, Droplets, AlertTriangle, ShieldCheck, FlaskConical, Leaf, Bug } from "lucide-react";
 import { useAnalysisContext } from "../../context/AnalysisContext";
 import type { RiskAlert } from "../../types";
 
@@ -43,26 +43,23 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
   const pestAssessments = pesticideData?.assessments || [];
   const hasHighPestRisk = pestAssessments.some((a: any) => a.riskLevel === "High");
   const hasMediumPestRisk = pestAssessments.some((a: any) => a.riskLevel === "Medium");
+  const hasPestData = pesticideData && pestAssessments.length > 0;
 
-  const isCriticalThreat = criticalAlerts.length > 0 || hasHighPestRisk;
-  const hasRisks = isCriticalThreat || hasMediumPestRisk;
+  let pestTitle = "Pest & Disease";
+  let pestValue = "No Data";
+  let pestSubtext = "Run Analysis";
 
-  let threatTitle = "Threat Level";
-  let threatValue = "All Clear";
-  let threatSubtext = "No critical risks";
-
-  if (hasHighPestRisk) {
-    threatTitle = "Pest Warning";
-    threatValue = "High Pest Risk";
-    threatSubtext = "Immediate spray recommended";
-  } else if (criticalAlerts.length > 0) {
-    threatTitle = "Active Alerts";
-    threatValue = `${criticalAlerts.length} Critical`;
-    threatSubtext = "Requires attention";
-  } else if (hasMediumPestRisk) {
-    threatTitle = "Pest Warning";
-    threatValue = "Medium Pest Risk";
-    threatSubtext = "Monitor closely";
+  if (hasPestData) {
+    if (hasHighPestRisk) {
+      pestValue = "High Risk";
+      pestSubtext = "Immediate treatment needed";
+    } else if (hasMediumPestRisk) {
+      pestValue = "Medium Risk";
+      pestSubtext = "Monitor field closely";
+    } else {
+      pestValue = "Low Risk";
+      pestSubtext = "No active threats";
+    }
   }
 
   // 2. Analyze Irrigation
@@ -164,23 +161,23 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
         </div>
       </div>
 
-      {/* 3. Active Threats */}
+      {/* 3. Pest & Disease Risk */}
       <div 
         onClick={() => onNavigate?.("crop_health")}
-        className={`${baseCardClasses} ${isCriticalThreat ? 'border-red-500/50' : hasRisks ? 'border-orange-500/50' : 'border-emerald-500/50'}`}
+        className={`${baseCardClasses} ${pestValue === "High Risk" ? 'border-red-500/50' : pestValue === "Medium Risk" ? 'border-yellow-500/50' : pestValue === "Low Risk" ? 'border-emerald-500/50' : 'border-white/10'}`}
       >
         <div className="flex items-center gap-3 mb-2 transition-transform group-hover:scale-105">
-          <div className={`p-2 rounded-lg ${isCriticalThreat ? 'bg-red-500/20 text-red-400' : hasRisks ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
-            {isCriticalThreat ? <AlertTriangle className="w-5 h-5" /> : hasRisks ? <AlertTriangle className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
+          <div className={`p-2 rounded-lg ${pestValue === "High Risk" ? 'bg-red-500/20 text-red-400' : pestValue === "Medium Risk" ? 'bg-yellow-500/20 text-yellow-400' : pestValue === "Low Risk" ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}`}>
+            <Bug className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">{threatTitle}</h3>
+          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">{pestTitle}</h3>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center text-center mt-2">
-          <p className={`font-mono text-2xl font-black ${isCriticalThreat ? 'text-red-400' : hasRisks ? 'text-orange-400' : 'text-emerald-400'}`}>
-            {threatValue}
+          <p className={`font-mono text-2xl font-black ${pestValue === "High Risk" ? 'text-red-400' : pestValue === "Medium Risk" ? 'text-yellow-400' : pestValue === "Low Risk" ? 'text-emerald-400' : 'text-slate-400'}`}>
+            {pestValue}
           </p>
-          <p className={`text-sm mt-1 font-medium ${isCriticalThreat ? 'text-red-300' : hasRisks ? 'text-orange-300' : 'text-emerald-300'}`}>
-            {threatSubtext}
+          <p className={`text-sm mt-1 font-medium ${pestValue === "High Risk" ? 'text-red-300' : pestValue === "Medium Risk" ? 'text-yellow-300' : pestValue === "Low Risk" ? 'text-emerald-300' : 'text-slate-500'}`}>
+            {pestSubtext}
           </p>
         </div>
       </div>
