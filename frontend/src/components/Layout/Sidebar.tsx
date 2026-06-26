@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   ];
 
   const asideClasses = [
-    "flex flex-col bg-emerald-950 border-r border-white/10 h-screen transition-all duration-300 z-50 shadow-2xl shrink-0",
+    "flex flex-col bg-slate-950/40 backdrop-blur-2xl border-r border-white/10 h-screen transition-all duration-300 z-50 shadow-2xl shrink-0",
     "fixed md:sticky top-0 left-0",
     isOpen ? "translate-x-0 w-72" : "-translate-x-full md:translate-x-0 w-72 md:w-20"
   ].join(" ");

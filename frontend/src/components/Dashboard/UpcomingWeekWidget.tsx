@@ -23,9 +23,9 @@ const UpcomingWeekWidget: React.FC<Props> = ({ tasks }) => {
     }
   };
 
-  const getTaskForDate = (date: Date) => {
+  const getTasksForDate = (date: Date) => {
     const dateStr = date.toISOString().split('T')[0];
-    return tasks.find(t => t.dueDate === dateStr);
+    return tasks.filter(t => t.dueDate === dateStr);
   };
 
   return (
@@ -36,23 +36,45 @@ const UpcomingWeekWidget: React.FC<Props> = ({ tasks }) => {
 
       <div className="flex justify-between items-end flex-1 z-10 relative mb-8">
         {weekDays.map((date, i) => {
-          const task = getTaskForDate(date);
-          const hasWork = !!task;
-          const colorClass = getCategoryColor(task?.category);
+          const dayTasks = getTasksForDate(date);
+          const hasWork = dayTasks.length > 0;
           
           return (
             <div key={i} className="flex flex-col items-center gap-3 group relative cursor-pointer">
               <span className="text-xs font-semibold text-slate-400 uppercase">
                 {date.toLocaleDateString('en-US', { weekday: 'short' })}
               </span>
-              <div className={`w-12 rounded-full flex items-center justify-center font-bold text-white transition-all shadow-lg ${hasWork ? 'h-24 ' + colorClass : 'h-12 bg-white/5 border border-white/10 text-slate-300'}`}>
-                {date.getDate()}
+              
+              <div className={`w-12 rounded-full flex flex-col overflow-hidden font-bold text-white shadow-lg transition-all ${hasWork ? 'h-24' : 'h-12 bg-white/5 border border-white/10 text-slate-300'}`}>
+                {hasWork ? (
+                  <div className="flex flex-col h-full w-full relative">
+                    {/* Background segments */}
+                    <div className="absolute inset-0 flex flex-col w-full h-full">
+                      {dayTasks.map((task, idx) => (
+                        <div key={idx} className={`flex-1 w-full ${getCategoryColor(task.category)}`}></div>
+                      ))}
+                    </div>
+                    {/* Centered Date Text */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10 drop-shadow-md">
+                      {date.getDate()}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full">
+                    {date.getDate()}
+                  </div>
+                )}
               </div>
               
               {/* Tooltip */}
               {hasWork && (
-                <div className={`absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-3 rounded-lg shadow-xl shadow-black/20 font-bold ${colorClass}`}>
-                  {task.title}
+                <div className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-2 px-3 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 flex flex-col gap-1.5">
+                  {dayTasks.map((task, idx) => (
+                    <div key={idx} className="flex items-center gap-1.5 font-bold">
+                      <div className={`w-2 h-2 rounded-full ${getCategoryColor(task.category)}`}></div>
+                      {task.title}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
