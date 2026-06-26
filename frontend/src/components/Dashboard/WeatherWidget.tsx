@@ -1,11 +1,45 @@
 import React, { useState } from "react";
-import { Cloud, Sun, Droplets, Wind, MapPin, Maximize2 } from "lucide-react";
+import { Cloud, Sun, Droplets, Wind, MapPin, Maximize2, X } from "lucide-react";
 import { useWeather } from "../../hooks/useWeather";
 import type { ForecastDay } from "../../hooks/useWeather";
 
 const WeatherWidget: React.FC = () => {
   const weather = useWeather();
-  const [forecastTab, setForecastTab] = useState<"24h" | "weekly">("weekly");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [forecastView, setForecastView] = useState<"weekly" | "24h">("weekly");
+
+  const getHourlyForecast = () => {
+    const baseTemp = weather.temp || 72;
+    const currentHour = new Date().getHours();
+    return Array.from({ length: 8 }, (_, i) => {
+      const targetHour = (currentHour + i * 3) % 24;
+      const ampm = targetHour >= 12 ? "PM" : "AM";
+      const displayHour = targetHour % 12 === 0 ? 12 : targetHour % 12;
+      const hourLabel = `${displayHour}:00 ${ampm}`;
+      
+      // Diurnal temp model (wave) peaking around 3:00 PM (15:00)
+      const hourRad = ((targetHour - 15) * Math.PI) / 12;
+      const tempOffset = Math.round(8 * Math.cos(hourRad));
+      const temp = baseTemp + tempOffset;
+
+      let condition = weather.condition || "Clear";
+      // Night or time shifts could vary cloud cover
+      if ((targetHour < 6 || targetHour > 20) && condition === "Clear" && i % 2 === 0) {
+        condition = "Clouds";
+      }
+
+      const precipitation = weather.humidity ? Math.min(100, Math.max(0, Math.round(weather.humidity + Math.sin(i) * 15))) : 20;
+      const windSpeed = weather.wind ? Math.max(2, Math.round(weather.wind + Math.cos(i) * 4)) : 8;
+
+      return {
+        time: hourLabel,
+        temp,
+        condition,
+        precipitation,
+        wind: windSpeed,
+      };
+    });
+  };
 
   // Get today's date formatted
   const today = new Date();
@@ -45,8 +79,6 @@ const WeatherWidget: React.FC = () => {
         <div className="p-6 flex-1 flex flex-col overflow-hidden">
           <div className="h-4 w-32 bg-slate-700/50 rounded mb-4"></div>
           
-          <div className="flex bg-slate-900/50 rounded-full p-1 mb-6 shrink-0 h-10 w-full"></div>
-
           <div className="flex-1 space-y-5">
             {[1, 2, 3, 4, 5].map((idx) => (
               <div key={idx} className="flex items-center justify-between">
@@ -79,98 +111,163 @@ const WeatherWidget: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/50 shadow-xl backdrop-blur-md overflow-hidden h-full">
-      {/* Top Section: Heatmap */}
-      <div className="relative h-48 w-full shrink-0">
-        <img 
-          src="/weather-heatmap.png" 
-          alt="Weather Radar" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
-        <button className="absolute top-4 right-4 h-8 w-8 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors">
-          <Maximize2 className="h-4 w-4" />
-        </button>
-      </div>
+    <>
+      <div className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/50 shadow-xl backdrop-blur-md overflow-hidden h-full">
+        {/* Top Section: Heatmap */}
+        <div className="relative h-48 w-full shrink-0">
+          <img 
+            src="/weather-heatmap.png" 
+            alt="Weather Radar" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-4 right-4 h-8 w-8 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+            aria-label="Maximize Map"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        </div>
 
-      {/* Middle Section: Weather's today */}
-      <div className="p-6 border-b border-white/5">
-        <h4 className="text-sm font-semibold text-slate-400 mb-2">Weather's today</h4>
-        <p className="text-emerald-400 text-lg font-medium mb-5">
-          {dayName} <span className="text-xs text-slate-500 font-normal">({dateRest})</span>
-        </p>
+        {/* Middle Section: Weather's today */}
+        <div className="p-6 border-b border-white/5">
+          <h4 className="text-sm font-semibold text-slate-400 mb-2">Weather's today</h4>
+          <p className="text-emerald-400 text-lg font-medium mb-5">
+            {dayName} <span className="text-xs text-slate-500 font-normal">({dateRest})</span>
+          </p>
 
-        <div className="flex items-center gap-6 mb-8">
-          <div className="h-16 w-16 flex items-center justify-center shrink-0">
-            {weather.condition?.toLowerCase().includes("cloud") ? (
-               <Cloud className="h-full w-full text-slate-400" />
+          <div className="flex items-center gap-6 mb-8">
+            <div className="h-16 w-16 flex items-center justify-center shrink-0">
+              {weather.condition?.toLowerCase().includes("cloud") ? (
+                 <Cloud className="h-full w-full text-slate-400" />
+              ) : (
+                 <Sun className="h-full w-full text-yellow-400" />
+              )}
+            </div>
+            <div>
+              <div className="text-5xl font-bold text-white tracking-tight">{weather.temp}°F</div>
+              {/* Mocking sunshine duration as per image */}
+              <div className="text-xs text-slate-500 mt-1.5 font-medium">11:43 hours (7:19 / 18:30)</div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm text-slate-300 font-medium px-2">
+             <div className="flex items-center gap-2"><Droplets className="h-4 w-4 text-blue-400"/> {weather.humidity}%</div>
+             <div className="flex items-center gap-2"><Wind className="h-4 w-4 text-teal-400"/> {weather.wind} mph</div>
+             <div className="flex items-center gap-2"><Cloud className="h-4 w-4 text-slate-400"/> {weather.pressure ? weather.pressure.toFixed(2) : "30.21"} inHg</div>
+          </div>
+        </div>
+
+        {/* Bottom Section: Weather forecast */}
+        <div className="p-6 flex-1 flex flex-col overflow-hidden">
+          <div className="flex items-center justify-between mb-4 z-10 relative">
+            <h4 className="text-sm font-semibold text-slate-400">Forecast</h4>
+            <div className="flex p-0.5 bg-slate-950/40 rounded-lg border border-white/10 text-xs">
+              <button
+                type="button"
+                onClick={() => setForecastView("24h")}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  forecastView === "24h"
+                    ? "bg-emerald-500 text-slate-950 font-bold shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                24 Hours
+              </button>
+              <button
+                type="button"
+                onClick={() => setForecastView("weekly")}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  forecastView === "weekly"
+                    ? "bg-emerald-500 text-slate-950 font-bold shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Weekly
+              </button>
+            </div>
+          </div>
+
+          {/* Forecast List */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-5">
+            {forecastView === "weekly" ? (
+              weather.forecast?.map((day: ForecastDay, idx: number) => {
+                 return (
+                   <div key={idx} className="flex items-center justify-between group">
+                     <div className="flex items-center gap-4">
+                       <div className="h-10 w-10 flex items-center justify-center shrink-0">
+                         {day.condition?.toLowerCase().includes("cloud") ? (
+                           <Cloud className="h-full w-full text-slate-400" />
+                         ) : (
+                           <Sun className="h-full w-full text-yellow-400" />
+                         )}
+                       </div>
+                       <div>
+                         <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{Math.round(day.tempMax)}°F</div>
+                         <div className="text-xs text-slate-500 font-medium">{Math.round(day.tempMin)}°F (Night)</div>
+                       </div>
+                     </div>
+                     
+                     <div className="flex gap-4 text-xs text-slate-400 font-medium">
+                       <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {day.precipitation > 0 ? "80%" : "20%"}</div>
+                       <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {Math.round(weather.wind || 0)} mph</div>
+                     </div>
+                   </div>
+                 )
+              })
             ) : (
-               <Sun className="h-full w-full text-yellow-400" />
+              getHourlyForecast().map((hour, idx) => {
+                 return (
+                   <div key={idx} className="flex items-center justify-between group">
+                     <div className="flex items-center gap-4">
+                       <div className="h-10 w-10 flex items-center justify-center shrink-0">
+                         {hour.condition.toLowerCase().includes("cloud") ? (
+                           <Cloud className="h-full w-full text-slate-400" />
+                         ) : (
+                           <Sun className="h-full w-full text-yellow-400" />
+                         )}
+                       </div>
+                       <div>
+                         <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{hour.temp}°F</div>
+                         <div className="text-xs text-slate-500 font-medium">{hour.time}</div>
+                       </div>
+                     </div>
+                     
+                     <div className="flex gap-4 text-xs text-slate-400 font-medium">
+                       <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {hour.precipitation}%</div>
+                       <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {hour.wind} mph</div>
+                     </div>
+                   </div>
+                 )
+              })
             )}
           </div>
-          <div>
-            <div className="text-5xl font-bold text-white tracking-tight">{weather.temp}°F</div>
-            {/* Mocking sunshine duration as per image */}
-            <div className="text-xs text-slate-500 mt-1.5 font-medium">11:43 hours (7:19 / 18:30)</div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between text-sm text-slate-300 font-medium px-2">
-           <div className="flex items-center gap-2"><Droplets className="h-4 w-4 text-blue-400"/> {weather.humidity}%</div>
-           <div className="flex items-center gap-2"><Wind className="h-4 w-4 text-teal-400"/> {weather.wind} mph</div>
-           <div className="flex items-center gap-2"><Cloud className="h-4 w-4 text-slate-400"/> {weather.pressure ? weather.pressure.toFixed(2) : "30.21"} inHg</div>
-        </div>
-      </div>
-
-      {/* Bottom Section: Weather forecast */}
-      <div className="p-6 flex-1 flex flex-col overflow-hidden">
-        <h4 className="text-sm font-semibold text-slate-400 mb-4">Weather forecast</h4>
-        
-        {/* Toggle */}
-        <div className="flex bg-slate-900/50 rounded-full p-1 mb-6 shrink-0">
-          <button 
-            onClick={() => setForecastTab("24h")}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-full transition-colors ${forecastTab === "24h" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-400 hover:text-white"}`}
-          >
-            24 hours
-          </button>
-          <button 
-            onClick={() => setForecastTab("weekly")}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-full transition-colors ${forecastTab === "weekly" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-400 hover:text-white"}`}
-          >
-            Weekly
-          </button>
-        </div>
-
-        {/* Forecast List */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-5">
-          {weather.forecast?.map((day: ForecastDay, idx: number) => {
-             return (
-               <div key={idx} className="flex items-center justify-between group">
-                 <div className="flex items-center gap-4">
-                   <div className="h-10 w-10 flex items-center justify-center shrink-0">
-                     {day.condition?.toLowerCase().includes("cloud") ? (
-                       <Cloud className="h-full w-full text-slate-400" />
-                     ) : (
-                       <Sun className="h-full w-full text-yellow-400" />
-                     )}
-                   </div>
-                   <div>
-                     <div className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{Math.round(day.tempMax)}°F</div>
-                     <div className="text-xs text-slate-500 font-medium">{Math.round(day.tempMin)}°F (Night)</div>
-                   </div>
-                 </div>
-                 
-                 <div className="flex gap-4 text-xs text-slate-400 font-medium">
-                   <div className="flex items-center gap-1.5"><Droplets className="h-3.5 w-3.5 text-blue-400/80"/> {day.precipitation > 0 ? "80%" : "20%"}</div>
-                   <div className="flex items-center gap-1.5"><Wind className="h-3.5 w-3.5 text-teal-400/80"/> {Math.round(weather.wind || 0)} mph</div>
-                 </div>
-               </div>
-             )
-          })}
-        </div>
       </div>
     </div>
+      
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" onClick={() => setIsModalOpen(false)}>
+          <div className="relative max-w-4xl w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/50 backdrop-blur-xl absolute top-0 inset-x-0 z-10">
+              <h3 className="text-white font-semibold">Weather Radar Map</h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <img 
+              src="/weather-heatmap.png" 
+              alt="Weather Radar Full" 
+              className="w-full h-auto max-h-[80vh] object-cover pt-14"
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

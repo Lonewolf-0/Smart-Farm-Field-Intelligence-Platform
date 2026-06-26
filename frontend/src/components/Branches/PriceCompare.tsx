@@ -117,6 +117,8 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
             const isCheapest = index === 0;
             const isBestValue = index === bestValueIdx;
             const diff = branch.price - cheapestPrice;
+            const bestValueBranch = resultsWithValue[bestValueIdx];
+            const effectiveSavings = branch.effectiveCost - (bestValueBranch?.effectiveCost || 0);
 
             return (
               <div
@@ -161,9 +163,15 @@ const PriceCompare: React.FC<PriceCompareProps> = ({ userFields, onSelectBranch 
                   )}
                 </div>
 
-                {!isCheapest && (
+                {!isBestValue && effectiveSavings > 0.01 && bestValueBranch && (
                   <p className="text-xs text-slate-400 mb-3 bg-white/5 p-2 rounded-lg border border-white/5">
-                    Save <span className="text-emerald-400 font-bold">${diff}</span> by going to {results[0].branchName} instead.
+                    Save <span className="text-emerald-400 font-bold">${effectiveSavings.toFixed(2)}</span> overall (factoring travel) by going to {bestValueBranch.branchName} instead.
+                  </p>
+                )}
+
+                {isCheapest && !isBestValue && bestValueBranch && (
+                  <p className="text-xs text-slate-400 mb-3 bg-white/5 p-2 rounded-lg border border-white/5">
+                    Note: <span className="text-blue-400 font-bold">{bestValueBranch.branchName}</span> is a better overall value when factoring in travel distance.
                   </p>
                 )}
 

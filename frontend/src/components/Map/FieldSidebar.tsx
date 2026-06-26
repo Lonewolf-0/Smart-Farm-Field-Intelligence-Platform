@@ -43,7 +43,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
           </div>
         ) : fields.length === 0 ? (
           <div className="text-center p-6 bg-white/5 rounded-xl border border-dashed border-white/10 mt-4">
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-400 text-sm">
               No fields saved yet. Draw a polygon on the map and click "Save Polygon".
             </p>
           </div>
@@ -100,7 +100,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                           <Maximize2 className="h-3.5 w-3.5 shrink-0" />
                           <span className="truncate">{field.area.toFixed(2)} ha</span>
                         </span>
-                        <span className="flex items-center gap-1.5 pl-5 text-slate-500">
+                        <span className="flex items-center gap-1.5 pl-5 text-slate-400">
                           <span className="truncate">{(field.area * 2.47105).toFixed(2)} acres</span>
                         </span>
                       </div>
@@ -113,7 +113,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                             setEditName(field.name);
                             setEditingId(field.id);
                           }}
-                          className="text-slate-500 hover:text-emerald-400 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                          className="text-slate-400 hover:text-emerald-400 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
                           title="Edit field name"
                         >
                           <Pencil className="h-4 w-4" />
@@ -123,7 +123,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                             e.stopPropagation();
                             onDeleteField(field.id);
                           }}
-                          className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                          className="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
                           title="Delete field"
                         >
                           <Trash2 className="h-4 w-4" />

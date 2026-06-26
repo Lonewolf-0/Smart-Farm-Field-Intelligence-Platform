@@ -125,7 +125,7 @@ describe("MapPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Save Polygon")).toBeInTheDocument();
       expect(screen.getByText("Drawn Field Data")).toBeInTheDocument();
-      expect(screen.getByText(/2\.47 Acres/)).toBeInTheDocument(); // 10000 sq m * 0.000247105 = 2.47 acres
+      expect(screen.getByText(/2\.47 acres/i)).toBeInTheDocument(); // 10000 sq m * 0.000247105 = 2.47 acres
     });
   });
 

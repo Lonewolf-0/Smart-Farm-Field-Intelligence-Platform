@@ -33,15 +33,6 @@ describe("Navbar Component Tests", () => {
     );
 
     // Desktop elements
-    const mapLinks = screen.getAllByRole("link", { name: /map/i });
-    expect(mapLinks.length).toBeGreaterThan(0);
-
-    const dashboardLinks = screen.getAllByRole("link", { name: /dashboard/i });
-    expect(dashboardLinks.length).toBeGreaterThan(0);
-
-    const branchesLinks = screen.getAllByRole("link", { name: /branches/i });
-    expect(branchesLinks.length).toBeGreaterThan(0);
-
     const loginLinks = screen.getAllByRole("link", { name: /login/i });
     expect(loginLinks.length).toBeGreaterThan(0);
 

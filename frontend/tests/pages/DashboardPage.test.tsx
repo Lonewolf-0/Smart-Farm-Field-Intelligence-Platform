@@ -108,6 +108,7 @@ vi.mock("jspdf", () => {
           },
           getNumberOfPages: () => 1,
         },
+        getNumberOfPages: () => 1,
         save: mockSave,
         output: mockOutput,
         addPage: mockAddPage,

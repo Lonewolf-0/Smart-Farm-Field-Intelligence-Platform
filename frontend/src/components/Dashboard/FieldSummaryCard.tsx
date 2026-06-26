@@ -1,7 +1,7 @@
 import React from "react";
 import type { Field } from "../../types";
-import { Map, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Map, Store, BarChart3 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Props {
   fields: Field[];
@@ -10,16 +10,40 @@ interface Props {
 }
 
 const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFieldId }) => {
+  const navigate = useNavigate();
+
+  const handleAnalyse = (e: React.MouseEvent, fieldId: string) => {
+    e.stopPropagation();
+    onSelectField?.(fieldId);
+    navigate("/analytics");
+  };
+
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-6 shadow-xl backdrop-blur-md h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Map className="h-5 w-5 text-emerald-400" />
+        <h3 className="text-lg font-bold text-white">
           Your Fields
         </h3>
-        <Link to="/map" className="text-sm font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-          View Map <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link 
+            to="/map" 
+            className="group relative bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 p-2 rounded-lg transition-colors flex items-center justify-center shrink-0 border border-white/5 hover:border-emerald-500/30"
+          >
+            <Map className="h-4 w-4" />
+            <div className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-2.5 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 font-semibold">
+              View Map
+            </div>
+          </Link>
+          <Link 
+            to="/branches" 
+            className="group relative bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 p-2 rounded-lg transition-colors flex items-center justify-center shrink-0 border border-white/5 hover:border-emerald-500/30"
+          >
+            <Store className="h-4 w-4" />
+            <div className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-2.5 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 font-semibold">
+              View Branches
+            </div>
+          </Link>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
@@ -44,13 +68,19 @@ const FieldSummaryCard: React.FC<Props> = ({ fields, onSelectField, selectedFiel
                 }`}
               >
                 <div>
-                <p className="text-sm font-semibold text-white">{field.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{(field.area * 2.47105).toFixed(2)} Acres</p>
+                  <p className="text-sm font-semibold text-white">{field.name}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{(field.area * 2.47105).toFixed(2)} Acres</p>
+                </div>
+                <button
+                  onClick={(e) => handleAnalyse(e, field.id)}
+                  className="group relative p-2 bg-emerald-500/10 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors border border-emerald-500/20 flex items-center justify-center shrink-0"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <div className="absolute bottom-[calc(100%+0.5rem)] right-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-2.5 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 font-semibold">
+                    Analyse
+                  </div>
+                </button>
               </div>
-              <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-300">
-                <Map className="h-4 w-4" />
-              </div>
-            </div>
             );
           })
         )}

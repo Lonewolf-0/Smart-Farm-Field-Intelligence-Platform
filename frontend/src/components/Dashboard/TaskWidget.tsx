@@ -94,9 +94,12 @@ const TaskWidget: React.FC<Props> = ({ tasks, onToggle, onAdd }) => {
             <button
               type="submit"
               disabled={!newTaskTitle.trim()}
-              className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors flex items-center justify-center shrink-0"
+              className="group relative bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors flex items-center justify-center shrink-0"
             >
               <Plus className="h-5 w-5" />
+              <div className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap text-white text-xs py-1.5 px-2.5 rounded-lg shadow-xl shadow-black/20 bg-slate-800 border border-white/10 font-semibold">
+                Add Task
+              </div>
             </button>
           </form>
         </div>

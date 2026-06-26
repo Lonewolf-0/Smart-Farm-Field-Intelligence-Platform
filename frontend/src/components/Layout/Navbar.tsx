@@ -33,13 +33,15 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-slate-900/50 backdrop-blur-xl border-b border-white/5 h-16 flex items-center px-6 shrink-0">
       <div className="flex-1 flex items-center gap-4">
-        <button 
-          onClick={onToggleSidebar}
-          className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors md:hidden"
-          aria-label="Toggle Sidebar"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+        {isAuthenticated && (
+          <button 
+            onClick={onToggleSidebar}
+            className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors md:hidden"
+            aria-label="Toggle Sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-6">

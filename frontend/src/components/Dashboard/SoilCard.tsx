@@ -165,7 +165,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         {/* pH Bar */}
         <div>
           <div className="mb-2">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">pH Level</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">pH Level</span>
             <div className="flex items-baseline gap-2">
               <span className={`text-3xl font-black tracking-tight ${phColor}`}>{ph?.toFixed(1) || "-"}</span>
               <span className="text-sm font-medium text-slate-400">{phText}</span>
@@ -184,7 +184,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         {/* Organic Carbon Bar */}
         <div>
           <div className="mb-2">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Organic Carbon</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Organic Carbon</span>
             <div className="flex items-baseline gap-2">
               <span className={`text-3xl font-black tracking-tight ${ocColor}`}>{ocPercentage?.toFixed(2) || "-"}%</span>
               <span className="text-sm font-medium text-slate-400">{ocRating}</span>
@@ -201,7 +201,7 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         {/* Composition Bar */}
         <div>
           <div className="mb-3">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Composition</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Composition</span>
             <span className="text-2xl font-black text-white tracking-tight">{topLayer.texture || "Unknown"}</span>
           </div>
           <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden flex border border-white/5 shadow-inner">

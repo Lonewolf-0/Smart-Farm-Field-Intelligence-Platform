@@ -28,9 +28,11 @@ vi.mock("react-leaflet", async () => {
 
 // Mock Leaflet
 vi.mock("leaflet", () => {
+  const mockIcon = vi.fn().mockImplementation(() => ({}));
   return {
     default: {
       divIcon: vi.fn(),
+      Icon: mockIcon,
     },
   };
 });
