@@ -96,7 +96,7 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
         </p>
       </div>
 
-      <div className="flex-1 flex flex-col md:flex-row items-center gap-4 bg-white/5 rounded-xl p-4 border border-white/5">
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-white/5 rounded-xl p-4 border border-white/5">
         <div className="w-24 h-24 shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -122,17 +122,17 @@ const NDVICard: React.FC<NDVICardProps> = ({ fieldId }) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex-1 w-full space-y-2">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-emerald-400 flex items-center gap-1 font-medium">
-              <div className="w-2 h-2 rounded-full bg-emerald-400"></div> Healthy
-            </span>
+        <div className="flex flex-col items-center gap-2 w-full">
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+            <span className="text-emerald-400 font-medium">Healthy</span>
+            <span className="text-slate-400">:</span>
             <span className="text-white font-bold">{healthyArea.toFixed(1)}%</span>
           </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-red-400 flex items-center gap-1 font-medium">
-              <div className="w-2 h-2 rounded-full bg-red-400"></div> Stressed
-            </span>
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <div className="w-2 h-2 rounded-full bg-red-400"></div>
+            <span className="text-red-400 font-medium">Stressed</span>
+            <span className="text-slate-400">:</span>
             <span className="text-white font-bold">{data.stressAreas.toFixed(1)}%</span>
           </div>
         </div>
