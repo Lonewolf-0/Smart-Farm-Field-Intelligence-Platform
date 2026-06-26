@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Bug, AlertTriangle, ShieldCheck, ThermometerSun, Droplets, Wind, ChevronDown, ChevronUp } from "lucide-react";
+import { Bug, AlertTriangle, ShieldCheck, ThermometerSun, Droplets, Wind, ChevronDown, ChevronUp, Info } from "lucide-react";
 import api from "../../services/api";
 import { useAnalysisContext } from "../../context/AnalysisContext";
 
@@ -135,7 +135,14 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
             <Bug className={`w-5 h-5 ${overallColor}`} />
-            Pest Risk Assessment
+            <span>Pest Risk Assessment</span>
+            <div className="relative group cursor-pointer inline-flex items-center">
+              <Info className="w-4 h-4 text-slate-400 hover:text-emerald-400 transition-colors" />
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-72 p-3.5 text-xs text-white bg-slate-900 border border-emerald-500/30 rounded-xl shadow-2xl shadow-black/80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999] pointer-events-none text-center font-medium normal-case leading-relaxed">
+                Evaluates potential pest and disease threats based on weather parameters, crop type, and growth stage. Provides chemical treatment recommendations and dosing guidelines.
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-slate-900 border-l border-t border-emerald-500/30 rotate-45"></div>
+              </div>
+            </div>
           </h3>
           <p className="text-sm text-emerald-200 mt-0.5">Season: {data.season}</p>
         </div>
