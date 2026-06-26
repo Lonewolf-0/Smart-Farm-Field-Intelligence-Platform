@@ -23,17 +23,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
 
   return (
     <aside className={asideClasses}>
-      <div className="flex items-center justify-center md:justify-start h-16 border-b border-white/10 px-4 md:px-6 shrink-0">
+      <div className="flex items-center justify-center md:justify-start h-16 border-b border-white/10 shrink-0 relative overflow-hidden">
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="h-8 w-8 rounded bg-emerald-500/20 hover:bg-emerald-500/30 transition-colors flex items-center justify-center text-emerald-400 shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          className="w-full h-full flex items-center justify-center md:justify-start px-4 md:px-6 focus:outline-none relative group cursor-pointer"
           aria-label="Toggle Sidebar"
         >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-          </svg>
+          {/* Small Logo (Visible when closed) */}
+          <img 
+            src="https://companieslogo.com/img/orig/NTR-d409ac3b.png?t=1720244493" 
+            alt="Toggle Sidebar" 
+            className={`absolute md:left-6 h-8 w-auto brightness-0 invert transition-all duration-500 ease-out origin-center
+              ${isOpen ? 'opacity-0 scale-50 -rotate-180 pointer-events-none' : 'opacity-100 scale-100 rotate-0 group-hover:scale-110'}
+            `}
+          />
+          
+          {/* Full Logo (Visible when open) */}
+          <img 
+            src="/nutrien-logo.svg" 
+            alt="Nutrien Logo" 
+            className={`absolute md:left-6 h-16 w-auto brightness-0 invert transition-all duration-500 ease-out origin-left
+              ${isOpen ? 'opacity-100 scale-[1.75] translate-x-4 md:translate-x-6' : 'opacity-0 scale-75 -translate-x-8 pointer-events-none'}
+            `}
+          />
         </button>
-        {isOpen && <img src="/nutrien-logo.svg" alt="Nutrien Logo" className="ml-3 h-14 w-auto brightness-0 invert transform scale-150 origin-left" />}
       </div>
 
       <div className="flex-1 overflow-y-auto py-6 px-3 flex flex-col gap-2 no-scrollbar">
