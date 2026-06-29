@@ -1,5 +1,6 @@
 import {
   findFieldById,
+  findFieldByIdAndUserId,
   createField,
   getFieldsByUserId,
   deleteField,
@@ -35,6 +36,32 @@ describe("Field Repository", () => {
       (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
       const result = await findFieldById("1");
+
+      expect(result).toBeNull();
+    });
+  });
+
+  // findFieldByIdAndUserId
+  // ===============================
+  describe("findFieldByIdAndUserId", () => {
+    it("should return field when found for specific user", async () => {
+      (pool.query as jest.Mock).mockResolvedValue({
+        rows: [{ id: "1", polygon: {} }],
+      });
+
+      const result = await findFieldByIdAndUserId("1", "u1");
+
+      expect(result).toEqual({ id: "1", polygon: {} });
+      expect(pool.query).toHaveBeenCalledWith(
+        `SELECT id, polygon FROM fields WHERE id = $1 AND user_id = $2`,
+        ["1", "u1"]
+      );
+    });
+
+    it("should return null when field not found for specific user", async () => {
+      (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+      const result = await findFieldByIdAndUserId("1", "u1");
 
       expect(result).toBeNull();
     });
