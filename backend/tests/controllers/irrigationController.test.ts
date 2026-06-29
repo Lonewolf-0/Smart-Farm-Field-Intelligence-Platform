@@ -17,16 +17,16 @@ jest.mock("../../src/services/irrigationService", () => ({
   calculateIrrigation: jest.fn(),
 }));
 
-jest.mock("../../src/config/db", () => ({
-  pool: { query: jest.fn() },
+jest.mock("../../src/services/soilService", () => ({
+  findLatestSoilByCreatedAtService: jest.fn(),
 }));
 
 import { getIrrigationPlan } from "../../src/controllers/irrigationController";
 import { findFieldById } from "../../src/repositories/fieldRepository";
-import { pool } from "../../src/config/db";
 import { getWeatherData } from "../../src/services/weatherService";
 import { getNasaPowerData } from "../../src/services/nasaPowerService";
 import { calculateIrrigation } from "../../src/services/irrigationService";
+import { findLatestSoilByCreatedAtService } from "../../src/services/soilService";
 
 describe("Irrigation Controller", () => {
   const createApp = (user?: any) => {
@@ -98,7 +98,7 @@ describe("Irrigation Controller", () => {
   // No soil data
   it("should return 400 if no soil data", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
-    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+    (findLatestSoilByCreatedAtService as jest.Mock).mockResolvedValue(null);
 
     const app = createApp({ id: "user1" });
 
@@ -110,9 +110,7 @@ describe("Irrigation Controller", () => {
   //Missing layers
   it("should return 400 if soil layers missing", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
-    (pool.query as jest.Mock).mockResolvedValue({
-      rows: [{ data: {} }],
-    });
+    (findLatestSoilByCreatedAtService as jest.Mock).mockResolvedValue({ data: {} });
 
     const app = createApp({ id: "user1" });
 
@@ -125,8 +123,8 @@ describe("Irrigation Controller", () => {
   it("should return 400 if texture missing", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
-      rows: [{ data: { layers: [{}] } }],
+    (findLatestSoilByCreatedAtService as jest.Mock).mockResolvedValue({
+      data: { layers: [{}] },
     });
 
     const app = createApp({ id: "user1" });
@@ -140,14 +138,10 @@ describe("Irrigation Controller", () => {
   it("should return irrigation plan successfully", async () => {
     (findFieldById as jest.Mock).mockResolvedValue(mockField);
 
-    (pool.query as jest.Mock).mockResolvedValue({
-      rows: [
-        {
-          data: {
-            layers: [{ texture: "loam" }],
-          },
-        },
-      ],
+    (findLatestSoilByCreatedAtService as jest.Mock).mockResolvedValue({
+      data: {
+        layers: [{ texture: "loam" }],
+      },
     });
 
     (getWeatherData as jest.Mock).mockResolvedValue({});
