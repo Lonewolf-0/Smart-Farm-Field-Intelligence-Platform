@@ -1,10 +1,22 @@
 import { RegisterRequest, LoginRequest } from "../types";
 
 export const validateRegisterInput = (data: RegisterRequest) => {
+  if (!data) {
+    return "Invalid request data";
+  }
+
   const { name, email, password } = data;
 
   //Name validation
-  if (!name || name.trim().length === 0) {
+  if (name === undefined || name === null || name === "") {
+    return "Name is required";
+  }
+
+  if (typeof name !== "string") {
+    return "Name must be a valid string";
+  }
+
+  if (name.trim().length === 0) {
     return "Name is required";
   }
 
@@ -13,7 +25,15 @@ export const validateRegisterInput = (data: RegisterRequest) => {
   }
 
   //  Email validation (proper regex)
-  if (!email || email.trim().length === 0) {
+  if (email === undefined || email === null || email === "") {
+    return "Email is required";
+  }
+
+  if (typeof email !== "string") {
+    return "Email must be a valid string";
+  }
+
+  if (email.trim().length === 0) {
     return "Email is required";
   }
 
@@ -23,7 +43,15 @@ export const validateRegisterInput = (data: RegisterRequest) => {
   }
 
   //  Password validation
-  if (!password || password.trim().length === 0) {
+  if (password === undefined || password === null || password === "") {
+    return "Password is required";
+  }
+
+  if (typeof password !== "string") {
+    return "Password must be a valid string";
+  }
+
+  if (password.trim().length === 0) {
     return "Password is required";
   }
 
@@ -35,9 +63,21 @@ export const validateRegisterInput = (data: RegisterRequest) => {
 };
 
 export const validateLoginInput = (data: LoginRequest): string | null => {
+  if (!data) {
+    return "Invalid request data";
+  }
+
   const { email, password } = data;
 
-  if (!email || email.trim().length === 0) {
+  if (email === undefined || email === null || email === "") {
+    return "Email is required";
+  }
+
+  if (typeof email !== "string") {
+    return "Email must be a valid string";
+  }
+
+  if (email.trim().length === 0) {
     return "Email is required";
   }
 
@@ -46,7 +86,15 @@ export const validateLoginInput = (data: LoginRequest): string | null => {
     return "Invalid email format";
   }
 
-  if (!password || password.trim().length === 0) {
+  if (password === undefined || password === null || password === "") {
+    return "Password is required";
+  }
+
+  if (typeof password !== "string") {
+    return "Password must be a valid string";
+  }
+
+  if (password.trim().length === 0) {
     return "Password is required";
   }
 
