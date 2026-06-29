@@ -13,7 +13,13 @@ const TestComponent = () => {
       <span data-testid="has-cached-data">{context.hasCachedData.toString()}</span>
       <span data-testid="is-stale-24h">{context.isStale24h.toString()}</span>
       <span data-testid="is-stale-7d">{context.isStale7d.toString()}</span>
+      <span data-testid="has-data">{(context.data !== null).toString()}</span>
       <button onClick={() => context.refreshAnalysis()}>Refresh</button>
+      <button
+        onClick={() => context.updateAnalysisData && context.updateAnalysisData({ soil: { type: 'clay' } })}
+      >
+        Update Data
+      </button>
     </div>
   );
 };
@@ -61,5 +67,54 @@ describe('AnalysisContext', () => {
     const button = screen.getByText('Refresh');
     await user.click(button);
     expect(mockRefreshAnalysis).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders correctly when data is null', () => {
+    const mockContextValue = {
+      data: null,
+      timestamp: null,
+      isLoading: false,
+      isStale24h: false,
+      isStale7d: false,
+      refreshAnalysis: vi.fn(),
+      hasCachedData: false,
+    };
+
+    render(
+      <AnalysisProvider value={mockContextValue}>
+        <TestComponent />
+      </AnalysisProvider>
+    );
+
+    expect(screen.getByTestId('has-data')).toHaveTextContent('false');
+    expect(screen.getByTestId('has-cached-data')).toHaveTextContent('false');
+  });
+
+  it('calls updateAnalysisData when the context function is triggered', async () => {
+    const user = userEvent.setup();
+    const mockUpdateData = vi.fn();
+
+    const mockContextValue = {
+      data: { soil: { type: 'loam' } },
+      timestamp: 1234567890,
+      isLoading: false,
+      isStale24h: false,
+      isStale7d: false,
+      refreshAnalysis: vi.fn(),
+      hasCachedData: true,
+      updateAnalysisData: mockUpdateData,
+    };
+
+    render(
+      <AnalysisProvider value={mockContextValue}>
+        <TestComponent />
+      </AnalysisProvider>
+    );
+
+    const updateButton = screen.getByText('Update Data');
+    await user.click(updateButton);
+
+    expect(mockUpdateData).toHaveBeenCalledTimes(1);
+    expect(mockUpdateData).toHaveBeenCalledWith({ soil: { type: 'clay' } });
   });
 });
