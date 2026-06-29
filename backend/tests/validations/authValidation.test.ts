@@ -123,6 +123,30 @@ describe("validateRegisterInput", () => {
 
     expect(result).toBe("Password must be at least 6 characters");
   });
+
+  //  MALFORMED INPUTS (missing/undefined/wrong types)
+  it("should fail if data is undefined or null", () => {
+    expect(validateRegisterInput(undefined as any)).toBe("Invalid request data");
+    expect(validateRegisterInput(null as any)).toBe("Invalid request data");
+  });
+
+  it("should fail if name is missing or not a string", () => {
+    expect(validateRegisterInput({ email: "test@test.com", password: "123456" } as any)).toBe("Name is required");
+    expect(validateRegisterInput({ name: 123, email: "test@test.com", password: "123456" } as any)).toBe("Name must be a valid string");
+    expect(validateRegisterInput({ name: null, email: "test@test.com", password: "123456" } as any)).toBe("Name is required");
+  });
+
+  it("should fail if email is missing or not a string", () => {
+    expect(validateRegisterInput({ name: "Ashish", password: "123456" } as any)).toBe("Email is required");
+    expect(validateRegisterInput({ name: "Ashish", email: true, password: "123456" } as any)).toBe("Email must be a valid string");
+    expect(validateRegisterInput({ name: "Ashish", email: null, password: "123456" } as any)).toBe("Email is required");
+  });
+
+  it("should fail if password is missing or not a string", () => {
+    expect(validateRegisterInput({ name: "Ashish", email: "test@test.com" } as any)).toBe("Password is required");
+    expect(validateRegisterInput({ name: "Ashish", email: "test@test.com", password: {} } as any)).toBe("Password must be a valid string");
+    expect(validateRegisterInput({ name: "Ashish", email: "test@test.com", password: null } as any)).toBe("Password is required");
+  });
 });
 
 describe("validateLoginInput", () => {
@@ -203,5 +227,23 @@ describe("validateLoginInput", () => {
     });
 
     expect(result).toBe("Password must be at least 6 characters");
+  });
+
+  //  MALFORMED INPUTS (missing/undefined/wrong types)
+  it("should fail if data is undefined or null", () => {
+    expect(validateLoginInput(undefined as any)).toBe("Invalid request data");
+    expect(validateLoginInput(null as any)).toBe("Invalid request data");
+  });
+
+  it("should return error if email is missing or not a string", () => {
+    expect(validateLoginInput({ password: "123456" } as any)).toBe("Email is required");
+    expect(validateLoginInput({ email: 123, password: "123456" } as any)).toBe("Email must be a valid string");
+    expect(validateLoginInput({ email: null, password: "123456" } as any)).toBe("Email is required");
+  });
+
+  it("should return error if password is missing or not a string", () => {
+    expect(validateLoginInput({ email: "test@test.com" } as any)).toBe("Password is required");
+    expect(validateLoginInput({ email: "test@test.com", password: [] } as any)).toBe("Password must be a valid string");
+    expect(validateLoginInput({ email: "test@test.com", password: null } as any)).toBe("Password is required");
   });
 });
