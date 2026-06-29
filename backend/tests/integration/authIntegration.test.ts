@@ -5,6 +5,7 @@ import { pool } from "../../src/config/db";
 import jwt from "jsonwebtoken";
 import { ENV } from "../../src/config/env";
 import { getMe } from "../../src/controllers/authController";
+import { authenticate } from "../../src/middlewares/authMiddleware";
 
 const app = express();
 app.use(express.json());
@@ -17,7 +18,11 @@ app.get("/test-getme-error", (req, res) => {
       throw new Error("Simulated getMe error");
     }
   });
-  return getMe(req, res);
+  return getMe(req as any, res);
+});
+app.get("/api/auth/me", authenticate, getMe);
+app.get("/api/auth/protected", authenticate, (req: any, res) => {
+  res.json({ message: "You are authenticated", user: req.user });
 });
 
 describe("Auth Integration", () => {
@@ -246,6 +251,7 @@ describe("Auth Input Validation - Login", () => {
 describe("Auth Integration - Protected Endpoints", () => {
   let email: string;
   let validToken: string;
+  let user_id: number;
 
   beforeAll(async () => {
     email = `protected_${Date.now()}@test.com`;
@@ -297,7 +303,7 @@ describe("Auth Integration - Protected Endpoints", () => {
     });
 
     it("should return 401 if user inside token does not exist in DB", async () => {
-      const fakeToken = jwt.sign({ userId: "00000000-0000-0000-0000-000000000000" }, ENV.JWT_SECRET);
+      const fakeToken = jwt.sign({ userId: -1 }, ENV.JWT_SECRET);
       
       const res = await request(app)
         .get("/api/auth/me")
