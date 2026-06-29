@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Crosshair, Search, MapPin, X, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, useMap, GeoJSON, Tooltip, Marker } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
@@ -60,6 +60,19 @@ const branchIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
+const farmIcon = new L.DivIcon({
+  className: "custom-farm-icon",
+  html: `<div style="background-color: #3b82f6; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.3); margin-top: -8px; margin-left: -8px;">
+           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+             <polyline points="9 22 9 12 15 12 15 22"></polyline>
+           </svg>
+         </div>`,
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
+  popupAnchor: [0, -20]
+});
+
 export interface DrawnPolygon {
   geoJSON: GeoJSON.Polygon;
 }
@@ -71,6 +84,7 @@ interface FarmMapProps {
   onSelectField?: (id: string) => void;
   readOnly?: boolean;
   branches?: any[];
+  showFieldMarkers?: boolean;
 }
 
 const FarmMap: React.FC<FarmMapProps> = ({
@@ -79,7 +93,8 @@ const FarmMap: React.FC<FarmMapProps> = ({
   selectedFieldId = null,
   onSelectField,
   readOnly = false,
-  branches = []
+  branches = [],
+  showFieldMarkers = false
 }) => {
   const hasGeolocation =
     typeof navigator !== "undefined" && !!navigator.geolocation;
@@ -462,23 +477,27 @@ const FarmMap: React.FC<FarmMapProps> = ({
         {savedFields.map((field) => {
           const isSelected = field.id === selectedFieldId;
           return (
-            <GeoJSON
-              key={field.id}
-              data={field.polygon}
-              eventHandlers={{
-                click: () => onSelectField?.(field.id),
-              }}
-              pathOptions={{
-                color: isSelected ? "#eab308" : "#3b82f6", // Yellow if selected, blue otherwise
-                weight: isSelected ? 4 : 2,
-                fillColor: isSelected ? "#fef08a" : "#93c5fd",
-                fillOpacity: isSelected ? 0.6 : 0.3,
-              }}
-            >
-              <Tooltip direction="top" sticky>
-                <span className="font-semibold">{field.name}</span>
-              </Tooltip>
-            </GeoJSON>
+            <React.Fragment key={field.id}>
+              <GeoJSON
+                data={field.polygon}
+                eventHandlers={{
+                  click: () => onSelectField?.(field.id),
+                }}
+                pathOptions={{
+                  color: isSelected ? "#eab308" : "#3b82f6", // Yellow if selected, blue otherwise
+                  weight: isSelected ? 4 : 2,
+                  fillColor: isSelected ? "#fef08a" : "#93c5fd",
+                  fillOpacity: isSelected ? 0.6 : 0.3,
+                }}
+              >
+                <Tooltip direction="top" sticky>
+                  <span className="font-semibold">{field.name}</span>
+                </Tooltip>
+              </GeoJSON>
+              {showFieldMarkers && field.centroid && (
+                <Marker position={[field.centroid.lat, field.centroid.lng]} icon={farmIcon} />
+              )}
+            </React.Fragment>
           );
         })}
         {branches.map((branch) => (

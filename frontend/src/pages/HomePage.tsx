@@ -141,6 +141,7 @@ function HomePage() {
                 selectedFieldId={selectedFieldId} 
                 readOnly={true} 
                 branches={branches} 
+                showFieldMarkers={true}
               />
             </div>
           </div>
