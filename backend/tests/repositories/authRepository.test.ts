@@ -31,6 +31,16 @@ describe("Auth Repository", () => {
 
     expect(user?.email).toBe("test@test.com");
   });
+
+  it("should return null if user not found by email", async () => {
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [],
+    });
+
+    const user = await findUserByEmail("notfound@test.com");
+
+    expect(user).toBeNull();
+  });
 });
 
 describe("Auth Repository - Login", () => {
