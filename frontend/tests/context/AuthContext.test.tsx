@@ -97,6 +97,30 @@ describe('AuthContext', () => {
     expect(api.get).toHaveBeenCalledWith('/auth/me');
   });
 
+  it('sets user to null if api fetch succeeds but returns no data', async () => {
+    localStorage.setItem('token', 'existing-token');
+
+    (api.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      data: {},
+    });
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('user')).toHaveTextContent('no user');
+    });
+
+    expect(screen.getByTestId('token')).toHaveTextContent('existing-token');
+    expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('no');
+    expect(api.get).toHaveBeenCalledWith('/auth/me');
+  });
+
   it('handles api fetch error by clearing user and token', async () => {
     localStorage.setItem('token', 'invalid-token');
 
