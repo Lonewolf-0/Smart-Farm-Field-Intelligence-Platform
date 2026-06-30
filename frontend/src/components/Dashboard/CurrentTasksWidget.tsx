@@ -1,14 +1,15 @@
 import React from "react";
 import type { Task } from "../../types";
-import { Plus, Check } from "lucide-react";
+import { Plus, Check, Pencil } from "lucide-react";
 
 interface Props {
   tasks: Task[];
   onAddTaskClick?: () => void;
   onCompleteTask?: (id: string) => void;
+  onEditTaskClick?: (task: Task) => void;
 }
 
-const CurrentTasksWidget: React.FC<Props> = ({ tasks, onAddTaskClick, onCompleteTask }) => {
+const CurrentTasksWidget: React.FC<Props> = ({ tasks, onAddTaskClick, onCompleteTask, onEditTaskClick }) => {
   // Sort tasks to show overdue/soonest first
   const sortedTasks = [...tasks].sort((a, b) => {
     if (!a.dueDate) return 1;
@@ -84,7 +85,14 @@ const CurrentTasksWidget: React.FC<Props> = ({ tasks, onAddTaskClick, onComplete
               </div>
               
               {/* Actions */}
-              <div className="shrink-0 flex items-center pr-1">
+              <div className="shrink-0 flex items-center pr-1 gap-2">
+                <button 
+                  onClick={() => onEditTaskClick && onEditTaskClick(task)}
+                  className="h-8 w-8 rounded-full border border-white/20 bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 hover:text-emerald-400 transition-all shadow-sm group-hover:border-emerald-500/30"
+                  title="Edit task"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
                 <button 
                   onClick={() => onCompleteTask && onCompleteTask(task.id)}
                   className="h-8 w-8 rounded-full border border-white/20 bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:border-emerald-400 hover:text-slate-950 transition-all shadow-sm group-hover:border-emerald-500/50"

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, ChevronDown } from "lucide-react";
 import { useField } from "../../context/FieldContext";
+import type { Task } from "../../types";
 
 export interface TaskInput {
   title: string;
@@ -13,20 +14,18 @@ interface AddTaskModalProps {
   onSave: (task: TaskInput) => void;
   onCancel: () => void;
   isOpen: boolean;
+  taskToEdit?: Task | null;
 }
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({
   onSave,
   onCancel,
   isOpen,
+  taskToEdit,
 }) => {
   const { fields } = useField();
   const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split("T")[0];
-  });
+  const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("Plowing");
   const [linkedFieldId, setLinkedFieldId] = useState("");
 
@@ -35,6 +34,22 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().split("T")[0];
   })();
+
+  useEffect(() => {
+    if (taskToEdit) {
+      setTitle(taskToEdit.title);
+      setDueDate(taskToEdit.dueDate || "");
+      setCategory(taskToEdit.category || "Plowing");
+      setLinkedFieldId(taskToEdit.fieldId || "");
+    } else {
+      setTitle("");
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      setDueDate(tomorrow.toISOString().split("T")[0]);
+      setCategory("Plowing");
+      setLinkedFieldId("");
+    }
+  }, [taskToEdit, isOpen]);
 
   if (!isOpen) return null;
 
@@ -62,7 +77,9 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-md transform transition-all">
-        <h2 className="text-xl font-bold text-white mb-4">Add New Task</h2>
+        <h2 className="text-xl font-bold text-white mb-4">
+          {taskToEdit ? "Edit Task" : "Add New Task"}
+        </h2>
         <p className="text-sm text-slate-400 mb-6">
           Schedule a task to stay on top of your field operations.
         </p>
@@ -159,7 +176,11 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               disabled={!title.trim()}
               className="px-4 py-2.5 text-sm font-bold text-slate-950 bg-emerald-500 hover:bg-emerald-400 rounded-xl transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              <Plus className="h-4 w-4" /> Add Task
+              {taskToEdit ? (
+                "Save Changes"
+              ) : (
+                <><Plus className="h-4 w-4" /> Add Task</>
+              )}
             </button>
           </div>
         </form>
