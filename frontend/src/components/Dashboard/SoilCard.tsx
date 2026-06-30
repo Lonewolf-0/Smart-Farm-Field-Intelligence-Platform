@@ -242,6 +242,15 @@ const SoilCard: React.FC<SoilCardProps> = ({ fieldId }) => {
         </div>
       </div>
 
+      <div className="mt-4 flex flex-col gap-3 shrink-0">
+        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-white/5">
+          <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+          <p>
+            <span className="font-semibold text-slate-300">Soil Guide:</span> Score ≥80 Excellent, 60-79 Fair, &lt;60 Poor. pH 6.0-7.5 Optimal. OC &gt;1.5% Good.
+          </p>
+        </div>
+      </div>
+
       <div className="mt-8 pt-6 border-t border-white/10">
         <button 
           onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}

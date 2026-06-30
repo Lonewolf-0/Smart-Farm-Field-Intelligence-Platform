@@ -275,6 +275,15 @@ const PesticideCard: React.FC<PesticideCardProps> = ({ fieldId, selectedCrop }) 
           );
         })}
       </div>
+
+      <div className="mt-4 flex flex-col gap-3 shrink-0">
+        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-white/5">
+          <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+          <p>
+            <span className="font-semibold text-slate-300">Pest Risk Guide:</span> High Risk (Action Required), Medium Risk (Monitor Closely), Low Risk (Routine).
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

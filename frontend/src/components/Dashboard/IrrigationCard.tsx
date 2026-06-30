@@ -153,7 +153,7 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
           </div>
           <div>
             <p className="text-xs text-slate-400">Daily ET</p>
-            <p className="text-sm font-bold text-slate-200">{data.dailyET} <span className="text-xs font-normal text-slate-500">mm/d</span></p>
+            <p className="text-sm font-bold text-slate-200">{(data.dailyET / 25.4).toFixed(1)} <span className="text-xs font-normal text-slate-500">in/d</span></p>
           </div>
         </div>
 
@@ -163,11 +163,19 @@ const IrrigationCard: React.FC<IrrigationCardProps> = ({ fieldId }) => {
           </div>
           <div>
             <p className="text-xs text-slate-400">7-Day Rain</p>
-            <p className="text-sm font-bold text-slate-200">{data.rainfallNext7Days} <span className="text-xs font-normal text-slate-500">mm</span></p>
+            <p className="text-sm font-bold text-slate-200">{(data.rainfallNext7Days / 25.4).toFixed(1)} <span className="text-xs font-normal text-slate-500">in</span></p>
           </div>
         </div>
       </div>
 
+      <div className="mt-4 flex flex-col gap-3 shrink-0">
+        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-white/5">
+          <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+          <p>
+            <span className="font-semibold text-slate-300">Irrigation Guide:</span> &gt;5 Days Optimal, 2-5 Days Approaching, &le;1 Day Critical.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
