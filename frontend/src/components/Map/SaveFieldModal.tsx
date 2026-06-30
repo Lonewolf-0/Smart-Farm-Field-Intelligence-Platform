@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Save, Maximize2 } from "lucide-react";
+import { Save, AlertTriangle } from "lucide-react";
 
 interface SaveFieldModalProps {
   onSave: (name: string) => Promise<void>;
@@ -7,6 +7,7 @@ interface SaveFieldModalProps {
   isOpen: boolean;
   isLoading: boolean;
   areaAcres?: number | null;
+  error?: string | null;
 }
 
 const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
@@ -15,6 +16,7 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
   isOpen,
   isLoading,
   areaAcres,
+  error,
 }) => {
   const [fieldName, setFieldName] = useState("");
 
@@ -48,6 +50,12 @@ const SaveFieldModal: React.FC<SaveFieldModalProps> = ({
             <label htmlFor="fieldName" className="block text-sm font-medium text-slate-300 mb-1">
               Field Name <span className="text-red-400">*</span>
             </label>
+            {error && (
+              <div className="mb-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2 text-amber-200 text-xs font-semibold animate-slide-up">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
             <input
               type="text"
               id="fieldName"

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../types";
 import * as turf from "@turf/turf";
-import { createFieldService, getFieldsByUserIdService, deleteFieldService, updateFieldNameService } from "../services/fieldService";
+import { createFieldService, getFieldsByUserIdService, deleteFieldService, updateFieldNameService, findFieldByNameAndUserIdService } from "../services/fieldService";
 import { sendResponse } from "../utils/response";
 
 export const updateField = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -18,6 +18,12 @@ export const updateField = async (req: AuthRequest, res: Response): Promise<void
     
     if (!name || name.trim() === "") {
       sendResponse(res, 400, "Field name required", null, "Field name required");
+      return;
+    }
+
+    const existingField = await findFieldByNameAndUserIdService(user.id, name.trim());
+    if (existingField && existingField.id !== id) {
+      sendResponse(res, 400, "A field with this name already exists. Please choose a different name.", null, "A field with this name already exists. Please choose a different name.");
       return;
     }
 
@@ -87,6 +93,12 @@ export const saveField = async (req: AuthRequest, res: Response): Promise<void> 
     const { name, polygon } = req.body;
     if (!name || !polygon || polygon.type !== "Polygon") {
       sendResponse(res, 400, "Invalid field data. Name and valid Polygon required.", null, "Invalid field data. Name and valid Polygon required.");
+      return;
+    }
+
+    const existingField = await findFieldByNameAndUserIdService(user.id, name.trim());
+    if (existingField) {
+      sendResponse(res, 400, "A field with this name already exists. Please choose a different name.", null, "A field with this name already exists. Please choose a different name.");
       return;
     }
 

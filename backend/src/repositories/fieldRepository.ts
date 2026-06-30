@@ -64,3 +64,12 @@ export const updateFieldName = async (fieldId: string, userId: string, newName: 
   );
   return result.rows[0];
 };
+
+export const findFieldByNameAndUserId = async (userId: string, name: string) => {
+  const result = await pool.query(
+    `SELECT id, name, area, centroid_lat, centroid_lng, polygon FROM fields WHERE user_id = $1 AND LOWER(name) = LOWER($2)`,
+    [userId, name]
+  );
+  return result.rows[0] || null;
+};
+

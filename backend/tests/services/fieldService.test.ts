@@ -4,7 +4,8 @@ import {
   deleteFieldService,
   updateFieldNameService,
   findFieldByIdService,
-  findFieldByIdAndUserIdService
+  findFieldByIdAndUserIdService,
+  findFieldByNameAndUserIdService
 } from "../../src/services/fieldService";
 import * as fieldRepo from "../../src/repositories/fieldRepository";
 
@@ -101,6 +102,21 @@ describe("Field Service", () => {
       const result = await findFieldByIdAndUserIdService(fieldId, userId);
 
       expect(fieldRepo.findFieldByIdAndUserId).toHaveBeenCalledWith(fieldId, userId);
+      expect(result).toEqual(mockField);
+    });
+  });
+
+  describe("findFieldByNameAndUserIdService", () => {
+    it("should call findFieldByNameAndUserId repository with correct parameters and return the result", async () => {
+      const mockField = { id: "field1", name: "Test Field", user_id: "user1" };
+      jest.spyOn(fieldRepo, "findFieldByNameAndUserId").mockResolvedValue(mockField as any);
+
+      const userId = "user1";
+      const name = "Test Field";
+
+      const result = await findFieldByNameAndUserIdService(userId, name);
+
+      expect(fieldRepo.findFieldByNameAndUserId).toHaveBeenCalledWith(userId, name);
       expect(result).toEqual(mockField);
     });
   });
