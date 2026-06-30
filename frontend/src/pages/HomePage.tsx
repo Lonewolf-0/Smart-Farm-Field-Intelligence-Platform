@@ -19,6 +19,7 @@ function HomePage() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [branches, setBranches] = useState<any[]>([]);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   
   // Fetch branches for the map
   useEffect(() => {
@@ -76,20 +77,39 @@ function HomePage() {
     localStorage.setItem("dashboard_tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const handleAddTask = (input: TaskInput) => {
+  const handleSaveTask = (input: TaskInput) => {
     const linkedField = savedFields.find(f => f.id === input.fieldId);
-    const newTask: Task = {
-      id: Math.random().toString(36).substr(2, 9),
-      userId: user?.id || "u1",
-      title: input.title,
-      dueDate: input.dueDate,
-      category: input.category,
-      completed: false,
-      fieldId: input.fieldId,
-      fieldName: linkedField ? linkedField.name : undefined,
-    };
-    setTasks([...tasks, newTask]);
+    if (taskToEdit) {
+      // Edit mode
+      setTasks(tasks.map(t => t.id === taskToEdit.id ? {
+        ...t,
+        title: input.title,
+        dueDate: input.dueDate,
+        category: input.category,
+        fieldId: input.fieldId,
+        fieldName: linkedField ? linkedField.name : undefined,
+      } : t));
+      setTaskToEdit(null);
+    } else {
+      // Add mode
+      const newTask: Task = {
+        id: Math.random().toString(36).substr(2, 9),
+        userId: user?.id || "u1",
+        title: input.title,
+        dueDate: input.dueDate,
+        category: input.category,
+        completed: false,
+        fieldId: input.fieldId,
+        fieldName: linkedField ? linkedField.name : undefined,
+      };
+      setTasks([...tasks, newTask]);
+    }
     setIsModalOpen(false);
+  };
+
+  const handleEditTaskClick = (task: Task) => {
+    setTaskToEdit(task);
+    setIsModalOpen(true);
   };
 
   const handleCompleteTask = (id: string) => {
@@ -120,6 +140,7 @@ function HomePage() {
                     tasks={tasks} 
                     onAddTaskClick={() => setIsModalOpen(true)}
                     onCompleteTask={handleCompleteTask}
+                    onEditTaskClick={handleEditTaskClick}
                   />
                 </div>
                 <div className="h-full min-h-0">
@@ -151,8 +172,12 @@ function HomePage() {
         </div>
         <AddTaskModal 
           isOpen={isModalOpen}
-          onSave={handleAddTask}
-          onCancel={() => setIsModalOpen(false)}
+          onSave={handleSaveTask}
+          onCancel={() => {
+            setIsModalOpen(false);
+            setTaskToEdit(null);
+          }}
+          taskToEdit={taskToEdit}
         />
       </div>
     );
