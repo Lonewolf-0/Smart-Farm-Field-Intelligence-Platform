@@ -1,13 +1,14 @@
 import React from "react";
-import { Pencil, Trash2, Check, X, Maximize2 } from "lucide-react";
+import { Pencil, Trash2, Check, X, Maximize2, AlertTriangle } from "lucide-react";
 import type { Field } from "../../types";
+import Toast from "../UI/Toast";
 
 interface FieldSidebarProps {
   fields: Field[];
   selectedFieldId: string | null;
   onSelectField: (id: string) => void;
   onDeleteField: (id: string) => void;
-  onEditField: (id: string, newName: string) => void;
+  onEditField: (id: string, newName: string) => Promise<boolean>;
   isLoading: boolean;
 }
 
@@ -21,14 +22,38 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
 }) => {
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [editName, setEditName] = React.useState("");
+  const [toast, setToast] = React.useState<{ message: string; type: "info" | "warning" | "success" | "error" } | null>(null);
+  const [editError, setEditError] = React.useState<string | null>(null);
 
-  const handleEditSubmit = (e: React.FormEvent, id: string) => {
+  const handleEditSubmit = async (e: React.FormEvent, id: string) => {
     e.preventDefault();
-    if (editName.trim()) {
-      onEditField(id, editName.trim());
-      setEditingId(null);
+    const trimmedName = editName.trim();
+    if (!trimmedName) return;
+    setEditError(null);
+
+    // Client-side check for duplicate name
+    const isDuplicate = fields.some(
+      (f) => f.id !== id && f.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (isDuplicate) {
+      setEditError("Field name already is in use.");
+      return;
+    }
+
+    try {
+      const success = await onEditField(id, trimmedName);
+      if (success) {
+        setEditingId(null);
+        setEditError(null);
+      } else {
+        setEditError("Field name already is in use.");
+      }
+    } catch (error) {
+      console.error("Failed to edit field name:", error);
+      setEditError("Failed to edit field name.");
     }
   };
+
   return (
     <div className="w-80 h-full flex flex-col z-[1000] relative overflow-hidden shrink-0">
       <div className="p-4 border-b border-white/10 bg-transparent">
@@ -64,12 +89,19 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                   <div className="flex justify-between items-start">
                     <div className="flex-1 min-w-0">
                       {editingId === field.id ? (
-                        <form 
-                          onSubmit={(e) => handleEditSubmit(e, field.id)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex gap-2"
-                        >
-                          <input
+                        <div className="relative w-full">
+                          {editError && (
+                            <div className="absolute bottom-full left-0 mb-1.5 z-50 p-2 bg-amber-500 text-slate-950 rounded-lg text-[10px] font-bold shadow-lg flex items-center gap-1 border border-amber-600 animate-slide-up">
+                              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{editError}</span>
+                            </div>
+                          )}
+                          <form 
+                            onSubmit={(e) => handleEditSubmit(e, field.id)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex gap-2"
+                          >
+                            <input
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
@@ -90,6 +122,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                             <X className="h-4 w-4" />
                           </button>
                         </form>
+                        </div>
                       ) : (
                         <h3 className="font-semibold text-white truncate pr-2">
                           {field.name}
@@ -112,6 +145,7 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
                             e.stopPropagation();
                             setEditName(field.name);
                             setEditingId(field.id);
+                            setEditError(null);
                           }}
                           className="text-slate-400 hover:text-emerald-400 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
                           title="Edit field name"
@@ -137,6 +171,13 @@ const FieldSidebar: React.FC<FieldSidebarProps> = ({
           </ul>
         )}
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

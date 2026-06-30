@@ -9,6 +9,7 @@ import FieldSidebar from "../components/Map/FieldSidebar";
 import api from "../services/api";
 import type { Field } from "../types";
 import * as turf from "@turf/turf";
+import Toast from "../components/UI/Toast";
 
 const MapPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -16,6 +17,8 @@ const MapPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "info" | "warning" | "success" | "error" } | null>(null);
+  const [saveFieldError, setSaveFieldError] = useState<string | null>(null);
 
   const { fields: savedFields, isLoadingFields, selectedFieldId, setSelectedFieldId, refreshFields } = useField();
   
@@ -35,18 +38,36 @@ const MapPage: React.FC = () => {
   const handleSaveSubmit = async (name: string) => {
     if (!currentPolygon) return;
     
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
+    setSaveFieldError(null);
+
+    // Client-side check for duplicate name
+    const isDuplicate = savedFields.some(
+      (f) => f.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (isDuplicate) {
+      setSaveFieldError("Field name already is in use. Please choose another name.");
+      return;
+    }
+
     try {
       setIsSaving(true);
       await api.post("/fields", {
-        name,
+        name: trimmedName,
         polygon: currentPolygon.geoJSON,
       });
-      setSaveSuccess(`Field "${name}" saved successfully!`);
+      setSaveSuccess(`Field "${trimmedName}" saved successfully!`);
       setIsModalOpen(false);
       void refreshFields();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save field:", error);
-      alert("Failed to save field. Please try again.");
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to save field. Please try again.";
+      if (error.response?.status === 400 && errorMessage.toLowerCase().includes("already exists")) {
+        setSaveFieldError("Field name already is in use. Please choose another name.");
+      } else {
+        setSaveFieldError(errorMessage);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -67,17 +88,24 @@ const MapPage: React.FC = () => {
       void refreshFields();
     } catch (error) {
       console.error("Failed to delete field:", error);
-      alert("Failed to delete field. Please try again.");
+      setToast({ message: "Failed to delete field. Please try again.", type: "error" });
     }
   };
 
-  const handleEditField = async (id: string, newName: string) => {
+  const handleEditField = async (id: string, newName: string): Promise<boolean> => {
     try {
       await api.put(`/fields/${id}`, { name: newName });
       void refreshFields();
-    } catch (error) {
+      return true;
+    } catch (error: any) {
       console.error("Failed to rename field:", error);
-      alert("Failed to rename field. Please try again.");
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to rename field. Please try again.";
+      if (error.response?.status === 400 && errorMessage.toLowerCase().includes("already exists")) {
+        setToast({ message: "Field name already is in use. Please choose another name.", type: "warning" });
+      } else {
+        setToast({ message: errorMessage, type: "error" });
+      }
+      return false;
     }
   };
 
@@ -142,10 +170,21 @@ const MapPage: React.FC = () => {
           isOpen={isModalOpen}
           isLoading={isSaving}
           onSave={handleSaveSubmit}
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={() => {
+            setIsModalOpen(false);
+            setSaveFieldError(null);
+          }}
           areaAcres={currentAreaAcres}
+          error={saveFieldError}
         />
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       </div>
     </div>
   );

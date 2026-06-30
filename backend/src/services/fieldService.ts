@@ -4,7 +4,8 @@ import {
   deleteField,
   updateFieldName,
   findFieldById,
-  findFieldByIdAndUserId
+  findFieldByIdAndUserId,
+  findFieldByNameAndUserId
 } from "../repositories/fieldRepository";
 
 export const createFieldService = async (
@@ -37,3 +38,8 @@ export const findFieldByIdService = async (fieldId: string) => {
 export const findFieldByIdAndUserIdService = async (fieldId: string, userId: string) => {
   return await findFieldByIdAndUserId(fieldId, userId);
 };
+
+export const findFieldByNameAndUserIdService = async (userId: string, name: string) => {
+  return await findFieldByNameAndUserId(userId, name);
+};
+

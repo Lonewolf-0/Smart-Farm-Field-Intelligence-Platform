@@ -22,6 +22,7 @@ describe("Field Controller", () => {
 
     jest.clearAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => {});
+    (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -34,11 +35,44 @@ describe("Field Controller", () => {
       req.body.name = "New Field Name";
 
       const mockUpdatedField = { id: "field123", name: "New Field Name" };
+      (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(null);
       (fieldService.updateFieldNameService as jest.Mock).mockResolvedValue(mockUpdatedField);
 
       await updateField(req, res);
 
+      expect(fieldService.findFieldByNameAndUserIdService).toHaveBeenCalledWith("user123", "New Field Name");
       expect(fieldService.updateFieldNameService).toHaveBeenCalledWith("field123", "user123", "New Field Name");
+      expect(sendResponse).toHaveBeenCalledWith(res, 200, "Success", mockUpdatedField);
+    });
+
+    it("should return 400 if field name already exists (duplicate name)", async () => {
+      req.params.id = "field123";
+      req.body.name = "Duplicate Field";
+
+      const mockExistingField = { id: "anotherFieldId", name: "Duplicate Field" };
+      (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(mockExistingField);
+
+      await updateField(req, res);
+
+      expect(fieldService.findFieldByNameAndUserIdService).toHaveBeenCalledWith("user123", "Duplicate Field");
+      expect(sendResponse).toHaveBeenCalledWith(res, 400, "A field with this name already exists. Please choose a different name.", null, "A field with this name already exists. Please choose a different name.");
+      expect(fieldService.updateFieldNameService).not.toHaveBeenCalled();
+    });
+
+    it("should allow updating field name to its current name (ID matches)", async () => {
+      req.params.id = "field123";
+      req.body.name = "Current Field Name";
+
+      const mockExistingField = { id: "field123", name: "Current Field Name" };
+      (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(mockExistingField);
+      
+      const mockUpdatedField = { id: "field123", name: "Current Field Name" };
+      (fieldService.updateFieldNameService as jest.Mock).mockResolvedValue(mockUpdatedField);
+
+      await updateField(req, res);
+
+      expect(fieldService.findFieldByNameAndUserIdService).toHaveBeenCalledWith("user123", "Current Field Name");
+      expect(fieldService.updateFieldNameService).toHaveBeenCalledWith("field123", "user123", "Current Field Name");
       expect(sendResponse).toHaveBeenCalledWith(res, 200, "Success", mockUpdatedField);
     });
 
@@ -235,9 +269,12 @@ describe("Field Controller", () => {
         created_at: "2023-01-01T00:00:00Z"
       };
 
+      (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(null);
       (fieldService.createFieldService as jest.Mock).mockResolvedValue(mockNewField);
 
       await saveField(req, res);
+
+      expect(fieldService.findFieldByNameAndUserIdService).toHaveBeenCalledWith("user123", "My New Field");
 
       // Verify turf functions were called
       expect(turf.polygon).toHaveBeenCalledWith(req.body.polygon.coordinates);
@@ -266,6 +303,25 @@ describe("Field Controller", () => {
         },
         createdAt: "2023-01-01T00:00:00Z"
       });
+    });
+
+    it("should return 400 if field name already exists", async () => {
+      req.body = {
+        name: "Existing Field",
+        polygon: {
+          type: "Polygon",
+          coordinates: [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]
+        }
+      };
+
+      const mockExistingField = { id: "existingId", name: "Existing Field" };
+      (fieldService.findFieldByNameAndUserIdService as jest.Mock).mockResolvedValue(mockExistingField);
+
+      await saveField(req, res);
+
+      expect(fieldService.findFieldByNameAndUserIdService).toHaveBeenCalledWith("user123", "Existing Field");
+      expect(sendResponse).toHaveBeenCalledWith(res, 400, "A field with this name already exists. Please choose a different name.", null, "A field with this name already exists. Please choose a different name.");
+      expect(fieldService.createFieldService).not.toHaveBeenCalled();
     });
 
     it("should return 400 if name is missing", async () => {

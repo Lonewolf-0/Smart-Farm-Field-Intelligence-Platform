@@ -50,9 +50,10 @@ vi.mock("../../src/components/Map/FieldSidebar", () => ({
 }));
 
 vi.mock("../../src/components/Map/SaveFieldModal", () => ({
-  default: ({ isOpen, isLoading, onSave, onCancel, areaAcres }: any) => isOpen ? (
+  default: ({ isOpen, isLoading, onSave, onCancel, areaAcres, error }: any) => isOpen ? (
     <div data-testid="save-field-modal">
       <span data-testid="modal-area">{areaAcres}</span>
+      {error && <span data-testid="modal-error">{error}</span>}
       <button data-testid="modal-save" onClick={() => onSave("Test Field Name")}>Save</button>
       <button data-testid="modal-cancel" onClick={onCancel}>Cancel</button>
     </div>
@@ -183,6 +184,78 @@ describe("MapPage", () => {
     await waitFor(() => {
       expect(mockApiPut).toHaveBeenCalledWith("/fields/field-1", { name: "New Name" });
       expect(mockRefreshFields).toHaveBeenCalled();
+    });
+  });
+
+  it("handles saving a field with duplicate name locally (prevent duplicate)", async () => {
+    // Mock user having a field named "Test Field Name"
+    mockUseField.mockReturnValue({
+      fields: [{ id: "field-1", name: "Test Field Name", area: 10, polygon: {}, centroid: { lat: 0, lng: 0 }, createdAt: "" }],
+      isLoadingFields: false,
+      selectedFieldId: null,
+      setSelectedFieldId: vi.fn(),
+      refreshFields: mockRefreshFields,
+    });
+
+    render(<MapPage />);
+
+    // Draw polygon
+    fireEvent.click(screen.getByTestId("mock-polygon-change"));
+
+    // Click save button
+    fireEvent.click(await screen.findByText("Save Polygon"));
+
+    // Click save inside modal
+    fireEvent.click(screen.getByTestId("modal-save"));
+
+    // Verify it shows Toast and doesn't call API
+    expect(screen.getByText("Field name already is in use. Please choose another name.")).toBeInTheDocument();
+    expect(mockApiPost).not.toHaveBeenCalled();
+  });
+
+  it("handles save API duplicate name error response", async () => {
+    const errorResponse = {
+      response: {
+        status: 400,
+        data: { message: "A field with this name already exists. Please choose a different name." }
+      }
+    };
+    mockApiPost.mockRejectedValueOnce(errorResponse);
+
+    render(<MapPage />);
+
+    // Draw polygon
+    fireEvent.click(screen.getByTestId("mock-polygon-change"));
+
+    // Click save button
+    fireEvent.click(await screen.findByText("Save Polygon"));
+
+    // Click save inside modal
+    fireEvent.click(screen.getByTestId("modal-save"));
+
+    // Verify it shows Toast and keeps modal open
+    await waitFor(() => {
+      expect(screen.getByText("Field name already is in use. Please choose another name.")).toBeInTheDocument();
+      expect(screen.getByTestId("save-field-modal")).toBeInTheDocument();
+    });
+  });
+
+  it("handles edit API duplicate name error response", async () => {
+    const errorResponse = {
+      response: {
+        status: 400,
+        data: { message: "A field with this name already exists. Please choose a different name." }
+      }
+    };
+    mockApiPut.mockRejectedValueOnce(errorResponse);
+
+    render(<MapPage />);
+
+    fireEvent.click(screen.getByTestId("mock-edit-field"));
+
+    await waitFor(() => {
+      expect(mockApiPut).toHaveBeenCalledWith("/fields/field-1", { name: "New Name" });
+      expect(screen.getByText("Field name already is in use. Please choose another name.")).toBeInTheDocument();
     });
   });
 
