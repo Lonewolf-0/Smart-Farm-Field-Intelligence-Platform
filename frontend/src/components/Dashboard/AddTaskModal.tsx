@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
+import { useField } from "../../context/FieldContext";
 
 export interface TaskInput {
   title: string;
   dueDate: string;
   category: string;
+  fieldId?: string;
 }
 
 interface AddTaskModalProps {
@@ -18,6 +20,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   onCancel,
   isOpen,
 }) => {
+  const { fields } = useField();
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState(() => {
     const tomorrow = new Date();
@@ -25,6 +28,13 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     return tomorrow.toISOString().split("T")[0];
   });
   const [category, setCategory] = useState("Plowing");
+  const [linkedFieldId, setLinkedFieldId] = useState("");
+
+  const tomorrowStr = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  })();
 
   if (!isOpen) return null;
 
@@ -35,6 +45,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
         title: title.trim(),
         dueDate,
         category,
+        fieldId: linkedFieldId || undefined,
       });
       // Reset form
       setTitle("");
@@ -42,6 +53,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       tomorrow.setDate(tomorrow.getDate() + 1);
       setDueDate(tomorrow.toISOString().split("T")[0]);
       setCategory("Plowing");
+      setLinkedFieldId("");
     }
   };
 
@@ -80,6 +92,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               type="date"
               id="dueDate"
               value={dueDate}
+              min={tomorrowStr}
               onChange={(e) => setDueDate(e.target.value)}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
               required
@@ -90,18 +103,47 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <label htmlFor="category" className="block text-sm font-medium text-slate-300 mb-1">
               Category
             </label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors appearance-none"
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat} className="bg-slate-800">
-                  {cat}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors appearance-none pr-10"
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat} className="bg-slate-800">
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                <ChevronDown className="h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="linkedField" className="block text-sm font-medium text-slate-300 mb-1">
+              Link to Field (Optional)
+            </label>
+            <div className="relative">
+              <select
+                id="linkedField"
+                value={linkedFieldId}
+                onChange={(e) => setLinkedFieldId(e.target.value)}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors appearance-none pr-10"
+              >
+                <option value="" className="bg-slate-800">No Farm / Unlinked</option>
+                {fields.map((f) => (
+                  <option key={f.id} value={f.id} className="bg-slate-800">
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                <ChevronDown className="h-5 w-5" />
+              </div>
+            </div>
           </div>
           
           <div className="flex justify-end gap-3 mt-4">
