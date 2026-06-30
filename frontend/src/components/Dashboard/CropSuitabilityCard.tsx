@@ -207,7 +207,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                     {getSeasonBadge(season)}
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className={`text-sm font-black ${style.textClass}`}>{score}%</span>
+                    <span className={`text-sm font-black ${style.textClass}`}>{score}</span>
                     {isExpanded ? (
                       <ChevronUp className="w-4 h-4 text-slate-400" />
                     ) : (
@@ -239,7 +239,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                       <div>
                         <div className="flex justify-between text-[11px] text-slate-400 mb-1">
                           <span>pH match</span>
-                          <span className="font-semibold text-slate-200">{crop.breakdown.ph}%</span>
+                          <span className="font-semibold text-slate-200">{crop.breakdown.ph}</span>
                         </div>
                         <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                           <div className="h-full bg-slate-400 rounded-full" style={{ width: `${crop.breakdown.ph}%` }}></div>
@@ -249,7 +249,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                       <div>
                         <div className="flex justify-between text-[11px] text-slate-400 mb-1">
                           <span>Temperature match</span>
-                          <span className="font-semibold text-slate-200">{crop.breakdown.temperature}%</span>
+                          <span className="font-semibold text-slate-200">{crop.breakdown.temperature}</span>
                         </div>
                         <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                           <div className="h-full bg-slate-400 rounded-full" style={{ width: `${crop.breakdown.temperature}%` }}></div>
@@ -259,7 +259,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                       <div>
                         <div className="flex justify-between text-[11px] text-slate-400 mb-1">
                           <span>Rainfall match</span>
-                          <span className="font-semibold text-slate-200">{crop.breakdown.rainfall}%</span>
+                          <span className="font-semibold text-slate-200">{crop.breakdown.rainfall}</span>
                         </div>
                         <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                           <div className="h-full bg-slate-400 rounded-full" style={{ width: `${crop.breakdown.rainfall}%` }}></div>
@@ -269,7 +269,7 @@ const CropSuitabilityCard: React.FC<CropSuitabilityCardProps> = ({ fieldId }) =>
                       <div>
                         <div className="flex justify-between text-[11px] text-slate-400 mb-1">
                           <span>Soil texture match</span>
-                          <span className="font-semibold text-slate-200">{crop.breakdown.soilTexture}%</span>
+                          <span className="font-semibold text-slate-200">{crop.breakdown.soilTexture}</span>
                         </div>
                         <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                           <div className="h-full bg-slate-400 rounded-full" style={{ width: `${crop.breakdown.soilTexture}%` }}></div>

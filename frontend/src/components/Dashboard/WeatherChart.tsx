@@ -63,7 +63,7 @@ const CustomTooltip = ({ active, payload }: any) => {
           <span className="text-slate-400 flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Rainfall:
           </span>
-          <span className="font-bold text-emerald-200">{precip} mm</span>
+          <span className="font-bold text-emerald-200">{precip} in</span>
         </div>
       </div>
     );
@@ -78,7 +78,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
     fullDate: formatFullDate(day.date),
     "Max Temp": Math.round(day.tempMax),
     "Min Temp": Math.round(day.tempMin),
-    Precipitation: parseFloat(day.precipitation.toFixed(1)),
+    Precipitation: parseFloat((day.precipitation / 25.4).toFixed(1)),
   }));
 
   return (
@@ -118,7 +118,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ forecast }) => {
             fontSize={10}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(val) => `${val}mm`}
+            tickFormatter={(val) => `${val}in`}
             width={35}
           />
 

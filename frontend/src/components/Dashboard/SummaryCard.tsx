@@ -152,7 +152,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ onNavigate, fieldId, selected
                 {irrigation.nextIrrigationDays === 0 ? "TODAY" : `In ${irrigation.nextIrrigationDays} Days`}
               </p>
               <p className={`text-sm mt-1 font-medium ${isIrrigationUrgent ? 'text-red-300' : 'text-blue-400'}`}>
-                {irrigation.waterRequired > 0 ? `Needs ${irrigation.waterRequired} mm` : 'Optimal Moisture'}
+                {irrigation.waterRequired > 0 ? `Needs ${(irrigation.waterRequired / 25.4).toFixed(1)} in` : 'Optimal Moisture'}
               </p>
             </>
           ) : (

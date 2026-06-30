@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import type { FertilizerStep } from "../../types";
+import { calculateFertilizerMetrics } from "../../utils/fertilizerCalculations";
 
 interface FertilizerTimelineProps {
   scheduleSteps?: FertilizerStep[];
@@ -172,16 +173,19 @@ const FertilizerTimeline: React.FC<FertilizerTimelineProps> = ({
                         </td>
                       </tr>
                     ) : (
-                      activeStep.recommendations.map((rec) => (
-                        <tr key={rec.name} className="hover:bg-white/5">
-                          <td className="p-2.5 text-white font-semibold flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                            {rec.name}
-                          </td>
-                          <td className="p-2.5 text-right text-slate-200">{rec.quantity.toFixed(1)} lbs/acre</td>
-                          <td className="p-2.5 text-right text-slate-200">{(rec.quantity * fieldArea).toFixed(1)} lbs</td>
-                        </tr>
-                      ))
+                      activeStep.recommendations.map((rec) => {
+                        const metrics = calculateFertilizerMetrics(rec.name, rec.quantity, fieldArea);
+                        return (
+                          <tr key={rec.name} className="hover:bg-white/5">
+                            <td className="p-2.5 text-white font-semibold flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                              {rec.name}
+                            </td>
+                            <td className="p-2.5 text-right text-slate-200">{metrics.quantityPerAcre.toFixed(1)} lbs/acre</td>
+                            <td className="p-2.5 text-right text-slate-200">{metrics.totalQuantityLbs.toFixed(1)} lbs</td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>

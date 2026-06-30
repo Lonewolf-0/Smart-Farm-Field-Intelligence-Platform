@@ -124,9 +124,9 @@ describe("CropSuitabilityCard Component Tests", () => {
 
     expect(screen.getByText("Suitability Factor Breakdown")).toBeInTheDocument();
     expect(screen.getByText("pH match")).toBeInTheDocument();
-    expect(screen.getByText("90%")).toBeInTheDocument();
+    expect(screen.getByText("90")).toBeInTheDocument();
     expect(screen.getByText("Temperature match")).toBeInTheDocument();
-    expect(screen.getByText("85%")).toBeInTheDocument();
+    expect(screen.getByText("85")).toBeInTheDocument();
 
     // Click Wheat again to collapse
     fireEvent.click(wheatLabel);

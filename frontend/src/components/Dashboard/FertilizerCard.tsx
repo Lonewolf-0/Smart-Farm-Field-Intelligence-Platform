@@ -15,6 +15,7 @@ import {
 import type { Field, FertilizerPlan } from "../../types";
 import FertilizerTimeline from "./FertilizerTimeline";
 import { useAnalysisContext } from "../../context/AnalysisContext";
+import { calculateFertilizerMetrics } from "../../utils/fertilizerCalculations";
 
 interface FertilizerCardProps {
   fieldId: string;
@@ -39,13 +40,6 @@ const cropNutrients: Record<string, { n: number; p: number; k: number }> = {
   "Sunflower": { n: 80, p: 60, k: 40 },
   "Barley": { n: 80, p: 40, k: 30 },
   "Millet": { n: 60, p: 30, k: 20 }
-};
-
-// Retail pricing constants for Urea, DAP, MOP per kg
-const FERTILIZER_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number; pricePerBag: number }> = {
-  "Urea": { pricePerKg: 0.60, bagSizeKg: 50, pricePerBag: 30.00 },
-  "DAP": { pricePerKg: 0.80, bagSizeKg: 50, pricePerBag: 40.00 },
-  "MOP": { pricePerKg: 0.70, bagSizeKg: 50, pricePerBag: 35.00 }
 };
 
 const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, onCropChange }) => {
@@ -242,10 +236,10 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
   const availableP = Number((soilP * 0.4).toFixed(1));
   const availableK = Number((soilK * 0.6).toFixed(1));
 
-  // Required values
-  const reqN = activeCropRequirements.n;
-  const reqP = activeCropRequirements.p;
-  const reqK = activeCropRequirements.k;
+  // Required values (converted from kg/ha to lbs/acre)
+  const reqN = activeCropRequirements.n * 0.892179;
+  const reqP = activeCropRequirements.p * 0.892179;
+  const reqK = activeCropRequirements.k * 0.892179;
 
   // Deficit values
   const defN = Math.max(0, reqN - availableN);
@@ -267,31 +261,18 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
 
   // Cost estimates based on recommendations
   let totalCostPerAcre = 0;
+  
   const pricedRecommendations = plan?.recommendations.map(prod => {
-    const pricing = FERTILIZER_PRICES[prod.name];
-    if (pricing) {
-      // Backend quantity is per Hectare. Convert to per Acre.
-      const quantityPerAcre = prod.quantity / 2.47105;
-      const prodCostPerAcre = quantityPerAcre * pricing.pricePerKg; 
-      const totalProdCost = prodCostPerAcre * area;
-      const totalBags = Math.ceil((quantityPerAcre * area) / pricing.bagSizeKg);
-      totalCostPerAcre += prodCostPerAcre;
-      return {
-        ...prod,
-        quantityPerAcre: quantityPerAcre,
-        pricePerKg: pricing.pricePerKg,
-        costPerAcre: prodCostPerAcre,
-        totalCost: totalProdCost,
-        bagsNeeded: totalBags
-      };
-    }
+    const metrics = calculateFertilizerMetrics(prod.name, prod.quantity, area);
+    totalCostPerAcre += metrics.costPerAcre;
+    
     return {
       ...prod,
-      quantityPerAcre: 0,
-      pricePerKg: 0,
-      costPerHa: 0,
-      totalCost: 0,
-      bagsNeeded: 0
+      quantityPerAcre: metrics.quantityPerAcre,
+      pricePerLb: metrics.pricePerLb,
+      costPerAcre: metrics.costPerAcre,
+      totalCost: metrics.totalCost,
+      bagsNeeded: metrics.totalBags
     };
   }) || [];
 
@@ -554,7 +535,7 @@ const FertilizerCard: React.FC<FertilizerCardProps> = ({ fieldId, selectedCrop, 
                         <th className="p-2.5">Fertilizer Product</th>
                         <th className="p-2.5 text-right">Per Acre</th>
                         <th className="p-2.5 text-right">Total ({area.toFixed(1)} acres)</th>
-                        <th className="p-2.5 text-right">Bags (50kg)</th>
+                        <th className="p-2.5 text-right">Bags (50lbs)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 font-medium text-slate-300">

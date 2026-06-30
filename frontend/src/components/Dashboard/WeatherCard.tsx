@@ -119,7 +119,7 @@ export const getWeatherInfo = (condition: string | number): WeatherInfo => {
 const formatTemp = (temp: number): string => `${Math.round(temp)}°F`;
 const formatHumidity = (humidity: number): string => `${humidity}%`;
 const formatWindSpeed = (speedMs: number): string => `${speedMs.toFixed(1)} mph`; // API already returns mph in imperial mode
-const formatPrecipitation = (precip: number): string => `${precip.toFixed(1)} mm`;
+const formatPrecipitation = (precip: number): string => `${(precip / 25.4).toFixed(1)} in`;
 
 const formatDate = (dateStr: string): string => {
   try {
@@ -306,7 +306,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ fieldId }) => {
                       {day.precipitation > 0 ? (
                         <span className="text-blue-400 font-medium">{formatPrecipitation(day.precipitation)}</span>
                       ) : (
-                        "0 mm"
+                        "0.0 in"
                       )}
                     </p>
                     <p className="text-xs font-bold text-slate-200 w-[70px]">

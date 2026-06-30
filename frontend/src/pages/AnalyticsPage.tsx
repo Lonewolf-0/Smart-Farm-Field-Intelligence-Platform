@@ -21,6 +21,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import LoadingFarmAnimation from "../components/UI/LoadingFarmAnimation";
 import { getFarmLoadingHTML } from "../utils/farmLoadingPage";
+import { calculateFertilizerMetrics } from "../utils/fertilizerCalculations";
 function AnalyticsPage() {
   const { fields, isLoadingFields: loadingFields, selectedFieldId, setSelectedFieldId } = useField();
   const { user } = useAuth();
@@ -354,11 +355,11 @@ function AnalyticsPage() {
       const cropHeaders = [["Crop Name", "Suitability Score", "Soil pH Fit", "Temp Fit", "Rainfall Fit", "Soil Texture Fit"]];
       const cropRows = cropSuitabilityList.slice(0, 5).map((c) => [
         c.name || "N/A",
-        c.score !== undefined ? `${c.score.toFixed(0)}%` : "N/A",
-        c.breakdown?.ph !== undefined ? `${c.breakdown.ph.toFixed(0)}%` : "N/A",
-        c.breakdown?.temperature !== undefined ? `${c.breakdown.temperature.toFixed(0)}%` : "N/A",
-        c.breakdown?.rainfall !== undefined ? `${c.breakdown.rainfall.toFixed(0)}%` : "N/A",
-        c.breakdown?.soilTexture !== undefined ? `${c.breakdown.soilTexture.toFixed(0)}%` : "N/A",
+        c.score !== undefined ? `${c.score.toFixed(0)}` : "N/A",
+        c.breakdown?.ph !== undefined ? `${c.breakdown.ph.toFixed(0)}` : "N/A",
+        c.breakdown?.temperature !== undefined ? `${c.breakdown.temperature.toFixed(0)}` : "N/A",
+        c.breakdown?.rainfall !== undefined ? `${c.breakdown.rainfall.toFixed(0)}` : "N/A",
+        c.breakdown?.soilTexture !== undefined ? `${c.breakdown.soilTexture.toFixed(0)}` : "N/A",
       ]);
 
       if (cropRows.length === 0) {
@@ -425,8 +426,8 @@ function AnalyticsPage() {
         ["Current Soil Moisture", `${irrigation.currentSoilMoisture || 0}%`, "Current percentage of moisture content in top layer."],
         ["Next Irrigation Target", irrigation.nextIrrigationDays === 0 ? "TODAY" : `${irrigation.nextIrrigationDays || 0} Days`, irrigation.nextIrrigationDays <= 1 ? "Critical watering required." : "Soil moisture level is acceptable."],
         ["Water Quantity Required", `${(waterReq / 25.4).toFixed(2)} in (${Math.round((waterReq / 25.4) * 27154).toLocaleString()} gal/acre)`, waterReq > 0 ? `Target volume to restore field root zone.` : "No supplemental watering needed currently."],
-        ["Daily Evapotranspiration", `${irrigation.dailyET || 0} mm/day`, "Daily crop moisture consumption rate."],
-        ["7-Day Rainfall Forecast", `${irrigation.rainfallNext7Days || 0} mm`, "Expected local rainfall quantity."],
+        ["Daily Evapotranspiration", `${((irrigation.dailyET || 0) / 25.4).toFixed(1)} in/day`, "Daily crop moisture consumption rate."],
+        ["7-Day Rainfall Forecast", `${((irrigation.rainfallNext7Days || 0) / 25.4).toFixed(1)} in`, "Expected local rainfall quantity."],
       ];
 
       (doc as any).autoTable({
@@ -492,13 +493,13 @@ function AnalyticsPage() {
       };
 
       const activeCropRequirements = cropNutrients[selectedCrop] || { n: 100, p: 50, k: 50 };
-      const reqN = activeCropRequirements.n;
-      const reqP = activeCropRequirements.p;
-      const reqK = activeCropRequirements.k;
+      const reqN = activeCropRequirements.n * 0.892179;
+      const reqP = activeCropRequirements.p * 0.892179;
+      const reqK = activeCropRequirements.k * 0.892179;
 
-      const availableN = Number(((baseline.nitrogen || 0) * 0.5).toFixed(1));
-      const availableP = Number(((baseline.phosphorus || 0) * 0.4).toFixed(1));
-      const availableK = Number(((baseline.potassium || 0) * 0.6).toFixed(1));
+      const availableN = Number(((baseline.nitrogen || 0) * 0.892179 * 0.5).toFixed(1));
+      const availableP = Number(((baseline.phosphorus || 0) * 0.892179 * 0.4).toFixed(1));
+      const availableK = Number(((baseline.potassium || 0) * 0.892179 * 0.6).toFixed(1));
 
       const defN = Math.max(0, reqN - availableN);
       const defP = Math.max(0, reqP - availableP);
@@ -506,9 +507,9 @@ function AnalyticsPage() {
 
       const nutrientHeaders = [["Nutrient Element", "Soil Baseline (lbs/acre)", "Crop Requirement (lbs/acre)", "Net Deficit (lbs/acre)"]];
       const nutrientRows = [
-        ["Nitrogen (N)", (baseline.nitrogen || 0).toFixed(1), reqN.toFixed(1), defN > 0 ? `${defN.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
-        ["Phosphorus (P)", (baseline.phosphorus || 0).toFixed(1), reqP.toFixed(1), defP > 0 ? `${defP.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
-        ["Potassium (K)", (baseline.potassium || 0).toFixed(1), reqK.toFixed(1), defK > 0 ? `${defK.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
+        ["Nitrogen (N)", ((baseline.nitrogen || 0) * 0.892179).toFixed(1), reqN.toFixed(1), defN > 0 ? `${defN.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
+        ["Phosphorus (P)", ((baseline.phosphorus || 0) * 0.892179).toFixed(1), reqP.toFixed(1), defP > 0 ? `${defP.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
+        ["Potassium (K)", ((baseline.potassium || 0) * 0.892179).toFixed(1), reqK.toFixed(1), defK > 0 ? `${defK.toFixed(1)} (Deficit)` : "0.0 (Optimal)"],
       ];
 
       (doc as any).autoTable({
@@ -555,29 +556,20 @@ function AnalyticsPage() {
       doc.text("Recommends active commercial fertilizer types, application quantities, bag requirements, and cost projections.", margin, yPos);
       yPos += 5;
 
-      const recHeaders = [["Fertilizer Product", "Dose / Acre", `Total Qty (${area.toFixed(2)} acres)`, "50kg Bags", "Cost / acre", "Total Cost"]];
+      const recHeaders = [["Fertilizer Product", "Dose / Acre", `Total Qty (${area.toFixed(2)} acres)`, "50lbs Bags", "Cost / acre", "Total Cost"]];
       
       let totalCostPerAcre = 0;
       const recRows = recommendations.map((prod: any) => {
-        const FERT_PRICES: Record<string, { pricePerKg: number; bagSizeKg: number }> = {
-          "Urea": { pricePerKg: 0.60, bagSizeKg: 50 },
-          "DAP": { pricePerKg: 0.80, bagSizeKg: 50 },
-          "MOP": { pricePerKg: 0.70, bagSizeKg: 50 }
-        };
-        const pricing = FERT_PRICES[prod.name] || { pricePerKg: 0.6, bagSizeKg: 50 };
-        const quantityPerAcre = (prod.quantity || 0) / 2.47105;
-        const totalBags = Math.ceil((quantityPerAcre * area) / pricing.bagSizeKg);
-        const prodCostPerAcre = quantityPerAcre * pricing.pricePerKg;
-        const totalProdCost = prodCostPerAcre * area;
-        totalCostPerAcre += prodCostPerAcre;
+        const metrics = calculateFertilizerMetrics(prod.name, prod.quantity, area);
+        totalCostPerAcre += metrics.costPerAcre;
         
         return [
           prod.name || "N/A",
-          `${quantityPerAcre.toFixed(1)} lbs/acre`,
-          `${(quantityPerAcre * area).toFixed(1)} lbs`,
-          totalBags.toString(),
-          `$${prodCostPerAcre.toFixed(2)}`,
-          `$${totalProdCost.toFixed(2)}`
+          `${metrics.quantityPerAcre.toFixed(1)} lbs/acre`,
+          `${metrics.totalQuantityLbs.toFixed(1)} lbs`,
+          metrics.totalBags.toString(),
+          `$${metrics.costPerAcre.toFixed(2)}`,
+          `$${metrics.totalCost.toFixed(2)}`
         ];
       });
 
@@ -730,11 +722,14 @@ function AnalyticsPage() {
               margin: { left: contentX },
               tableWidth: timelineContentWidth,
               head: [["Fertilizer Product", "Dose / acre", `Total Qty (${area.toFixed(2)} acres)`]],
-              body: step.recommendations.map((r: any) => [
-                r.name || "N/A",
-                `${(r.quantity || 0).toFixed(1)} ${r.unit || "lbs"}/acre`,
-                `${((r.quantity || 0) * area).toFixed(1)} ${r.unit || "lbs"}`
-              ]),
+              body: step.recommendations.map((r: any) => {
+                const metrics = calculateFertilizerMetrics(r.name, r.quantity, area);
+                return [
+                  r.name || "N/A",
+                  `${metrics.quantityPerAcre.toFixed(1)} lbs/acre`,
+                  `${metrics.totalQuantityLbs.toFixed(1)} lbs`
+                ];
+              }),
               theme: "striped",
               headStyles: { fillColor: [16, 185, 129], halign: "left" }, // Emerald header consistent with other tables
               columnStyles: {
@@ -856,9 +851,7 @@ function AnalyticsPage() {
               <BarChart3 className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-200">
-                Dashboard
-              </p>
+              
               <h2 className="text-3xl font-semibold text-white">
                 Field Analytics
               </h2>
