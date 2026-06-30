@@ -77,6 +77,7 @@ function HomePage() {
   }, [tasks]);
 
   const handleAddTask = (input: TaskInput) => {
+    const linkedField = savedFields.find(f => f.id === input.fieldId);
     const newTask: Task = {
       id: Math.random().toString(36).substr(2, 9),
       userId: user?.id || "u1",
@@ -84,6 +85,8 @@ function HomePage() {
       dueDate: input.dueDate,
       category: input.category,
       completed: false,
+      fieldId: input.fieldId,
+      fieldName: linkedField ? linkedField.name : undefined,
     };
     setTasks([...tasks, newTask]);
     setIsModalOpen(false);

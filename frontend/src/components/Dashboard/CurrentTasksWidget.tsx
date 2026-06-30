@@ -73,6 +73,13 @@ const CurrentTasksWidget: React.FC<Props> = ({ tasks, onAddTaskClick, onComplete
                       {task.category}
                     </div>
                   )}
+                  
+                  {/* Field Pill */}
+                  {task.fieldName && (
+                    <div className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase border bg-sky-500/20 text-sky-400 border-sky-500/30">
+                      Farm: {task.fieldName}
+                    </div>
+                  )}
                 </div>
               </div>
               
