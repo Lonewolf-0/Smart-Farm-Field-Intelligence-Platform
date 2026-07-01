@@ -1,0 +1,1158 @@
+[
+  {
+    "id": "0c840334-b8d8-4085-b2c4-3da9aaf618d8",
+    "name": "Eaglesham",
+    "latitude": 58.49486,
+    "longitude": -117.1524,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 103 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 78 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 441 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 264 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 105 }
+    ]
+  },
+  {
+    "id": "a6a2e414-cc97-4c5b-b05e-6b475d8a65b9",
+    "name": "Fairview",
+    "latitude": 58.1872253,
+    "longitude": -116.4242706,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 108 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 67 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 363 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 284 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 43 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 107 }
+    ]
+  },
+  {
+    "id": "d488f695-9f10-482a-8cf4-0960e8361018",
+    "name": "NORTH ALBERTA DO",
+    "latitude": 56.50739,
+    "longitude": -119.13389,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 129 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 74 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 387 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 259 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 32 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 99 }
+    ]
+  },
+  {
+    "id": "7079fb30-41fe-4f88-ad99-618bbea7c624",
+    "name": "Falher",
+    "latitude": 55.729631,
+    "longitude": -117.181927,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 146 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 84 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 360 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 269 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 105 }
+    ]
+  },
+  {
+    "id": "068b508f-6ec6-41b1-a00c-01fd6a80019f",
+    "name": "McLennan Fuel",
+    "latitude": 55.7109871,
+    "longitude": -116.8984528,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 115 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 89 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 411 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 40 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 125 }
+    ]
+  },
+  {
+    "id": "1ca81f0c-4550-4643-a954-6722f4c3cf06",
+    "name": "BLAINE LAKE SK R",
+    "latitude": 55.4303474,
+    "longitude": -116.4633636,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 148 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 64 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 392 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 292 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 36 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 109 }
+    ]
+  },
+  {
+    "id": "e18dcbf6-9349-4d93-8257-91ed12521182",
+    "name": "SEXSMITH AB WH",
+    "latitude": 55.325016,
+    "longitude": -118.785316,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 148 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 66 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 420 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 251 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 35 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 80 }
+    ]
+  },
+  {
+    "id": "1c9097aa-6dcc-4110-8ea6-e2d341a379f5",
+    "name": "SEXSMITH AB R",
+    "latitude": 55.21017773,
+    "longitude": -119.4372628,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 130 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 76 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 431 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 272 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 40 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 117 }
+    ]
+  },
+  {
+    "id": "15d7c9a4-0cd1-431b-ac59-f32b5fefe2ac",
+    "name": "Bonnyville Fuel PCPS Transfer",
+    "latitude": 54.27308,
+    "longitude": -110.7535,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 146 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 82 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 436 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 32 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 102 }
+    ]
+  },
+  {
+    "id": "c2342521-2dac-4cbf-a372-cb1a46b2008d",
+    "name": "Bonnyville Fuel",
+    "latitude": 54.27308,
+    "longitude": -110.7535,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 149 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 70 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 408 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 279 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 117 }
+    ]
+  },
+  {
+    "id": "fe0e917a-a6e1-4022-8ea2-ff1e057daf11",
+    "name": "WINNIE TX R",
+    "latitude": 54.1581802,
+    "longitude": -113.8605423,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 134 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 84 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 363 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 278 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 41 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 85 }
+    ]
+  },
+  {
+    "id": "d4cdd368-f761-491f-9db1-48ab164eb073",
+    "name": "Douglas Division Inventory",
+    "latitude": 54.1352539,
+    "longitude": -114.393898,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 131 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 77 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 367 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 294 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 99 }
+    ]
+  },
+  {
+    "id": "b04eeb31-08ef-4afa-b0f4-460727b147f1",
+    "name": "Meadow Lake Cardlock",
+    "latitude": 54.1334038,
+    "longitude": -108.4460754,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 127 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 71 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 370 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 37 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 99 }
+    ]
+  },
+  {
+    "id": "ce1d2ef8-3051-4410-869c-0d77cd27e5a1",
+    "name": "NORTHWEST SASKATCHEWAN DO",
+    "latitude": 54.1334038,
+    "longitude": -108.4460754,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 122 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 64 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 400 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 282 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 30 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 111 }
+    ]
+  },
+  {
+    "id": "e32502d6-edc3-4c02-8264-a34d16e828af",
+    "name": "Meadow Lake Cardlock PCPS Tran",
+    "latitude": 54.1334038,
+    "longitude": -108.4460754,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 101 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 67 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 439 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 258 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 33 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 112 }
+    ]
+  },
+  {
+    "id": "1c1d902f-e467-4764-bdf6-5eb975f790ac",
+    "name": "HASTINGS (PINEBELT) FL R",
+    "latitude": 54.0934219,
+    "longitude": -112.4843826,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 142 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 81 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 389 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 277 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 41 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 103 }
+    ]
+  },
+  {
+    "id": "3e470c25-08e6-4e86-bc99-7cb6969977d4",
+    "name": "NORTH CENTRAL ALBERTA DO",
+    "latitude": 53.7450294,
+    "longitude": -113.2364426,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 113 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 85 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 359 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 47 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 118 }
+    ]
+  },
+  {
+    "id": "6a762225-704f-406d-8613-a702146ad578",
+    "name": "Cold Lake Cardlock",
+    "latitude": 53.7123413,
+    "longitude": -113.2124786,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 144 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 66 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 422 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 277 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 91 }
+    ]
+  },
+  {
+    "id": "274defc8-dbd4-4e68-9f55-894ad2e564fe",
+    "name": "Cold Lake Cardlock PCPS Transf",
+    "latitude": 53.7123413,
+    "longitude": -113.2124786,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 108 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 71 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 432 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 270 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 32 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 106 }
+    ]
+  },
+  {
+    "id": "76402602-ed0d-4d02-8546-09c58bde2262",
+    "name": "RYCROFT AB R",
+    "latitude": 53.6369133,
+    "longitude": -109.2059174,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 114 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 65 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 387 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 289 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 45 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 98 }
+    ]
+  },
+  {
+    "id": "77027950-2b2b-4ee1-a8c5-5b47d0b4edce",
+    "name": "Stony Plain Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 133 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 67 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 396 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 252 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 35 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 125 }
+    ]
+  },
+  {
+    "id": "c1733bec-4c15-4bdc-8f41-f0c01c968fa9",
+    "name": "Alberta North Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 118 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 86 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 406 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 253 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 45 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 125 }
+    ]
+  },
+  {
+    "id": "f2a716d6-a58e-4497-a126-f2f105e58284",
+    "name": "Grande Prairie Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 140 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 68 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 393 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 288 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 41 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 85 }
+    ]
+  },
+  {
+    "id": "5caa2649-1890-4850-9b8f-308439afb471",
+    "name": "Edmonton Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 148 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 68 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 391 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 291 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 112 }
+    ]
+  },
+  {
+    "id": "0eaa1c8e-9f44-4ed8-ab2c-c8e1070a9bd9",
+    "name": "Viking Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 105 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 63 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 411 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 119 }
+    ]
+  },
+  {
+    "id": "727bc804-f287-4878-8d6d-c64dc4b094d4",
+    "name": "Alberta Peace Fuel",
+    "latitude": 53.5561256,
+    "longitude": -114.0021667,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 137 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 80 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 353 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 279 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 92 }
+    ]
+  },
+  {
+    "id": "c14655cd-a907-41cf-8cb5-2d73ce0e7f43",
+    "name": "Spiritwood",
+    "latitude": 53.503341,
+    "longitude": -105.853381,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 134 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 67 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 409 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 297 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 46 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 128 }
+    ]
+  },
+  {
+    "id": "209e9428-4abf-47b1-b7c8-7e0049f0099c",
+    "name": "Innisfree",
+    "latitude": 53.3736382,
+    "longitude": -111.5286331,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 122 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 86 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 432 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 295 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 38 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 83 }
+    ]
+  },
+  {
+    "id": "31434e59-8b4b-42a0-b291-936d1145d744",
+    "name": "Vermillion (UL3)",
+    "latitude": 53.354035,
+    "longitude": -110.855,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 134 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 89 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 404 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 288 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 42 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 102 }
+    ]
+  },
+  {
+    "id": "b4dee9d2-dcfd-4bd8-9a45-43fd9a5f4bb1",
+    "name": "Tonopah",
+    "latitude": 39.521313,
+    "longitude": -119.73059,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 118 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 81 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 443 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 281 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 31 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 89 }
+    ]
+  },
+  {
+    "id": "99f3d866-65d7-41ca-828f-0dd7b0c3bcdf",
+    "name": "CENTRAL INDIANA DO",
+    "latitude": 39.495411,
+    "longitude": -85.92288,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 138 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 72 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 414 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 280 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 36 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 99 }
+    ]
+  },
+  {
+    "id": "1dc461bf-0300-4152-882c-62a4b324d6d1",
+    "name": "Sabina Inventory",
+    "latitude": 39.491964,
+    "longitude": -83.635738,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 134 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 82 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 391 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 284 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 34 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 125 }
+    ]
+  },
+  {
+    "id": "a8c98333-bdf5-4151-96de-4eaf7b229131",
+    "name": "Canada Digital",
+    "latitude": 39.49118219,
+    "longitude": -86.04517124,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 132 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 76 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 409 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 276 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 37 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 103 }
+    ]
+  },
+  {
+    "id": "e40c9cd0-7d91-454f-9326-9c4af67cdc7c",
+    "name": "SOUTHWEST SASKATCHEWAN DO",
+    "latitude": 39.474507,
+    "longitude": -75.163383,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 141 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 89 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 423 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 287 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 122 }
+    ]
+  },
+  {
+    "id": "94e0647f-1ed6-4266-a2c6-1229594102f9",
+    "name": "Melvin NH3",
+    "latitude": 39.472053,
+    "longitude": -83.715291,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 138 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 74 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 389 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 259 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 49 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 93 }
+    ]
+  },
+  {
+    "id": "d0fc1b27-4bb7-4d7c-8c79-0601ce3b462f",
+    "name": "Melvin A/A",
+    "latitude": 39.472053,
+    "longitude": -83.715291,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 124 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 76 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 438 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 254 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 49 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 121 }
+    ]
+  },
+  {
+    "id": "a31a84f0-7a74-4895-a7c9-d22768b04932",
+    "name": "Laurelville Division Inventory",
+    "latitude": 39.47109617,
+    "longitude": -82.73955323,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 112 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 67 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 436 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 256 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 36 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 106 }
+    ]
+  },
+  {
+    "id": "68535db8-432b-415b-be56-aa14ffc5c0c9",
+    "name": "Brookville",
+    "latitude": 39.458453,
+    "longitude": -84.910453,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 118 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 60 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 392 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 284 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 30 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 109 }
+    ]
+  },
+  {
+    "id": "6bbb529c-8903-4b76-8b6d-40ba160add1a",
+    "name": "ECHELON CANADA ADMIN",
+    "latitude": 39.454755,
+    "longitude": -98.102467,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 140 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 74 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 409 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 298 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 127 }
+    ]
+  },
+  {
+    "id": "c1798a01-1c71-4e9c-bf49-b30f240b1ddd",
+    "name": "Hillview",
+    "latitude": 39.452139,
+    "longitude": -90.538769,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 128 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 81 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 389 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 256 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 30 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 121 }
+    ]
+  },
+  {
+    "id": "c0ffdd20-97d3-4a40-a50a-31b86acf9695",
+    "name": "Leesburg OH",
+    "latitude": 39.438632,
+    "longitude": -83.509095,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 107 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 85 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 437 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 260 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 36 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 127 }
+    ]
+  },
+  {
+    "id": "45c5ceff-65f0-46a9-8d6c-ef90137cd45f",
+    "name": "Louisiana",
+    "latitude": 39.437814,
+    "longitude": -91.034499,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 117 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 84 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 377 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 270 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 35 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 97 }
+    ]
+  },
+  {
+    "id": "8ff68c33-0774-492d-831d-0a9c9cc18587",
+    "name": "Winchest",
+    "latitude": 39.431133,
+    "longitude": -90.399739,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 134 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 79 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 405 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 282 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 33 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 84 }
+    ]
+  },
+  {
+    "id": "e863ca3e-7fde-4357-a754-5b617b480924",
+    "name": "STOCKTON KS",
+    "latitude": 39.431133,
+    "longitude": -90.399739,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 148 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 84 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 425 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 276 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 30 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 83 }
+    ]
+  },
+  {
+    "id": "438080e7-164e-45a2-9e22-e77c5f4926b5",
+    "name": "SOUTHERN ILLINOIS DO",
+    "latitude": 39.418527,
+    "longitude": -88.792438,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 126 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 86 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 358 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 267 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 82 }
+    ]
+  },
+  {
+    "id": "25706480-50c6-4d9f-827b-ce0f2710c2bf",
+    "name": "CO Seed Storage",
+    "latitude": 39.406792,
+    "longitude": -89.439368,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 105 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 77 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 350 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 252 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 40 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 83 }
+    ]
+  },
+  {
+    "id": "10739e8d-0fb2-4950-9896-b04e982b5b7e",
+    "name": "Manchester Fert Division Inv",
+    "latitude": 39.402676,
+    "longitude": -83.170195,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 110 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 66 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 382 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 276 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 47 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 91 }
+    ]
+  },
+  {
+    "id": "4d817e64-1903-44b5-9d1b-986a441d0071",
+    "name": "Clay Center Fert Storage",
+    "latitude": 39.379954,
+    "longitude": -97.17121,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 132 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 60 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 351 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 296 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 34 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 88 }
+    ]
+  },
+  {
+    "id": "50f07c22-9b7c-410b-b9f1-00cac45a1e1b",
+    "name": "Waterville",
+    "latitude": 39.379954,
+    "longitude": -97.17121,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 119 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 88 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 361 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 259 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 46 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 121 }
+    ]
+  },
+  {
+    "id": "af949ab0-3c8e-40ce-ba3f-6b48dae5dbc2",
+    "name": "Oak Bluff (UM6)",
+    "latitude": 39.377881,
+    "longitude": -91.146642,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 147 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 68 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 351 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 253 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 34 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 97 }
+    ]
+  },
+  {
+    "id": "d2c5d539-1acd-4907-9042-da0198a630e9",
+    "name": "Colby Dry Fert",
+    "latitude": 39.372734,
+    "longitude": -101.040535,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 108 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 69 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 426 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 266 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 37 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 129 }
+    ]
+  },
+  {
+    "id": "6f6b0092-4143-4421-9a80-3a4e1d6ad9cd",
+    "name": "Paris MO",
+    "latitude": 39.368818,
+    "longitude": -91.977881,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 140 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 88 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 368 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 258 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 34 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 89 }
+    ]
+  },
+  {
+    "id": "60bdfaec-a1eb-48c8-884e-f8322d61d13b",
+    "name": "Union City Seed Warehouse",
+    "latitude": 39.346911,
+    "longitude": -101.726788,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 123 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 81 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 359 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 294 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 43 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 127 }
+    ]
+  },
+  {
+    "id": "28b14586-151d-4953-bddd-eb1d98ac68a1",
+    "name": "COTEAU DU LAC QC WH",
+    "latitude": 39.346911,
+    "longitude": -101.726788,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 143 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 70 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 425 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 261 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 45 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 118 }
+    ]
+  },
+  {
+    "id": "c4cf9562-fb60-48f4-a8ce-81afb755d2b0",
+    "name": "Rosedale",
+    "latitude": 39.3420323,
+    "longitude": -76.47587299,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 145 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 65 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 404 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 293 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 47 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 120 }
+    ]
+  },
+  {
+    "id": "f8f7c661-c375-4385-add2-51b5011d0160",
+    "name": "GREENSBURG IN R",
+    "latitude": 39.328761,
+    "longitude": -85.546197,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 125 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 83 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 376 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 292 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 46 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 120 }
+    ]
+  },
+  {
+    "id": "10d12bc5-3f25-45dd-aa5d-79020dff48ed",
+    "name": "Neoga Seed Treating",
+    "latitude": 39.325099,
+    "longitude": -88.449899,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 112 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 62 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 439 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 277 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 40 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 94 }
+    ]
+  },
+  {
+    "id": "a4139b07-457a-421c-b042-503e289762ae",
+    "name": "COLONIAL DO",
+    "latitude": 39.32335167,
+    "longitude": -75.82421203,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 120 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 76 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 393 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 272 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 33 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 102 }
+    ]
+  },
+  {
+    "id": "e1517fb2-cdbb-4da6-8c05-500d20b24df3",
+    "name": "SOUTHWEST INDIANA DO",
+    "latitude": 39.310264,
+    "longitude": -87.30466,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 104 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 62 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 370 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 271 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 46 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 105 }
+    ]
+  },
+  {
+    "id": "a2e094b5-d6e2-4c31-8cce-2aa2fbe66d0d",
+    "name": "SHELBURN IN R",
+    "latitude": 39.310264,
+    "longitude": -87.30466,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 143 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 77 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 442 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 264 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 34 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 90 }
+    ]
+  },
+  {
+    "id": "72dfa548-1f80-449b-9ad5-6e28224e4ce8",
+    "name": "Midland Inventory",
+    "latitude": 39.30512,
+    "longitude": -83.904167,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 133 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 88 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 410 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 256 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 41 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 82 }
+    ]
+  },
+  {
+    "id": "72756273-2bbb-40ae-8a31-9fa36aa0e52c",
+    "name": "Glennville",
+    "latitude": 39.30512,
+    "longitude": -83.904167,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 148 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 66 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 381 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 284 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 43 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 129 }
+    ]
+  },
+  {
+    "id": "7dd54105-49bc-4ef9-a468-a7999b5da066",
+    "name": "Manila",
+    "latitude": 39.273434,
+    "longitude": -91.08958,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 136 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 78 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 442 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 277 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 38 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 108 }
+    ]
+  },
+  {
+    "id": "40fd3855-1736-45bb-8dd1-1aa878062e36",
+    "name": "Hunter",
+    "latitude": 39.27033,
+    "longitude": -98.428601,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 122 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 82 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 400 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 279 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 125 }
+    ]
+  },
+  {
+    "id": "8f6a2aaf-fbea-4507-b31e-97d41a44cf46",
+    "name": "MACOMB IL R",
+    "latitude": 39.265425,
+    "longitude": -100.441567,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 118 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 80 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 387 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 288 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 46 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 121 }
+    ]
+  },
+  {
+    "id": "d12305d6-b2eb-4c2e-99d8-6c3049a58ed4",
+    "name": "Hoxie Division Inventory",
+    "latitude": 39.265425,
+    "longitude": -100.441567,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 135 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 72 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 437 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 255 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 38 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 101 }
+    ]
+  },
+  {
+    "id": "369cde4c-597c-4e61-a55d-7050ba5f94a9",
+    "name": "DO NOT USE - OPEN",
+    "latitude": 39.26448441,
+    "longitude": -87.13569641,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 144 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 70 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 362 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 259 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 38 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 100 }
+    ]
+  },
+  {
+    "id": "8ec3ec9c-e417-4337-841b-8a72c8aa8a9a",
+    "name": "DNU - IDENTIFIED AS CLOSED",
+    "latitude": 39.26438503,
+    "longitude": -87.66703136,
+    "address": "123 Main St, Anytown",
+    "phone": "(555) 123-4567",
+    "services": ["Soil Testing", "Crop Consulting", "Custom Application"],
+    "products": [
+      { "name": "Corn Seed X7", "unit": "bag", "price": 109 },
+      { "name": "Soybean Seed Pro", "unit": "bag", "price": 81 },
+      { "name": "Urea 46-0-0", "unit": "ton", "price": 433 },
+      { "name": "Ammonium Sulfate", "unit": "ton", "price": 251 },
+      { "name": "Roundup PowerMAX", "unit": "gal", "price": 48 },
+      { "name": "Fungicide Plus", "unit": "gal", "price": 100 }
+    ]
+  }
+]
