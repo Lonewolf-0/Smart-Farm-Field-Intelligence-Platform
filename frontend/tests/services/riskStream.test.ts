@@ -35,7 +35,7 @@ describe('connectRiskStream', () => {
         const eventSource = connectRiskStream(fieldId, token, onAlert) as unknown as MockEventSource;
 
         expect(eventSource).toBeInstanceOf(MockEventSource);
-        expect(eventSource.url).toBe(`http://localhost:5000/api/analysis/${fieldId}/risks/stream?token=${token}`);
+        expect(eventSource.url).toBe(`http://localhost:5000/analysis/${fieldId}/risks/stream?token=${token}`);
     });
 
     it('should call onAlert when receiving an array message', () => {
