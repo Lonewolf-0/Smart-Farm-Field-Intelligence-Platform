@@ -49,7 +49,7 @@ const calculateTexture = (clay: number | null, sand: number | null): string => {
  * @returns {Promise<SoilData>} The aggregated soil data across different depth layers.
  * @throws {Error} If the API request fails after all retries.
  */
-export const getSoilProperties = async (lat: number, lon: number, retries = 3): Promise<SoilData> => {
+export const getSoilProperties = async (lat: number, lon: number, retries = 5): Promise<SoilData> => {
   const url = `https://rest.isric.org/soilgrids/v2.0/properties/query`;
   const params = {
     lat,
@@ -68,7 +68,7 @@ export const getSoilProperties = async (lat: number, lon: number, retries = 3): 
         paramsSerializer: {
           indexes: null
         },
-        timeout: 10000,
+        timeout: 30000,
         httpsAgent
       });
 
@@ -133,7 +133,7 @@ export const getSoilProperties = async (lat: number, lon: number, retries = 3): 
         console.error(`SoilGrids API failed after ${retries} attempts:`, error.message);
         throw new Error(`Failed to fetch soil data: ${error.message}`);
       }
-      await new Promise(res => setTimeout(res, 1000 * attempt));
+      await new Promise(res => setTimeout(res, 2000 * attempt));
     }
   }
   
