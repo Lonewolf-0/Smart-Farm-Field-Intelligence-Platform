@@ -47,6 +47,7 @@ export const authenticate = async (
     // 5. Continue
     next();
   } catch (error: any) {
+    console.error("Auth Error:", error);
     return sendResponse(res, 401, "Unauthorized", null, "INVALID_TOKEN");
   }
 };

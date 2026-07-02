@@ -4,8 +4,9 @@ export const connectRiskStream = (
     onAlert: (alerts: any[]) => void
 ) => {
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     const eventSource = new EventSource(
-        `http://localhost:5000/api/analysis/${fieldId}/risks/stream?token=${token}`
+        `${API_URL}/api/analysis/${fieldId}/risks/stream?token=${token}`
     );
 
     eventSource.onmessage = (event) => {
