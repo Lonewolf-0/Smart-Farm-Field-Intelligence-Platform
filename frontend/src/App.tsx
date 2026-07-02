@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import HomePage from "./pages/HomePage.tsx";
 import MapPage from "./pages/MapPage.tsx";
 import AnalyticsPage from "./pages/AnalyticsPage.tsx";
@@ -29,6 +30,7 @@ function App() {
           </Routes>
         </Layout>
         <Analytics />
+        <SpeedInsights />
       </FieldProvider>
     </AuthProvider>
   );
