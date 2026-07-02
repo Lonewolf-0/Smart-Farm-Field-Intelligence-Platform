@@ -12,6 +12,7 @@ const requiredEnv = (key: string): string => {
 
 export const ENV = {
   PORT: process.env.PORT || "5000",
+  NODE_ENV: process.env.NODE_ENV || "development",
 
   DB_HOST: requiredEnv("DB_HOST"),
   DB_PORT: requiredEnv("DB_PORT"),
