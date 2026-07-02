@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import HomePage from "./pages/HomePage.tsx";
 import MapPage from "./pages/MapPage.tsx";
 import AnalyticsPage from "./pages/AnalyticsPage.tsx";
@@ -27,6 +28,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
+        <Analytics />
       </FieldProvider>
     </AuthProvider>
   );
